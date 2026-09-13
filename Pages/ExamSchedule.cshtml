@@ -55,9 +55,8 @@
 
                 @foreach (var examType in Model.ExamTypes)
                 {
-                    <button type="button"
-                            class="exam-type-button @(examType.IsActive ? "active" : "")"
-                            data-exam-type="@examType.Code">
+                    <a class="exam-type-button @(examType.IsActive ? "active" : "")"
+                       href="?examTypeCode=@examType.Code">
 
                         <span class="exam-type-icon">
                             @examType.Icon
@@ -67,7 +66,7 @@
                             @examType.Name
                         </span>
 
-                    </button>
+                    </a>
                 }
 
             </div>

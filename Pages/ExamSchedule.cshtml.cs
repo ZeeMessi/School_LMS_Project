@@ -1,60 +1,53 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using SchoolLMS.Data;
 
 namespace SchoolLMS.Pages;
 
 public class ExamScheduleModel : PageModel
 {
-    /*
-     * ============================================================
-     * DATABASE-READY STRUCTURE
-     * ============================================================
-     *
-     * The sample values below are temporary demonstration data.
-     *
-     * Later these properties should be populated from the school's
-     * actual database/service.
-     *
-     * The Razor page does NOT need to be redesigned when database
-     * values change.
-     * ============================================================
-     */
+    private readonly AppDbContext _db;
 
+    public ExamScheduleModel(AppDbContext db)
+    {
+        _db = db;
+    }
 
     // ------------------------------------------------------------
     // STUDENT / CLASS INFORMATION
     // ------------------------------------------------------------
 
-    public string ClassName { get; set; } = "Class 5";
+    public string ClassName { get; set; } = "";
 
-    public string SectionName { get; set; } = "Section A";
+    public string SectionName { get; set; } = "";
 
-    public string AcademicYear { get; set; } = "2026 - 2027";
+    public string AcademicYear { get; set; } = "";
 
 
     // ------------------------------------------------------------
     // CURRENT EXAMINATION TYPE
     // ------------------------------------------------------------
 
-    public string CurrentExamType { get; set; } = "QUARTERLY";
+    // Real navigation (?examTypeCode=...), same approach as Grade.cshtml -
+    // not a client-side data swap.
+    [BindProperty(SupportsGet = true)]
+    public string ExamTypeCode { get; set; } = "";
 
 
     // ------------------------------------------------------------
-    // SCHOOL CONFIGURATION
+    // DISPLAY TOGGLES
     // ------------------------------------------------------------
+    //
+    // Rather than separate school-configuration flags unbacked by any
+    // real data, these just reflect whether the currently-filtered exams
+    // actually have that information - so the columns adapt to the data.
 
-    /*
-     * These flags represent features configured by the school.
-     *
-     * Later these values can come directly from the database.
-     */
+    public bool ShowSubjectCode { get; set; }
 
-    public bool ShowSubjectCode { get; set; } = true;
+    public bool ShowRoom { get; set; }
 
-    public bool ShowRoom { get; set; } = true;
-
-    public bool ShowInvigilator { get; set; } = true;
-
-    public bool ShowInstructions { get; set; } = true;
+    public bool ShowInvigilator { get; set; }
 
 
     // ------------------------------------------------------------
@@ -90,190 +83,86 @@ public class ExamScheduleModel : PageModel
 
     public int TotalExams => Exams.Count;
 
-    public int TotalSubjects =>
-        Exams
-            .Select(x => x.Subject)
-            .Distinct()
-            .Count();
+    public int TotalSubjects => Exams.Select(x => x.Subject).Distinct().Count();
 
-    public int UpcomingExamCount =>
-        UpcomingExams.Count;
+    public int UpcomingExamCount => UpcomingExams.Count;
 
 
     // ------------------------------------------------------------
     // EXAM INSTRUCTIONS
     // ------------------------------------------------------------
+    //
+    // Still a static default - there's no per-school/per-exam-type
+    // instructions entity yet, same caveat as Grade.cshtml's general
+    // teacher remark.
+
+    public bool ShowInstructions { get; set; } = true;
 
     public string ExamInstructions { get; set; } =
         "Students should arrive at least 15 minutes before the examination. " +
         "Bring the required stationery and examination materials.";
 
 
-    // ============================================================
-    // ON GET
-    // ============================================================
-
-    public void OnGet()
+    public async Task OnGetAsync()
     {
-        /*
-         * TEMPORARY SAMPLE DATA
-         *
-         * Replace this section later with database/service calls.
-         */
+        var student = await _db.Students
+            .Include(s => s.ClassRoom)
+            .FirstAsync();
 
-        LoadExamTypes();
+        ClassName = student.ClassRoom.ClassName;
+        SectionName = student.ClassRoom.SectionName;
+        AcademicYear = student.ClassRoom.AcademicYear;
 
-        LoadExams();
+        var examTypesInDb = await _db.ExamTypes.OrderBy(t => t.Id).ToListAsync();
+
+        if (string.IsNullOrWhiteSpace(ExamTypeCode) || examTypesInDb.All(t => t.Code != ExamTypeCode))
+        {
+            // Default to whichever exam type actually has exams scheduled
+            // for this class, preferring one flagged IsActive.
+            var codesWithExams = await _db.Exams
+                .Where(e => e.ClassRoomId == student.ClassRoomId)
+                .Select(e => e.ExamType.Code)
+                .Distinct()
+                .ToListAsync();
+
+            ExamTypeCode = examTypesInDb.FirstOrDefault(t => t.IsActive && codesWithExams.Contains(t.Code))?.Code
+                ?? examTypesInDb.FirstOrDefault(t => codesWithExams.Contains(t.Code))?.Code
+                ?? examTypesInDb.FirstOrDefault()?.Code
+                ?? "";
+        }
+
+        ExamTypes = examTypesInDb
+            .Select(t => new ExamType { Code = t.Code, Name = t.Name, Icon = t.Icon, IsActive = t.Code == ExamTypeCode })
+            .ToList();
+
+        var examRows = await _db.Exams
+            .Where(e => e.ClassRoomId == student.ClassRoomId && e.ExamType.Code == ExamTypeCode)
+            .OrderBy(e => e.Date)
+            .ToListAsync();
+
+        Exams = examRows
+            .Select(e => new ExamItem
+            {
+                Date = e.Date,
+                Subject = e.Subject,
+                SubjectCode = e.SubjectCode ?? "",
+                StartTime = e.StartTime,
+                EndTime = e.EndTime,
+                Room = e.Room ?? "",
+                Invigilator = e.Invigilator ?? "",
+                Status = e.Status,
+                Icon = e.Icon
+            })
+            .ToList();
+
+        ShowSubjectCode = Exams.Any(e => e.SubjectCodeAvailable);
+        ShowRoom = Exams.Any(e => !string.IsNullOrWhiteSpace(e.Room));
+        ShowInvigilator = Exams.Any(e => !string.IsNullOrWhiteSpace(e.Invigilator));
+
+        var today = DateTime.Today;
+        UpcomingExams = Exams.Where(x => x.Date >= today).OrderBy(x => x.Date).Take(5).ToList();
 
         BuildCalendar();
-    }
-
-
-    // ============================================================
-    // EXAM TYPES
-    // ============================================================
-
-    private void LoadExamTypes()
-    {
-        /*
-         * Example:
-         *
-         * If a school only has Quarterly + Annual,
-         * simply return those two from the database.
-         *
-         * No change to the .cshtml page is required.
-         */
-
-        ExamTypes = new List<ExamType>
-        {
-            new ExamType
-            {
-                Code = "QUARTERLY",
-                Name = "Quarterly",
-                Icon = "📝",
-                IsActive = true
-            },
-
-            new ExamType
-            {
-                Code = "BIANNUAL",
-                Name = "Bi-Annual",
-                Icon = "📚",
-                IsActive = false
-            },
-
-            new ExamType
-            {
-                Code = "ANNUAL",
-                Name = "Annual",
-                Icon = "🏆",
-                IsActive = false
-            }
-        };
-    }
-
-
-    // ============================================================
-    // EXAM DATA
-    // ============================================================
-
-    private void LoadExams()
-    {
-        Exams = new List<ExamItem>
-        {
-            new ExamItem
-            {
-                Date = new DateTime(2026, 9, 5),
-                Subject = "English",
-                SubjectCode = "ENG-05",
-                StartTime = "09:00 AM",
-                EndTime = "11:00 AM",
-                Room = "Room 204",
-                Invigilator = "Mr. Ahmed Khan",
-                Status = "Upcoming",
-                Icon = "🇬🇧"
-            },
-
-            new ExamItem
-            {
-                Date = new DateTime(2026, 9, 7),
-                Subject = "Mathematics",
-                SubjectCode = "MTH-05",
-                StartTime = "09:00 AM",
-                EndTime = "11:00 AM",
-                Room = "Room 204",
-                Invigilator = "Ms. Sara Ali",
-                Status = "Upcoming",
-                Icon = "📐"
-            },
-
-            new ExamItem
-            {
-                Date = new DateTime(2026, 9, 9),
-                Subject = "Science",
-                SubjectCode = "SCI-05",
-                StartTime = "09:00 AM",
-                EndTime = "11:00 AM",
-                Room = "Room 204",
-                Invigilator = "Mr. Bilal Ahmed",
-                Status = "Upcoming",
-                Icon = "🔬"
-            },
-
-            new ExamItem
-            {
-                Date = new DateTime(2026, 9, 11),
-                Subject = "Urdu",
-                SubjectCode = "URD-05",
-                StartTime = "09:00 AM",
-                EndTime = "11:00 AM",
-                Room = "Room 204",
-                Invigilator = "Mrs. Ayesha Khan",
-                Status = "Upcoming",
-                Icon = "📖"
-            },
-
-            new ExamItem
-            {
-                Date = new DateTime(2026, 9, 14),
-                Subject = "Social Studies",
-                SubjectCode = "SST-05",
-                StartTime = "09:00 AM",
-                EndTime = "11:00 AM",
-                Room = "Room 205",
-                Invigilator = "Mr. Hamza",
-                Status = "Upcoming",
-                Icon = "🌍"
-            },
-
-            new ExamItem
-            {
-                Date = new DateTime(2026, 9, 16),
-                Subject = "Drawing",
-                SubjectCode = "DRW-05",
-                StartTime = "09:00 AM",
-                EndTime = "10:30 AM",
-                Room = "Art Room",
-                Invigilator = "Ms. Hina",
-                Status = "Upcoming",
-                Icon = "🎨"
-            }
-        };
-
-
-        /*
-         * In the real database implementation, this could become:
-         *
-         * Exams = await _examService
-         *     .GetExamsAsync(studentId, classId, sectionId, examTypeId);
-         */
-
-
-        UpcomingExams = Exams
-            .Where(x => x.Date >= DateTime.Today)
-            .OrderBy(x => x.Date)
-            .Take(5)
-            .ToList();
     }
 
 
@@ -283,133 +172,65 @@ public class ExamScheduleModel : PageModel
 
     private void BuildCalendar()
     {
-        /*
-         * Temporary calendar month.
-         *
-         * Later this can be determined automatically from the
-         * selected exam schedule.
-         */
+        // Shows the month of the nearest upcoming exam (or, if none are
+        // upcoming, the most recent past one) for the selected exam type -
+        // rather than a hardcoded September 2026.
+        var referenceDate = UpcomingExams.FirstOrDefault()?.Date
+            ?? Exams.OrderByDescending(e => e.Date).FirstOrDefault()?.Date
+            ?? DateTime.Today;
 
-        var calendarMonth = new DateTime(2026, 9, 1);
+        var calendarMonth = new DateTime(referenceDate.Year, referenceDate.Month, 1);
 
         CurrentMonthName = calendarMonth.ToString("MMMM yyyy");
 
-
         WeekDays = new List<string>
         {
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday"
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
         };
-
 
         CalendarDays = new List<CalendarDay>();
 
-
         var firstDay = calendarMonth;
+        var daysInMonth = DateTime.DaysInMonth(calendarMonth.Year, calendarMonth.Month);
+        var startOffset = ((int)firstDay.DayOfWeek + 6) % 7;
 
-        int daysInMonth =
-            DateTime.DaysInMonth(
-                calendarMonth.Year,
-                calendarMonth.Month);
-
-
-        int startOffset =
-            ((int)firstDay.DayOfWeek + 6) % 7;
-
-
-        /*
-         * Previous month days.
-         */
-
-        for (int i = startOffset - 1; i >= 0; i--)
+        for (var i = startOffset - 1; i >= 0; i--)
         {
             var date = firstDay.AddDays(-(i + 1));
-
-            CalendarDays.Add(
-                CreateCalendarDay(
-                    date,
-                    false));
+            CalendarDays.Add(CreateCalendarDay(date, false));
         }
 
-
-        /*
-         * Current month days.
-         */
-
-        for (int day = 1; day <= daysInMonth; day++)
+        for (var day = 1; day <= daysInMonth; day++)
         {
-            var date =
-                new DateTime(
-                    calendarMonth.Year,
-                    calendarMonth.Month,
-                    day);
-
-            CalendarDays.Add(
-                CreateCalendarDay(
-                    date,
-                    true));
+            var date = new DateTime(calendarMonth.Year, calendarMonth.Month, day);
+            CalendarDays.Add(CreateCalendarDay(date, true));
         }
-
-
-        /*
-         * Next month days.
-         */
 
         while (CalendarDays.Count % 7 != 0)
         {
-            var lastDate =
-                CalendarDays
-                    .Last()
-                    .Date;
-
-            var nextDate =
-                lastDate.AddDays(1);
-
-            CalendarDays.Add(
-                CreateCalendarDay(
-                    nextDate,
-                    false));
+            var nextDate = CalendarDays[^1].Date.AddDays(1);
+            CalendarDays.Add(CreateCalendarDay(nextDate, false));
         }
     }
 
-
-    // ============================================================
-    // CALENDAR DAY
-    // ============================================================
-
-    private CalendarDay CreateCalendarDay(
-        DateTime date,
-        bool isCurrentMonth)
+    private CalendarDay CreateCalendarDay(DateTime date, bool isCurrentMonth)
     {
-        var exam =
-            Exams.FirstOrDefault(
-                x => x.Date.Date == date.Date);
-
+        var exam = Exams.FirstOrDefault(x => x.Date.Date == date.Date);
 
         return new CalendarDay
         {
             Date = date,
-
             DayNumber = date.Day,
-
             IsCurrentMonth = isCurrentMonth,
-
             IsToday = date.Date == DateTime.Today,
-
             HasExam = exam != null,
-
             ExamSubject = exam?.Subject ?? ""
         };
     }
 
 
     // ============================================================
-    // MODELS
+    // VIEW MODELS
     // ============================================================
 
     public class ExamType
@@ -432,8 +253,7 @@ public class ExamScheduleModel : PageModel
 
         public string SubjectCode { get; set; } = "";
 
-        public bool SubjectCodeAvailable =>
-            !string.IsNullOrWhiteSpace(SubjectCode);
+        public bool SubjectCodeAvailable => !string.IsNullOrWhiteSpace(SubjectCode);
 
         public string StartTime { get; set; } = "";
 
