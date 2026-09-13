@@ -1,28 +1,34 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using SchoolLMS.Data;
 
 namespace SchoolLMS.Pages;
 
 public class AccountBookModel : PageModel
 {
+    private readonly AppDbContext _db;
+
+    public AccountBookModel(AppDbContext db)
+    {
+        _db = db;
+    }
+
     // =========================================================
-    // STUDENT INFORMATION
-    //
-    // FUTURE:
-    // These values will come from the database.
+    // STUDENT / SCHOOL INFORMATION
     // =========================================================
 
-    public string StudentName { get; set; } = "Ali Ahmed";
+    public string StudentName { get; set; } = "";
 
-    public string ClassName { get; set; } = "Class 5";
+    public string ClassName { get; set; } = "";
 
-    public string Section { get; set; } = "Section A";
+    public string Section { get; set; } = "";
 
 
     // =========================================================
     // CURRENT BILLING INFORMATION
     // =========================================================
 
-    public string BillingPeriod { get; set; } = "August 2026";
+    public string BillingPeriod { get; set; } = "";
 
     public decimal CurrentPayable { get; set; }
 
@@ -30,46 +36,32 @@ public class AccountBookModel : PageModel
 
     public decimal Outstanding { get; set; }
 
-    public string PaymentStatus { get; set; } = "Unpaid";
+    public string PaymentStatus { get; set; } = "";
 
 
     // =========================================================
     // CHALLAN INFORMATION
-    //
-    // These details are intentionally displayed only inside
-    // the View/Download Challan area.
     // =========================================================
 
-    public string ChallanNumber { get; set; } = "SCH-2026-000125";
+    public string ChallanNumber { get; set; } = "";
 
-    public string IssueDate { get; set; } = "01 August 2026";
+    public string IssueDate { get; set; } = "";
 
-    public string DueDate { get; set; } = "15 August 2026";
+    public string DueDate { get; set; } = "";
 
 
     // =========================================================
     // FEE COMPONENTS
-    //
-    // Any value of 0 means that fee will not appear in the
-    // challan.
     // =========================================================
 
     public decimal AdmissionFee { get; set; }
-
     public decimal TuitionFee { get; set; }
-
     public decimal LibraryFee { get; set; }
-
     public decimal TransportFee { get; set; }
-
     public decimal StationeryFee { get; set; }
-
     public decimal UniformFee { get; set; }
-
     public decimal Fine { get; set; }
-
     public decimal OtherCharges { get; set; }
-
     public decimal Discount { get; set; }
 
 
@@ -77,92 +69,67 @@ public class AccountBookModel : PageModel
     // PAYMENT HISTORY
     // =========================================================
 
-    public List<PaymentHistoryItem> PaymentHistory { get; set; }
-        = new List<PaymentHistoryItem>();
+    public List<PaymentHistoryItem> PaymentHistory { get; set; } = new();
 
 
-    // =========================================================
-    // PAGE LOAD
-    //
-    // TEMPORARY SAMPLE DATA ONLY.
-    //
-    // LATER:
-    // Replace this section with database/service calls.
-    // =========================================================
-
-    public void OnGet()
+    public async Task OnGetAsync()
     {
-        TuitionFee = 10000;
+        // No login yet, so this always shows the first student's account.
+        var student = await _db.Students
+            .Include(s => s.ClassRoom)
+            .FirstAsync();
 
-        AdmissionFee = 0;
+        StudentName = student.FullName;
+        ClassName = student.ClassRoom.ClassName;
+        Section = student.ClassRoom.SectionName;
 
-        LibraryFee = 0;
+        var invoices = await _db.FeeInvoices
+            .Where(f => f.StudentId == student.Id)
+            .OrderByDescending(f => f.IssueDate)
+            .ToListAsync();
 
-        TransportFee = 2000;
+        // "Current" is simply the most recently-issued invoice - the rest
+        // form the payment history table below it.
+        var current = invoices.FirstOrDefault();
 
-        StationeryFee = 0;
-
-        UniformFee = 0;
-
-        Fine = 0;
-
-        OtherCharges = 0;
-
-        Discount = 0;
-
-
-        CurrentPayable =
-            AdmissionFee
-            + TuitionFee
-            + LibraryFee
-            + TransportFee
-            + StationeryFee
-            + UniformFee
-            + Fine
-            + OtherCharges
-            - Discount;
-
-
-        TotalPaid = 20000;
-
-        Outstanding = CurrentPayable;
-
-
-        PaymentStatus = "Unpaid";
-
-
-        PaymentHistory = new List<PaymentHistoryItem>
+        if (current is not null)
         {
-            new PaymentHistoryItem
-            {
-                Month = "July 2026",
-                Amount = 10000,
-                DueDate = "15 July 2026",
-                PaidDate = "13 July 2026",
-                Status = "Paid",
-                ReceiptNumber = "REC-2026-00091"
-            },
+            BillingPeriod = current.BillingPeriod;
+            ChallanNumber = current.ChallanNumber;
+            IssueDate = current.IssueDate.ToString("dd MMMM yyyy");
+            DueDate = current.DueDate.ToString("dd MMMM yyyy");
+            PaymentStatus = current.Status;
 
-            new PaymentHistoryItem
-            {
-                Month = "June 2026",
-                Amount = 10000,
-                DueDate = "15 June 2026",
-                PaidDate = "14 June 2026",
-                Status = "Paid",
-                ReceiptNumber = "REC-2026-00072"
-            },
+            AdmissionFee = current.AdmissionFee;
+            TuitionFee = current.TuitionFee;
+            LibraryFee = current.LibraryFee;
+            TransportFee = current.TransportFee;
+            StationeryFee = current.StationeryFee;
+            UniformFee = current.UniformFee;
+            Fine = current.Fine;
+            OtherCharges = current.OtherCharges;
+            Discount = current.Discount;
+            CurrentPayable = current.TotalPayable;
+        }
 
-            new PaymentHistoryItem
+        // Computed from every invoice, not just the current one - so this
+        // agrees with the "Outstanding Dues" figure on the Overview page,
+        // which is computed the same way.
+        TotalPaid = invoices.Where(f => f.Status == "Paid").Sum(f => f.TotalPayable);
+        Outstanding = invoices.Where(f => f.Status != "Paid").Sum(f => f.TotalPayable);
+
+        PaymentHistory = invoices
+            .Where(f => f != current)
+            .Select(f => new PaymentHistoryItem
             {
-                Month = "May 2026",
-                Amount = 10000,
-                DueDate = "15 May 2026",
-                PaidDate = "—",
-                Status = "Unpaid",
-                ReceiptNumber = ""
-            }
-        };
+                Month = f.BillingPeriod,
+                Amount = f.TotalPayable,
+                DueDate = f.DueDate.ToString("dd MMMM yyyy"),
+                PaidDate = f.PaidDate?.ToString("dd MMMM yyyy") ?? "",
+                Status = f.Status,
+                ReceiptNumber = f.ReceiptNumber ?? ""
+            })
+            .ToList();
     }
 }
 
