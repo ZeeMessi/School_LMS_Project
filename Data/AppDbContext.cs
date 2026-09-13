@@ -49,6 +49,17 @@ public class AppDbContext : DbContext
             .HasForeignKey(cs => cs.TeacherId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        // ExamResult has a cascade path to Student AND to Exam, and both of
+        // those in turn cascade from ClassRoom — two cascade paths
+        // converging on the same table, which SQL Server refuses to create.
+        // Breaking the Exam side to Restrict keeps "delete a student wipes
+        // their results" while avoiding the cycle.
+        modelBuilder.Entity<ExamResult>()
+            .HasOne(er => er.Exam)
+            .WithMany(e => e.Results)
+            .HasForeignKey(er => er.ExamId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<Announcement>()
             .HasOne(a => a.TargetClassRoom)
             .WithMany()

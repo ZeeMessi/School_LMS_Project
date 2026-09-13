@@ -316,7 +316,7 @@ namespace SchoolLMS.Migrations
                         column: x => x.ExamId,
                         principalTable: "Exams",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ExamResults_Students_StudentId",
                         column: x => x.StudentId,

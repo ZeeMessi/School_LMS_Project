@@ -582,7 +582,7 @@ namespace SchoolLMS.Migrations
                     b.HasOne("SchoolLMS.Data.Entities.Exam", "Exam")
                         .WithMany("Results")
                         .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SchoolLMS.Data.Entities.Student", "Student")

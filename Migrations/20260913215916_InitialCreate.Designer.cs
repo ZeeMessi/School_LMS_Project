@@ -12,7 +12,7 @@ using SchoolLMS.Data;
 namespace SchoolLMS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260913212527_InitialCreate")]
+    [Migration("20260913215916_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -585,7 +585,7 @@ namespace SchoolLMS.Migrations
                     b.HasOne("SchoolLMS.Data.Entities.Exam", "Exam")
                         .WithMany("Results")
                         .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SchoolLMS.Data.Entities.Student", "Student")

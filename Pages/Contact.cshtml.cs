@@ -1,64 +1,47 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SchoolLMS.Data;
 
 namespace SchoolLMS.Pages
 {
     public class ContactModel : PageModel
     {
-        /*
-         * =====================================================
-         * FUTURE DATABASE DATA
-         * =====================================================
-         *
-         * These values will eventually come from the school's
-         * database.
-         *
-         * The page structure does not need to change when the
-         * school changes its information.
-         */
+        private readonly AppDbContext _db;
 
-        public string SchoolName { get; set; } =
-            "School Name";
+        public ContactModel(AppDbContext db)
+        {
+            _db = db;
+        }
 
-        public string SchoolLogo { get; set; } =
-            "";
+        public string SchoolName { get; set; } = "";
 
-        public string AboutUs { get; set; } =
-            "School information will appear here.";
+        public string? SchoolLogo { get; set; }
 
-        public string Address { get; set; } =
-            "School Address";
+        public string AboutUs { get; set; } = "";
 
-        public string Dial { get; set; } =
-            "+92 (51-111-8-88-80)";
+        public string Address { get; set; } = "";
 
-        public string Mobile { get; set; } =
-            "0304-1234567";
+        public string Dial { get; set; } = "";
 
-        public string Fax { get; set; } =
-            "+92 (51) 1234567";
+        public string Mobile { get; set; } = "";
 
-        public string Email { get; set; } =
-            "school@example.com";
+        public string Fax { get; set; } = "";
 
+        public string Email { get; set; } = "";
 
         public void OnGet()
         {
-            /*
-             * FUTURE:
-             *
-             * Load school information from database here.
-             *
-             * Example:
-             *
-             * SchoolName = school.Name;
-             * SchoolLogo = school.LogoUrl;
-             * Address = school.Address;
-             * Dial = school.Dial;
-             * Mobile = school.Mobile;
-             * Fax = school.Fax;
-             * Email = school.Email;
-             * AboutUs = school.AboutUs;
-             */
+            // One database per school deployment means there's only ever
+            // one School row here — this is simply that school's profile.
+            var school = _db.Schools.First();
+
+            SchoolName = school.Name;
+            SchoolLogo = school.LogoUrl;
+            AboutUs = school.AboutUs;
+            Address = school.Address;
+            Dial = school.Dial;
+            Mobile = school.Mobile;
+            Fax = school.Fax;
+            Email = school.Email;
         }
     }
 }

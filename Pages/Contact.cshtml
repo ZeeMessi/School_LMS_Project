@@ -19,17 +19,22 @@
 
         <div class="contact-school-logo">
 
-            <!-- Future database image -->
-            <div class="contact-logo-placeholder">
-                SCHOOL LOGO
-            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.SchoolLogo))
+            {
+                <img src="@Model.SchoolLogo" alt="@Model.SchoolName logo" />
+            }
+            else
+            {
+                <div class="contact-logo-placeholder">
+                    SCHOOL LOGO
+                </div>
+            }
 
         </div>
 
         <div class="contact-school-name">
 
-            <!-- Future database value -->
-            <h1>School Name</h1>
+            <h1>@Model.SchoolName</h1>
 
             <p>
                 About Us &amp; Contact Us
@@ -65,12 +70,8 @@
 
         <div class="contact-about-content">
 
-            <!--
-                This content will eventually come from the database.
-            -->
-
             <p>
-                School information will appear here.
+                @Model.AboutUs
             </p>
 
         </div>
@@ -117,9 +118,8 @@
                         Address
                     </span>
 
-                    <!-- Future database value -->
                     <span class="contact-value">
-                        School Address
+                        @Model.Address
                     </span>
 
                 </div>
@@ -141,9 +141,8 @@
                         Dial
                     </span>
 
-                    <!-- Future database value -->
                     <span class="contact-value">
-                        +92 (51-111-8-88-80)
+                        @Model.Dial
                     </span>
 
                 </div>
@@ -165,9 +164,8 @@
                         Mobile
                     </span>
 
-                    <!-- Future database value -->
                     <span class="contact-value">
-                        0304-1234567
+                        @Model.Mobile
                     </span>
 
                 </div>
@@ -189,9 +187,8 @@
                         Fax
                     </span>
 
-                    <!-- Future database value -->
                     <span class="contact-value">
-                        +92 (51) 1234567
+                        @Model.Fax
                     </span>
 
                 </div>
@@ -213,9 +210,8 @@
                         Email
                     </span>
 
-                    <!-- Future database value -->
                     <span class="contact-value">
-                        school@example.com
+                        @Model.Email
                     </span>
 
                 </div>
