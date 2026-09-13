@@ -1,0 +1,383 @@
+﻿@*
+    ============================================================
+    SHARED LMS LAYOUT
+    ============================================================
+
+    Three main areas:
+
+    1. SIDEBAR
+       - School logo
+       - Hamburger
+       - Navigation icons + names
+
+    2. HEADER
+       - LMS
+       - Learning Management System
+       - Notification
+       - Student information
+       - Profile picture
+
+    3. MAIN CONTENT
+       - Future Class, Attendance, Gradebook, etc.
+       - @RenderBody() places the selected page here.
+*@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - School LMS</title>
+
+    <link rel="stylesheet"
+          href="~/css/site.css" />
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside id="sidebar"
+           class="sidebar">
+
+        <!-- SIDEBAR HEADER -->
+
+        <div class="sidebar-header">
+
+            <!--
+                OPEN STATE:
+                SCHOOL LOGO | HAMBURGER
+
+                CLOSED STATE:
+                HAMBURGER ONLY
+
+                The logo is completely removed when collapsed.
+            -->
+
+            <div class="school-logo">
+
+                <!--
+                    Replace this placeholder later with your
+                    actual school logo.
+
+                    The container is intentionally flexible.
+                -->
+
+                <div class="school-logo-placeholder">
+                    SCHOOL LOGO
+                </div>
+
+            </div>
+
+
+            <!-- HAMBURGER -->
+
+            <button id="sidebarToggle"
+                    class="sidebar-toggle"
+                    type="button"
+                    aria-label="Toggle sidebar"
+                    aria-expanded="true">
+
+                <span class="hamburger-lines">
+                    ☰
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             SIDEBAR NAVIGATION
+
+             To change order later:
+             simply move an entire <a> block.
+
+             To add a new option:
+             copy one <a> block.
+             ================================================= -->
+
+        <nav class="sidebar-navigation">
+
+            <a href="#"
+                class="sidebar-link active">
+
+            <span class="sidebar-icon-box">
+            <span class="sidebar-icon">⌂</span>
+            </span>
+
+             <span class="sidebar-text">
+                Overview
+            </span>
+
+            </a>
+
+            <a href="#"
+               class="sidebar-link">
+
+                <span class="sidebar-icon-box">
+                    <span class="sidebar-icon">▣</span>
+                </span>
+
+                <span class="sidebar-text">
+                    Class
+                </span>
+
+            </a>
+
+
+            <a href="#"
+               class="sidebar-link">
+
+                <span class="sidebar-icon-box">
+                    <span class="sidebar-icon">✓</span>
+                </span>
+
+                <span class="sidebar-text">
+                    Attendance
+                </span>
+
+            </a>
+
+
+            <a href="#"
+               class="sidebar-link">
+
+                <span class="sidebar-icon-box">
+                    <span class="sidebar-icon">▤</span>
+                </span>
+
+                <span class="sidebar-text">
+                    Grade Book
+                </span>
+
+            </a>
+
+
+            <a href="#"
+               class="sidebar-link">
+
+                <span class="sidebar-icon-box">
+                    <span class="sidebar-icon">↗</span>
+                </span>
+
+                <span class="sidebar-text">
+                    Progress
+                </span>
+
+            </a>
+
+
+            <a href="#"
+               class="sidebar-link">
+
+                <span class="sidebar-icon-box">
+                    <span class="sidebar-icon">₨</span>
+                </span>
+
+                <span class="sidebar-text">
+                    Account Book
+                </span>
+
+            </a>
+
+
+            <a href="#"
+               class="sidebar-link">
+
+                <span class="sidebar-icon-box">
+                    <span class="sidebar-icon">▦</span>
+                </span>
+
+                <span class="sidebar-text">
+                    Exam Schedule
+                </span>
+
+            </a>
+
+
+            <a href="#"
+               class="sidebar-link">
+
+                <span class="sidebar-icon-box">
+                    <span class="sidebar-icon">●</span>
+                </span>
+
+                <span class="sidebar-text">
+                    Announcements
+                </span>
+
+            </a>
+
+        <!-- FEEDBACK -->
+
+            <a href="#"
+            class="sidebar-link">
+
+        <span class="sidebar-icon-box">
+        <span class="sidebar-icon">♡</span>
+        </span>
+
+        <span class="sidebar-text">
+            Feedback
+        </span>
+
+        </a>
+
+
+            <!-- CONTACT -->
+
+        <a href="#"
+        class="sidebar-link">
+
+        <span class="sidebar-icon-box">
+        <span class="sidebar-icon">✉</span>
+        </span>
+
+        <span class="sidebar-text">
+        Contact
+        </span>
+
+        </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         PAGE AREA
+         ===================================================== -->
+
+    <div id="pageArea"
+         class="page-area">
+
+
+        <!-- =================================================
+             HEADER
+             ================================================= -->
+
+        <header class="top-header">
+
+
+            <!-- LMS TITLE -->
+
+            <div class="lms-heading">
+
+                <div class="lms-word">
+                    LMS
+                </div>
+
+                <div class="lms-full-name">
+                    Learning Management System
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 STUDENT HEADER
+
+                 This is one independent header section.
+
+                 Bell
+                 Student Name
+                 Roll Number
+                 Profile Picture
+                 ================================================= -->
+
+            <div class="student-header">
+
+
+                <!-- NOTIFICATION -->
+
+                <button class="notification-button"
+                        type="button"
+                        aria-label="Notifications">
+
+                    <span class="notification-icon">
+                        ♢
+                    </span>
+
+                </button>
+
+
+                <!-- STUDENT INFORMATION -->
+
+                <div class="student-details">
+
+                    <span class="student-name">
+                        Ali Raza
+                    </span>
+
+                    <span class="student-roll">
+                        Roll No: 10-A-042
+                    </span>
+
+                </div>
+
+
+                <!-- PROFILE PICTURE -->
+
+                <div class="profile-picture">
+
+                    <!--
+                        Replace this placeholder later with
+                        the student's actual picture.
+
+                        The container automatically adapts
+                        to different image sizes.
+                    -->
+
+                    <span class="profile-initials">
+                        AR
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             MAIN CONTENT AREA
+
+             Future pages will appear here.
+
+             Example:
+
+             Class
+             Attendance
+             Gradebook
+             Progress
+             ================================================= -->
+
+        <main class="main-content">
+
+            @RenderBody()
+
+        </main>
+
+
+    </div>
+
+
+    <script src="~/js/site.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>

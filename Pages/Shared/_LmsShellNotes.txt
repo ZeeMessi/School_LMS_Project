@@ -1,0 +1,20 @@
+Schools LMS - layout notes
+
+This version establishes the visual shell only.
+
+Structure:
+- Main LMS area is one independent region.
+- Right sidebar is a separate fixed div/aside.
+- Sidebar is open by default.
+- Hamburger is on the LEFT side of the sidebar header.
+- School logo placeholder is immediately to the RIGHT of the hamburger.
+- Closing the sidebar hides the school logo and navigation labels.
+- Navigation icons remain visible when collapsed.
+- The actual icon set can be replaced later without changing the layout.
+- Student name, roll number, photo, and notification are placeholders for now.
+
+Next stage:
+1. Connect logged-in student information.
+2. Replace placeholders with real school/student images.
+3. Build Home / My Subjects.
+4. Add the final sidebar options and pages.

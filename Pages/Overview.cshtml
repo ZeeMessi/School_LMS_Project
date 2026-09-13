@@ -1,0 +1,299 @@
+
+@page
+@model School_LMS.Pages.OverviewModel
+
+@{
+    ViewData["Title"] = "Overview";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Overview.css" />
+}
+
+<div class="overview-page">
+
+    <!-- =====================================================
+         STUDENT SUMMARY
+         ===================================================== -->
+
+    <section class="overview-student-card">
+
+        <div class="overview-student-avatar">
+            AR
+        </div>
+
+        <div class="overview-student-info">
+
+            <span class="overview-welcome">
+                Student Overview
+            </span>
+
+            <h1>Ali Raza</h1>
+
+            <span class="overview-class">
+                Class 5 — Section A
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         QUICK SUMMARY
+         ===================================================== -->
+
+    <section class="overview-summary-grid">
+
+
+        <!-- ATTENDANCE -->
+
+        <article class="overview-card overview-attendance-card">
+
+            <button class="overview-fullscreen-button"
+                    type="button"
+                    aria-label="View attendance summary full screen"
+                    data-fullscreen-target="attendanceOverview">
+
+                ⛶
+
+            </button>
+
+            <div class="overview-card-header">
+
+                <div class="overview-card-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <h2>Attendance</h2>
+                    <p>Overall attendance summary</p>
+                </div>
+
+            </div>
+
+            <div id="attendanceOverview"
+                 class="overview-attendance-content">
+
+                <div class="overview-percentage">
+                    92%
+                </div>
+
+                <div class="overview-progress-track">
+                    <div class="overview-progress-fill"
+                         style="width: 92%;">
+                    </div>
+                </div>
+
+                <div class="overview-attendance-details">
+
+                    <span>
+                        Present: <strong>184</strong>
+                    </span>
+
+                    <span>
+                        Absent: <strong>16</strong>
+                    </span>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- OVERALL GRADE -->
+
+        <article class="overview-card">
+
+            <div class="overview-card-header">
+
+                <div class="overview-card-icon grade-icon">
+                    A
+                </div>
+
+                <div>
+                    <h2>Overall Grade</h2>
+                    <p>Current academic grade</p>
+                </div>
+
+            </div>
+
+            <div class="overview-grade-content">
+
+                <div class="overview-grade-value">
+                    A
+                </div>
+
+                <span class="overview-grade-label">
+                    Overall Performance
+                </span>
+
+            </div>
+
+        </article>
+
+
+        <!-- PROGRESS -->
+
+        <article class="overview-card">
+
+            <div class="overview-card-header">
+
+                <div class="overview-card-icon progress-icon">
+                    ↗
+                </div>
+
+                <div>
+                    <h2>Progress</h2>
+                    <p>Overall academic progress</p>
+                </div>
+
+            </div>
+
+            <div class="overview-progress-content">
+
+                <div class="overview-progress-number">
+                    78%
+                </div>
+
+                <div class="overview-progress-track">
+                    <div class="overview-progress-fill progress-fill"
+                         style="width: 78%;">
+                    </div>
+                </div>
+
+                <span class="overview-progress-label">
+                    Good progress
+                </span>
+
+            </div>
+
+        </article>
+
+
+        <!-- ACCOUNT -->
+
+        <article class="overview-card">
+
+            <div class="overview-card-header">
+
+                <div class="overview-card-icon account-icon">
+                    ₨
+                </div>
+
+                <div>
+                    <h2>Account</h2>
+                    <p>Fee payment summary</p>
+                </div>
+
+            </div>
+
+            <div class="overview-account-content">
+
+                <span class="overview-account-label">
+                    Outstanding Dues
+                </span>
+
+                <strong class="overview-account-amount">
+                    Rs. 12,500
+                </strong>
+
+                <span class="overview-account-status">
+                    Payment required
+                </span>
+
+            </div>
+
+        </article>
+
+
+        <!-- EXAM SCHEDULE -->
+
+        <article class="overview-card overview-exam-card">
+
+            <button class="overview-fullscreen-button"
+                    type="button"
+                    aria-label="View examination summary full screen"
+                    data-fullscreen-target="examOverview">
+
+                ⛶
+
+            </button>
+
+            <div class="overview-card-header">
+
+                <div class="overview-card-icon exam-icon">
+                    ▦
+                </div>
+
+                <div>
+                    <h2>Exam Schedule</h2>
+                    <p>Upcoming examination</p>
+                </div>
+
+            </div>
+
+            <div id="examOverview"
+                 class="overview-exam-content">
+
+                <div class="overview-exam-date">
+
+                    <span class="exam-month">
+                        AUG
+                    </span>
+
+                    <strong>
+                        20
+                    </strong>
+
+                </div>
+
+                <div class="overview-exam-info">
+
+                    <strong>
+                        Quarterly Examination
+                    </strong>
+
+                    <span>
+                        Mathematics
+                    </span>
+
+                    <small>
+                        09:00 AM
+                    </small>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         DATABASE NOTE
+         ===================================================== -->
+
+    <section class="overview-status-note">
+
+        <span class="overview-status-icon">
+            ●
+        </span>
+
+        <span>
+            All information shown on this page will be loaded
+            dynamically from the school database.
+        </span>
+
+    </section>
+
+</div>
+
+
+@section Scripts {
+    <script src="~/js/Overview.js"></script>
+}
+

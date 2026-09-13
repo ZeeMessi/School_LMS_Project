@@ -1,0 +1,525 @@
+@page
+@model AccountBookModel
+@{
+    ViewData["Title"] = "Account Book";
+}
+
+<link rel="stylesheet" href="~/css/AccountBook.css" />
+
+<div class="account-book-page">
+
+    <!-- =========================================================
+         PAGE HEADER
+         ========================================================= -->
+    <div class="account-page-header">
+
+        <div class="account-title-area">
+            <div class="account-title-icon">
+                <span>💳</span>
+            </div>
+
+            <div>
+                <h1>Account Book</h1>
+                <p>View your school fee information and challans.</p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         FEE SUMMARY
+         ========================================================= -->
+    <section class="fee-summary-grid">
+
+        <div class="fee-summary-card">
+            <div class="summary-icon">💰</div>
+
+            <div class="summary-content">
+                <span class="summary-label">Current Payable</span>
+                <strong>Rs. @Model.CurrentPayable.ToString("N0")</strong>
+            </div>
+        </div>
+
+
+        <div class="fee-summary-card">
+            <div class="summary-icon">✓</div>
+
+            <div class="summary-content">
+                <span class="summary-label">Total Paid</span>
+                <strong>Rs. @Model.TotalPaid.ToString("N0")</strong>
+            </div>
+        </div>
+
+
+        <div class="fee-summary-card">
+            <div class="summary-icon">⏳</div>
+
+            <div class="summary-content">
+                <span class="summary-label">Outstanding</span>
+                <strong>Rs. @Model.Outstanding.ToString("N0")</strong>
+            </div>
+        </div>
+
+
+        <div class="fee-summary-card">
+            <div class="summary-icon">📅</div>
+
+            <div class="summary-content">
+                <span class="summary-label">Payment Status</span>
+
+                <strong class="status-text @Model.PaymentStatus.ToLower()">
+                    @Model.PaymentStatus
+                </strong>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         CURRENT FEE
+         ========================================================= -->
+    <section class="account-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Current Fee</h2>
+                <p>Your current fee information.</p>
+            </div>
+        </div>
+
+
+        <div class="current-fee-card">
+
+            <div class="fee-month">
+                <span>Billing Period</span>
+                <strong>@Model.BillingPeriod</strong>
+            </div>
+
+
+            <div class="fee-amount">
+                <span>Amount Payable</span>
+                <strong>Rs. @Model.CurrentPayable.ToString("N0")</strong>
+            </div>
+
+
+            <div class="fee-status">
+                <span class="status-badge @Model.PaymentStatus.ToLower()">
+                    @Model.PaymentStatus
+                </span>
+            </div>
+
+
+            <!--
+                IMPORTANT:
+                Challan number, due date and detailed charges are NOT
+                displayed here.
+
+                They appear only after the student selects:
+                "View Challan" or "Download Challan".
+            -->
+
+            <div class="challan-actions">
+
+                <button type="button"
+                        class="account-button view-button"
+                        id="viewChallanButton">
+
+                    <span>👁</span>
+                    <span>View Challan</span>
+
+                </button>
+
+
+                <button type="button"
+                        class="account-button download-button"
+                        id="downloadChallanButton">
+
+                    <span>⬇</span>
+                    <span>Download Challan</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         PAYMENT HISTORY
+         ========================================================= -->
+    <section class="account-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Payment History</h2>
+                <p>Your previous fee payments.</p>
+            </div>
+        </div>
+
+
+        <div class="history-table-wrapper">
+
+            <table class="payment-history-table">
+
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                        <th>Paid Date</th>
+                        <th>Status</th>
+                        <th>Receipt</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+                    @if (Model.PaymentHistory.Any())
+                    {
+                        foreach (var payment in Model.PaymentHistory)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>@payment.Month</strong>
+                                </td>
+
+                                <td>
+                                    Rs. @payment.Amount.ToString("N0")
+                                </td>
+
+                                <td>
+                                    @payment.DueDate
+                                </td>
+
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(payment.PaidDate)
+                                        ? "—"
+                                        : payment.PaidDate)
+                                </td>
+
+                                <td>
+                                    <span class="history-status @payment.Status.ToLower()">
+                                        @payment.Status
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    @if (payment.Status == "Paid")
+                                    {
+                                        <button type="button"
+                                                class="receipt-button"
+                                                data-receipt="@payment.ReceiptNumber">
+
+                                            View
+
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="not-available">—</span>
+                                    }
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="empty-history">
+                                No payment history available.
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =============================================================
+     CHALLAN MODAL
+     ============================================================= -->
+
+<div class="challan-modal"
+     id="challanModal"
+     aria-hidden="true">
+
+    <div class="challan-overlay" id="challanOverlay"></div>
+
+
+    <div class="challan-dialog"
+         id="challanDialog">
+
+
+        <div class="challan-header">
+
+            <div>
+                <span class="challan-school-label">
+                    SCHOOL LMS
+                </span>
+
+                <h2>Fee Challan</h2>
+            </div>
+
+
+            <button type="button"
+                    class="close-challan"
+                    id="closeChallanButton"
+                    aria-label="Close">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="challan-body">
+
+
+            <!-- SCHOOL -->
+            <div class="challan-school">
+
+                <div class="challan-logo-placeholder">
+                    SCHOOL<br />LOGO
+                </div>
+
+                <div>
+                    <h3>Sample School</h3>
+                    <p>School Fee Challan</p>
+                </div>
+
+            </div>
+
+
+            <!-- STUDENT INFORMATION -->
+            <div class="challan-student-info">
+
+                <div>
+                    <span>Student Name</span>
+                    <strong>@Model.StudentName</strong>
+                </div>
+
+                <div>
+                    <span>Class</span>
+                    <strong>@Model.ClassName</strong>
+                </div>
+
+                <div>
+                    <span>Section</span>
+                    <strong>@Model.Section</strong>
+                </div>
+
+            </div>
+
+
+            <!-- CHALLAN INFORMATION -->
+            <div class="challan-information-grid">
+
+                <div>
+                    <span>Challan Number</span>
+                    <strong>@Model.ChallanNumber</strong>
+                </div>
+
+                <div>
+                    <span>Billing Period</span>
+                    <strong>@Model.BillingPeriod</strong>
+                </div>
+
+                <div>
+                    <span>Issue Date</span>
+                    <strong>@Model.IssueDate</strong>
+                </div>
+
+                <div>
+                    <span>Last Date of Payment</span>
+                    <strong>@Model.DueDate</strong>
+                </div>
+
+            </div>
+
+
+            <!-- FEE BREAKDOWN -->
+            <div class="challan-fee-table">
+
+                <div class="challan-fee-row heading">
+                    <span>Description</span>
+                    <span>Amount</span>
+                </div>
+
+
+                @if (Model.AdmissionFee > 0)
+                {
+                    <div class="challan-fee-row">
+                        <span>Admission Fee</span>
+                        <strong>
+                            Rs. @Model.AdmissionFee.ToString("N0")
+                        </strong>
+                    </div>
+                }
+
+
+                @if (Model.TuitionFee > 0)
+                {
+                    <div class="challan-fee-row">
+                        <span>Tuition Fee</span>
+                        <strong>
+                            Rs. @Model.TuitionFee.ToString("N0")
+                        </strong>
+                    </div>
+                }
+
+
+                @if (Model.LibraryFee > 0)
+                {
+                    <div class="challan-fee-row">
+                        <span>Library Fee</span>
+                        <strong>
+                            Rs. @Model.LibraryFee.ToString("N0")
+                        </strong>
+                    </div>
+                }
+
+
+                @if (Model.TransportFee > 0)
+                {
+                    <div class="challan-fee-row">
+                        <span>Transport Fee</span>
+                        <strong>
+                            Rs. @Model.TransportFee.ToString("N0")
+                        </strong>
+                    </div>
+                }
+
+
+                @if (Model.StationeryFee > 0)
+                {
+                    <div class="challan-fee-row">
+                        <span>Stationery Fee</span>
+                        <strong>
+                            Rs. @Model.StationeryFee.ToString("N0")
+                        </strong>
+                    </div>
+                }
+
+
+                @if (Model.UniformFee > 0)
+                {
+                    <div class="challan-fee-row">
+                        <span>Uniform Fee</span>
+                        <strong>
+                            Rs. @Model.UniformFee.ToString("N0")
+                        </strong>
+                    </div>
+                }
+
+
+                @if (Model.Fine > 0)
+                {
+                    <div class="challan-fee-row">
+                        <span>Fine</span>
+                        <strong>
+                            Rs. @Model.Fine.ToString("N0")
+                        </strong>
+                    </div>
+                }
+
+
+                @if (Model.OtherCharges > 0)
+                {
+                    <div class="challan-fee-row">
+                        <span>Other Charges</span>
+                        <strong>
+                            Rs. @Model.OtherCharges.ToString("N0")
+                        </strong>
+                    </div>
+                }
+
+
+                @if (Model.Discount > 0)
+                {
+                    <div class="challan-fee-row discount-row">
+                        <span>Discount</span>
+                        <strong>
+                            - Rs. @Model.Discount.ToString("N0")
+                        </strong>
+                    </div>
+                }
+
+
+                <div class="challan-total-row">
+                    <span>Total Payable</span>
+                    <strong>
+                        Rs. @Model.CurrentPayable.ToString("N0")
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <!-- PAYMENT INSTRUCTION -->
+            <div class="challan-instruction">
+
+                <strong>Payment Instructions</strong>
+
+                <p>
+                    Use the challan number above through your
+                    school's supported banking/payment channel.
+                </p>
+
+                <p>
+                    Payment verification and status are controlled
+                    by the school's finance system.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="challan-footer">
+
+            <button type="button"
+                    class="account-button secondary-button"
+                    id="closeChallanFooterButton">
+
+                Close
+
+            </button>
+
+
+            <button type="button"
+                    class="account-button download-button"
+                    id="printChallanButton">
+
+                ⬇ Download / Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script src="~/js/AccountBook.js"></script>
+
+}

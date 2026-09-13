@@ -1,0 +1,137 @@
+@page
+@model SchoolLMS.Pages.ClassModel
+
+@{
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="~/css/class.css" />
+
+<div class="class-page">
+
+    <!-- =========================================================
+         CLASS HEADER
+         Temporary values will later come from the database.
+         ========================================================= -->
+
+    <section class="class-header">
+
+        <div class="class-header-text">
+            <span class="class-label">CLASS</span>
+            <h1>@Model.ClassName</h1>
+            <p>@Model.SectionName</p>
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         SUBJECTS
+         ========================================================= -->
+
+    <section class="subjects-section">
+
+        <div class="subjects-grid">
+
+            @foreach (var subject in Model.Subjects)
+            {
+                <article class="subject-card">
+
+                    <!-- SUBJECT NAME -->
+
+                    <div class="subject-card-header">
+                        <h2>@subject.Name</h2>
+                    </div>
+
+
+                    <!-- TEACHER -->
+
+                    <div class="teacher-section">
+
+                        <!--
+                            Flexible placeholder for future teacher image.
+                            The actual image URL will later come from database.
+                        -->
+
+                        <div class="teacher-photo">
+
+                            @if (!string.IsNullOrWhiteSpace(subject.TeacherImageUrl))
+                            {
+                                <img src="@subject.TeacherImageUrl"
+                                     alt="@subject.TeacherName" />
+                            }
+                            else
+                            {
+                                <span>TEACHER<br />PHOTO</span>
+                            }
+
+                        </div>
+
+                        <div class="teacher-details">
+
+                            <span class="teacher-label">
+                                TEACHER
+                            </span>
+
+                            <h3>
+                                @subject.TeacherName
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SUBJECT OPTIONS
+                         ================================================= -->
+
+                    <div class="subject-options">
+
+                        @foreach (var option in Model.SubjectOptions)
+                        {
+                            <a href="#"
+                               class="subject-option"
+                               data-option="@option">
+
+                                <!--
+                                    Flexible icon placeholder.
+                                    Real icons can be added later.
+                                -->
+
+                                <div class="option-icon">
+
+                                    @if (!string.IsNullOrWhiteSpace(option.Icon))
+                                    {
+                                        <img src="@option.Icon"
+                                             alt="" />
+                                    }
+                                    else
+                                    {
+                                        <span class="icon-placeholder">
+                                            +
+                                        </span>
+                                    }
+
+                                </div>
+
+                                <span class="option-name">
+                                    @option.Name
+                                </span>
+
+                            </a>
+                        }
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="~/js/class.js"></script>
+

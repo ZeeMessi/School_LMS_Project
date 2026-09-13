@@ -1,0 +1,289 @@
+@page
+@model School_LMS.Pages.FeedbackModel
+
+@{
+    ViewData["Title"] = "Feedback";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Feedback.css" />
+}
+
+<div class="feedback-page">
+
+    <!-- =====================================================
+         FEEDBACK HEADER
+         ===================================================== -->
+
+    <section class="feedback-header-card">
+
+        <div class="feedback-header-icon">
+            💬
+        </div>
+
+        <div class="feedback-header-content">
+            <h1>Feedback</h1>
+
+            <p>
+                We value your opinion. Share your feedback with the school
+                to help us improve the learning experience.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FEEDBACK FORM
+         ===================================================== -->
+
+    <section class="feedback-form-card">
+
+        <div class="feedback-section-title">
+            <h2>Share Your Feedback</h2>
+
+            <p>
+                Please provide clear and respectful feedback.
+            </p>
+        </div>
+
+
+        <form method="post"
+              id="feedbackForm"
+              class="feedback-form">
+
+            <!-- =================================================
+                 CATEGORY
+                 ================================================= -->
+
+            <div class="feedback-field">
+
+                <label asp-for="Feedback.Category">
+                    Feedback Category
+                </label>
+
+                <select asp-for="Feedback.Category"
+                        id="feedbackCategory"
+                        class="feedback-input">
+
+                    <option value="">
+                        Select a category
+                    </option>
+
+                    <option value="General">
+                        General
+                    </option>
+
+                    <option value="Academic">
+                        Academic
+                    </option>
+
+                    <option value="Teacher">
+                        Teacher
+                    </option>
+
+                    <option value="Facilities">
+                        Facilities
+                    </option>
+
+                    <option value="School Management">
+                        School Management
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+                <span asp-validation-for="Feedback.Category"
+                      class="feedback-validation">
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 RATING
+                 ================================================= -->
+
+            <div class="feedback-field">
+
+                <label>
+                    Your Rating
+                </label>
+
+                <div class="feedback-rating"
+                     id="feedbackRating">
+
+                    <button type="button"
+                            class="rating-star"
+                            data-rating="1"
+                            aria-label="1 star">
+                        ★
+                    </button>
+
+                    <button type="button"
+                            class="rating-star"
+                            data-rating="2"
+                            aria-label="2 stars">
+                        ★
+                    </button>
+
+                    <button type="button"
+                            class="rating-star"
+                            data-rating="3"
+                            aria-label="3 stars">
+                        ★
+                    </button>
+
+                    <button type="button"
+                            class="rating-star"
+                            data-rating="4"
+                            aria-label="4 stars">
+                        ★
+                    </button>
+
+                    <button type="button"
+                            class="rating-star"
+                            data-rating="5"
+                            aria-label="5 stars">
+                        ★
+                    </button>
+
+                </div>
+
+                <input type="hidden"
+                       asp-for="Feedback.Rating"
+                       id="ratingValue" />
+
+                <span id="ratingText"
+                      class="rating-text">
+                    No rating selected
+                </span>
+
+                <span asp-validation-for="Feedback.Rating"
+                      class="feedback-validation">
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 MESSAGE
+                 ================================================= -->
+
+            <div class="feedback-field">
+
+                <label asp-for="Feedback.Message">
+                    Your Feedback
+                </label>
+
+                <textarea asp-for="Feedback.Message"
+                          id="feedbackMessage"
+                          class="feedback-input feedback-textarea"
+                          rows="7"
+                          maxlength="1000"
+                          placeholder="Write your feedback here...">
+                </textarea>
+
+                <div class="feedback-character-row">
+
+                    <span>
+                        Please provide your feedback clearly.
+                    </span>
+
+                    <span id="characterCount">
+                        0 / 1000
+                    </span>
+
+                </div>
+
+                <span asp-validation-for="Feedback.Message"
+                      class="feedback-validation">
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 SUBMIT
+                 ================================================= -->
+
+            <div class="feedback-submit-row">
+
+                <button type="submit"
+                        id="submitFeedback"
+                        class="feedback-submit-button">
+
+                    <span class="submit-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Submit Feedback
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 SERVER MESSAGE
+                 ================================================= -->
+
+            @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+            {
+                <div class="feedback-status"
+                     role="status">
+
+                    <span class="status-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        @Model.StatusMessage
+                    </span>
+
+                </div>
+            }
+
+        </form>
+
+    </section>
+
+
+    <!-- =====================================================
+         INFORMATION CARD
+         ===================================================== -->
+
+    <section class="feedback-info-card">
+
+        <div class="feedback-info-icon">
+            ℹ
+        </div>
+
+        <div>
+
+            <h3>Your feedback matters</h3>
+
+            <p>
+                Feedback submitted through this page can be reviewed
+                by authorized school staff. Please avoid sharing
+                passwords or other sensitive information.
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="~/js/Feedback.js"></script>
+}

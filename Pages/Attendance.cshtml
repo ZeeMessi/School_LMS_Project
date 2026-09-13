@@ -1,0 +1,542 @@
+@page
+@model SchoolLMS.Pages.AttendanceModel
+@section Styles {
+    <link rel="stylesheet" href="~/css/attendance.css" 
+    asp-append-version="true"
+    />
+}
+
+@{
+    ViewData["Title"] = "Attendance";
+}
+
+<div class="attendance-page">
+
+    <!-- =========================================================
+         ATTENDANCE HEADER
+         ========================================================= -->
+
+    <section class="attendance-hero">
+
+        <div class="attendance-title-area">
+
+            <!-- Future custom icon/logo can be placed here -->
+            <div class="attendance-icon-placeholder" aria-hidden="true">
+                📅
+            </div>
+
+            <div>
+                <div class="attendance-eyebrow">STUDENT RECORD</div>
+                <h1>Attendance</h1>
+
+                <div class="attendance-class-info">
+                    <span class="attendance-class-badge">
+                        Class 5
+                    </span>
+
+                    <span class="attendance-section-badge">
+                        Section A
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="attendance-hero-summary">
+
+            <div class="attendance-summary-icon">
+                %
+            </div>
+
+            <div>
+                <span>Overall Attendance</span>
+                <strong>85.71%</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         CALENDAR CONTROLS
+         ========================================================= -->
+
+    <section class="attendance-calendar-card">
+
+        <div class="calendar-toolbar">
+
+            <button class="calendar-navigation-button"
+                    type="button"
+                    aria-label="Previous month">
+                ‹
+            </button>
+
+            <div class="calendar-month">
+
+                <div class="calendar-month-name">
+                    August
+                </div>
+
+                <div class="calendar-year">
+                    2026
+                </div>
+
+            </div>
+
+            <button class="calendar-navigation-button"
+                    type="button"
+                    aria-label="Next month">
+                ›
+            </button>
+
+            <button class="calendar-today-button"
+                    type="button">
+                Today
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             WEEKDAYS
+             ===================================================== -->
+
+        <div class="attendance-weekdays">
+
+            <div>Monday</div>
+            <div>Tuesday</div>
+            <div>Wednesday</div>
+            <div>Thursday</div>
+            <div>Friday</div>
+            <div>Saturday</div>
+            <div>Sunday</div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CALENDAR
+             ===================================================== -->
+
+        <div class="attendance-calendar">
+
+            <!-- Previous month -->
+            <div class="attendance-day outside-month">
+                <span class="day-number">27</span>
+            </div>
+
+            <div class="attendance-day outside-month">
+                <span class="day-number">28</span>
+            </div>
+
+            <div class="attendance-day outside-month">
+                <span class="day-number">29</span>
+            </div>
+
+            <div class="attendance-day outside-month">
+                <span class="day-number">30</span>
+            </div>
+
+            <div class="attendance-day outside-month">
+                <span class="day-number">31</span>
+            </div>
+
+
+            <!-- August -->
+
+            <div class="attendance-day status-present">
+                <span class="day-number">1</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-weekend">
+                <span class="day-number">2</span>
+                <span class="attendance-status-icon">OFF</span>
+                <span class="attendance-status-text">Weekend</span>
+            </div>
+
+
+            <div class="attendance-day status-present">
+                <span class="day-number">3</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">4</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-absent">
+                <span class="day-number">5</span>
+                <span class="attendance-status-icon">×</span>
+                <span class="attendance-status-text">Absent</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">6</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">7</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-weekend">
+                <span class="day-number">8</span>
+                <span class="attendance-status-icon">OFF</span>
+                <span class="attendance-status-text">Weekend</span>
+            </div>
+
+            <div class="attendance-day status-weekend">
+                <span class="day-number">9</span>
+                <span class="attendance-status-icon">OFF</span>
+                <span class="attendance-status-text">Weekend</span>
+            </div>
+
+
+            <div class="attendance-day status-present">
+                <span class="day-number">10</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">11</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">12</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <!-- TODAY -->
+            <div class="attendance-day status-present today">
+                <span class="today-label">TODAY</span>
+                <span class="day-number">13</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-not-recorded">
+                <span class="day-number">14</span>
+                <span class="attendance-status-icon">—</span>
+                <span class="attendance-status-text">Not Recorded</span>
+            </div>
+
+            <div class="attendance-day status-weekend">
+                <span class="day-number">15</span>
+                <span class="attendance-status-icon">OFF</span>
+                <span class="attendance-status-text">Weekend</span>
+            </div>
+
+            <div class="attendance-day status-weekend">
+                <span class="day-number">16</span>
+                <span class="attendance-status-icon">OFF</span>
+                <span class="attendance-status-text">Weekend</span>
+            </div>
+
+
+            <div class="attendance-day status-present">
+                <span class="day-number">17</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">18</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-absent">
+                <span class="day-number">19</span>
+                <span class="attendance-status-icon">×</span>
+                <span class="attendance-status-text">Absent</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">20</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">21</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-weekend">
+                <span class="day-number">22</span>
+                <span class="attendance-status-icon">OFF</span>
+                <span class="attendance-status-text">Weekend</span>
+            </div>
+
+            <div class="attendance-day status-weekend">
+                <span class="day-number">23</span>
+                <span class="attendance-status-icon">OFF</span>
+                <span class="attendance-status-text">Weekend</span>
+            </div>
+
+
+            <div class="attendance-day status-present">
+                <span class="day-number">24</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">25</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">26</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">27</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+            <div class="attendance-day status-not-recorded">
+                <span class="day-number">28</span>
+                <span class="attendance-status-icon">—</span>
+                <span class="attendance-status-text">Not Recorded</span>
+            </div>
+
+            <div class="attendance-day status-weekend">
+                <span class="day-number">29</span>
+                <span class="attendance-status-icon">OFF</span>
+                <span class="attendance-status-text">Weekend</span>
+            </div>
+
+            <div class="attendance-day status-weekend">
+                <span class="day-number">30</span>
+                <span class="attendance-status-icon">OFF</span>
+                <span class="attendance-status-text">Weekend</span>
+            </div>
+
+            <div class="attendance-day status-present">
+                <span class="day-number">31</span>
+                <span class="attendance-status-icon">✓</span>
+                <span class="attendance-status-text">Present</span>
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             LEGEND
+             ===================================================== -->
+
+        <div class="attendance-legend">
+
+            <div class="legend-item">
+                <span class="legend-icon present">✓</span>
+                Present
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-icon absent">×</span>
+                Absent
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-icon holiday">OFF</span>
+                Holiday / Weekend
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-icon pending">—</span>
+                Not Recorded
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         TODAY'S ATTENDANCE
+         ========================================================= -->
+
+    <section class="attendance-today-card">
+
+        <div class="today-card-icon">
+            ✓
+        </div>
+
+        <div class="today-card-content">
+
+            <span class="today-card-label">
+                TODAY'S ATTENDANCE
+            </span>
+
+            <h2>
+                13 August 2026
+            </h2>
+
+            <p>
+                Thursday
+            </p>
+
+        </div>
+
+        <div class="today-card-status">
+            <span>Present</span>
+            <strong>✓</strong>
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         MONTHLY SUMMARY
+         ========================================================= -->
+
+    <section class="attendance-summary-section">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    ATTENDANCE REPORT
+                </span>
+
+                <h2>
+                    August 2026 Summary
+                </h2>
+            </div>
+
+            <!-- Future custom report icon -->
+            <div class="summary-title-icon">
+                %
+            </div>
+
+        </div>
+
+
+        <div class="attendance-summary-grid">
+
+            <div class="attendance-summary-card present-summary">
+
+                <div class="summary-card-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <span>Present</span>
+                    <strong>20</strong>
+                    <small>Days</small>
+                </div>
+
+            </div>
+
+
+            <div class="attendance-summary-card absent-summary">
+
+                <div class="summary-card-icon">
+                    ×
+                </div>
+
+                <div>
+                    <span>Absent</span>
+                    <strong>2</strong>
+                    <small>Days</small>
+                </div>
+
+            </div>
+
+
+            <div class="attendance-summary-card holiday-summary">
+
+                <div class="summary-card-icon">
+                    OFF
+                </div>
+
+                <div>
+                    <span>Holidays</span>
+                    <strong>8</strong>
+                    <small>Days</small>
+                </div>
+
+            </div>
+
+
+            <div class="attendance-summary-card pending-summary">
+
+                <div class="summary-card-icon">
+                    —
+                </div>
+
+                <div>
+                    <span>Not Recorded</span>
+                    <strong>1</strong>
+                    <small>Day</small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             ATTENDANCE PERCENTAGE
+             ===================================================== -->
+
+        <div class="attendance-percentage-card">
+
+            <div class="percentage-heading">
+
+                <div>
+                    <span>MONTHLY ATTENDANCE</span>
+                    <h3>Attendance Percentage</h3>
+                </div>
+
+                <strong>85.71%</strong>
+
+            </div>
+
+            <div class="percentage-bar">
+
+                <div class="percentage-fill"
+                     style="width: 85.71%;">
+                </div>
+
+            </div>
+
+            <div class="percentage-footer">
+
+                <span>
+                    Based on recorded working days
+                </span>
+
+                <span>
+                    20 Present / 22 Recorded
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+@section Scripts {
+    <script src="~/js/Attendance.js"
+    asp-append-version="true"></script>
+}

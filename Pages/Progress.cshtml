@@ -1,0 +1,847 @@
+@page
+@model SchoolLMS.Pages.ProgressModel
+
+@{
+    ViewData["Title"] = "Progress";
+}
+
+<link rel="stylesheet" href="~/css/Progress.css" />
+
+<div class="progress-page">
+
+    <!-- =========================================================
+         PAGE HEADER
+         ========================================================= -->
+
+    <div class="progress-page-header">
+
+        <div class="progress-title-area">
+
+            <div class="progress-title-icon">
+                📈
+            </div>
+
+            <div>
+                <h1>Progress</h1>
+                <p>Track academic performance and improvement over time</p>
+            </div>
+
+        </div>
+
+        <div class="progress-student-info">
+
+            <span class="progress-class-badge">
+                Class 5
+            </span>
+
+            <span class="progress-section-badge">
+                Section A
+            </span>
+
+            <span class="progress-year-badge">
+                2026
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         FILTERS
+         ========================================================= -->
+
+    <div class="progress-filter-card">
+
+        <div class="progress-filter">
+
+            <label for="academicYear">
+                Academic Year
+            </label>
+
+            <select id="academicYear">
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+            </select>
+
+        </div>
+
+
+        <div class="progress-filter">
+
+            <label for="progressTerm">
+                Term
+            </label>
+
+            <select id="progressTerm">
+                <option value="all">All Terms</option>
+                <option value="term1">Term 1</option>
+                <option value="term2">Term 2</option>
+                <option value="term3">Term 3</option>
+            </select>
+
+        </div>
+
+
+        <div class="progress-filter">
+
+            <label for="progressSubject">
+                Subject
+            </label>
+
+            <select id="progressSubject">
+                <option value="all">All Subjects</option>
+                <option value="english">English</option>
+                <option value="maths">Maths</option>
+                <option value="science">Science</option>
+                <option value="urdu">Urdu</option>
+                <option value="pakistan-studies">Pakistan Studies</option>
+                <option value="drawing">Drawing</option>
+                <option value="art">Art</option>
+                <option value="social-studies">Social Studies</option>
+            </select>
+
+        </div>
+
+
+        <div class="progress-filter">
+
+            <label for="progressPeriod">
+                Period
+            </label>
+
+            <select id="progressPeriod">
+                <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="annual">Annual</option>
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         SUMMARY CARDS
+         ========================================================= -->
+
+    <div class="progress-summary-grid">
+
+        <div class="progress-summary-card">
+
+            <div class="summary-icon blue">
+                📊
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    Overall Progress
+                </span>
+
+                <strong id="overallProgress">
+                    87%
+                </strong>
+
+                <small class="summary-positive">
+                    ↑ 5% from previous period
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-summary-card">
+
+            <div class="summary-icon green">
+                📈
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    Improvement
+                </span>
+
+                <strong>
+                    +5%
+                </strong>
+
+                <small class="summary-positive">
+                    Improving
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-summary-card">
+
+            <div class="summary-icon purple">
+                🏆
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    Current Grade
+                </span>
+
+                <strong>
+                    A
+                </strong>
+
+                <small>
+                    Excellent performance
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-summary-card">
+
+            <div class="summary-icon orange">
+                🎯
+            </div>
+
+            <div class="summary-content">
+
+                <span class="summary-label">
+                    Subjects Improving
+                </span>
+
+                <strong>
+                    6 / 8
+                </strong>
+
+                <small>
+                    2 need attention
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         PERFORMANCE TREND
+         ========================================================= -->
+
+    <div class="progress-main-card">
+
+        <div class="progress-card-header">
+
+            <div>
+
+                <h2>
+                    Performance Over Time
+                </h2>
+
+                <p>
+                    Academic performance throughout the selected period
+                </p>
+
+            </div>
+
+            <div class="chart-status">
+                <span class="status-dot"></span>
+                Improving
+            </div>
+
+        </div>
+
+        <div class="progress-line-chart-container">
+
+            <canvas id="performanceTrendChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         SUBJECT PERFORMANCE + ASSESSMENT BREAKDOWN
+         ========================================================= -->
+
+    <div class="progress-two-column">
+
+
+        <!-- SUBJECT PERFORMANCE -->
+
+        <div class="progress-main-card">
+
+            <div class="progress-card-header">
+
+                <div>
+
+                    <h2>
+                        Subject Progress
+                    </h2>
+
+                    <p>
+                        Current performance by subject
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="subject-progress-list">
+
+                <div class="subject-progress-item">
+
+                    <div class="subject-progress-top">
+                        <span>English</span>
+                        <strong>92%</strong>
+                    </div>
+
+                    <div class="subject-progress-track">
+                        <div
+                            class="subject-progress-fill"
+                            style="width: 92%;">
+                        </div>
+                    </div>
+
+                    <small class="progress-up">
+                        ↑ 10% improvement
+                    </small>
+
+                </div>
+
+
+                <div class="subject-progress-item">
+
+                    <div class="subject-progress-top">
+                        <span>Maths</span>
+                        <strong>88%</strong>
+                    </div>
+
+                    <div class="subject-progress-track">
+                        <div
+                            class="subject-progress-fill"
+                            style="width: 88%;">
+                        </div>
+                    </div>
+
+                    <small class="progress-up">
+                        ↑ 4% improvement
+                    </small>
+
+                </div>
+
+
+                <div class="subject-progress-item">
+
+                    <div class="subject-progress-top">
+                        <span>Science</span>
+                        <strong>85%</strong>
+                    </div>
+
+                    <div class="subject-progress-track">
+                        <div
+                            class="subject-progress-fill"
+                            style="width: 85%;">
+                        </div>
+                    </div>
+
+                    <small class="progress-down">
+                        ↓ 1% decline
+                    </small>
+
+                </div>
+
+
+                <div class="subject-progress-item">
+
+                    <div class="subject-progress-top">
+                        <span>Urdu</span>
+                        <strong>91%</strong>
+                    </div>
+
+                    <div class="subject-progress-track">
+                        <div
+                            class="subject-progress-fill"
+                            style="width: 91%;">
+                        </div>
+                    </div>
+
+                    <small class="progress-up">
+                        ↑ 13% improvement
+                    </small>
+
+                </div>
+
+
+                <div class="subject-progress-item">
+
+                    <div class="subject-progress-top">
+                        <span>Pakistan Studies</span>
+                        <strong>80%</strong>
+                    </div>
+
+                    <div class="subject-progress-track">
+                        <div
+                            class="subject-progress-fill"
+                            style="width: 80%;">
+                        </div>
+                    </div>
+
+                    <small class="progress-up">
+                        ↑ 6% improvement
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ASSESSMENT BREAKDOWN -->
+
+        <div class="progress-main-card">
+
+            <div class="progress-card-header">
+
+                <div>
+
+                    <h2>
+                        Assessment Breakdown
+                    </h2>
+
+                    <p>
+                        Performance across assessment types
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="assessment-chart-container">
+
+                <canvas id="assessmentChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         ATTENDANCE VS ACADEMIC PERFORMANCE
+         ========================================================= -->
+
+    <div class="progress-main-card">
+
+        <div class="progress-card-header">
+
+            <div>
+
+                <h2>
+                    Attendance & Academic Progress
+                </h2>
+
+                <p>
+                    Comparison between attendance and academic performance
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="attendance-progress-grid">
+
+            <div class="attendance-stat">
+
+                <div class="attendance-icon">
+                    📅
+                </div>
+
+                <div>
+
+                    <span>
+                        Attendance
+                    </span>
+
+                    <strong>
+                        94%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="attendance-stat">
+
+                <div class="attendance-icon">
+                    🎓
+                </div>
+
+                <div>
+
+                    <span>
+                        Academic Performance
+                    </span>
+
+                    <strong>
+                        87%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="attendance-stat">
+
+                <div class="attendance-icon">
+                    📈
+                </div>
+
+                <div>
+
+                    <span>
+                        Performance Trend
+                    </span>
+
+                    <strong class="trend-positive">
+                        Improving
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="attendance-chart-container">
+
+            <canvas id="attendancePerformanceChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         STRENGTHS + AREAS NEEDING ATTENTION
+         ========================================================= -->
+
+    <div class="progress-two-column">
+
+
+        <!-- STRENGTHS -->
+
+        <div class="progress-main-card strengths-card">
+
+            <div class="progress-card-header">
+
+                <div>
+
+                    <h2>
+                        ⭐ Strengths
+                    </h2>
+
+                    <p>
+                        Subjects where the student is performing strongly
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="strength-list">
+
+                <div class="strength-item">
+
+                    <span class="strength-icon">
+                        ✓
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            English
+                        </strong>
+
+                        <small>
+                            92% — Excellent
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="strength-item">
+
+                    <span class="strength-icon">
+                        ✓
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Urdu
+                        </strong>
+
+                        <small>
+                            91% — Excellent
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="strength-item">
+
+                    <span class="strength-icon">
+                        ✓
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Maths
+                        </strong>
+
+                        <small>
+                            88% — Very Good
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NEEDS ATTENTION -->
+
+        <div class="progress-main-card attention-card">
+
+            <div class="progress-card-header">
+
+                <div>
+
+                    <h2>
+                        ⚠ Areas Needing Attention
+                    </h2>
+
+                    <p>
+                        Subjects where additional attention may help
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="attention-list">
+
+                <div class="attention-item">
+
+                    <span class="attention-icon">
+                        !
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Science
+                        </strong>
+
+                        <small>
+                            85% — Slight decline
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="attention-item">
+
+                    <span class="attention-icon">
+                        !
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Pakistan Studies
+                        </strong>
+
+                        <small>
+                            80% — Requires monitoring
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         PROGRESS TIMELINE
+         ========================================================= -->
+
+    <div class="progress-main-card">
+
+        <div class="progress-card-header">
+
+            <div>
+
+                <h2>
+                    Progress Timeline
+                </h2>
+
+                <p>
+                    Important academic milestones
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-timeline">
+
+            <div class="timeline-item">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-content">
+
+                    <span class="timeline-date">
+                        January 2026
+                    </span>
+
+                    <h3>
+                        Academic Year Started
+                    </h3>
+
+                    <p>
+                        Initial academic performance recorded at 78%.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-content">
+
+                    <span class="timeline-date">
+                        March 2026
+                    </span>
+
+                    <h3>
+                        Monthly Assessment
+                    </h3>
+
+                    <p>
+                        Performance increased to 82%.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-content">
+
+                    <span class="timeline-date">
+                        May 2026
+                    </span>
+
+                    <h3>
+                        Quarterly Examination
+                    </h3>
+
+                    <p>
+                        Student achieved an overall score of 85%.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="timeline-item timeline-current">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-content">
+
+                    <span class="timeline-date">
+                        August 2026
+                    </span>
+
+                    <h3>
+                        Current Performance
+                    </h3>
+
+                    <p>
+                        Overall progress has reached 87%.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         FOOTER NOTE
+         ========================================================= -->
+
+    <div class="progress-footer-note">
+
+        <span>ℹ</span>
+
+        <p>
+            Progress is calculated from academic results, assessments,
+            attendance and other performance data.
+        </p>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <!-- Chart library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Progress page JavaScript -->
+    <script src="~/js/Progress.js"></script>
+}

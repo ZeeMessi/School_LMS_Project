@@ -1,0 +1,373 @@
+@page
+@model SchoolLMS.Pages.GradeModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Grade.css" asp-append-version="true" />
+}
+
+<div class="grade-page">
+
+    <!-- ============================================================
+         PAGE HEADER
+         ============================================================ -->
+
+    <div class="grade-page-header">
+        <div>
+            <span class="grade-page-icon">📊</span>
+            <div>
+                <h1>Grade</h1>
+                <p>Academic performance and examination results</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================================
+         STUDENT INFORMATION
+         Database-ready: values can later come from the database.
+         ============================================================ -->
+
+    <section class="grade-student-card">
+
+        <div class="grade-profile-placeholder">
+            <span>PHOTO</span>
+        </div>
+
+        <div class="grade-student-info">
+
+            <div class="grade-student-name">
+                Ahmed Khan
+            </div>
+
+            <div class="grade-student-meta">
+                <span>Roll No: 501</span>
+                <span>Class: 5</span>
+                <span>Section: A</span>
+                <span>Academic Year: 2026</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================================================
+         PERFORMANCE SUMMARY
+         ============================================================ -->
+
+    <section class="grade-summary-grid">
+
+        <div class="grade-summary-card percentage-card">
+            <div class="summary-icon">%</div>
+            <div>
+                <span class="summary-label">Overall Percentage</span>
+                <strong id="overallPercentage">87.5%</strong>
+            </div>
+        </div>
+
+        <div class="grade-summary-card">
+            <div class="summary-icon">★</div>
+            <div>
+                <span class="summary-label">Overall Grade</span>
+                <strong id="overallGrade">A</strong>
+            </div>
+        </div>
+
+        <div class="grade-summary-card">
+            <div class="summary-icon">✓</div>
+            <div>
+                <span class="summary-label">Total Marks</span>
+                <strong id="totalMarks">700 / 800</strong>
+            </div>
+        </div>
+
+        <div class="grade-summary-card">
+            <div class="summary-icon">✓</div>
+            <div>
+                <span class="summary-label">Subjects Passed</span>
+                <strong id="subjectsPassed">8 / 8</strong>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- ============================================================
+         EXAMINATION SELECTOR
+         ============================================================ -->
+
+    <section class="grade-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Examination</h2>
+                <p>Select an examination to view results.</p>
+            </div>
+        </div>
+
+        <div class="exam-selector">
+
+            <button class="exam-button active" data-exam="monthly">
+                Monthly Test
+            </button>
+
+            <button class="exam-button" data-exam="quarterly">
+                Quarterly
+            </button>
+
+            <button class="exam-button" data-exam="midterm">
+                Mid-Term
+            </button>
+
+            <button class="exam-button" data-exam="annual">
+                Annual
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================================================
+         INTERACTIVE PERFORMANCE CHART
+         ============================================================ -->
+
+    <section class="grade-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Subject Performance</h2>
+                <p>Compare your performance across subjects.</p>
+            </div>
+
+            <div class="chart-legend">
+                <span class="legend-dot"></span>
+                Percentage
+            </div>
+        </div>
+
+        <div class="performance-chart-card">
+
+            <div class="chart-area" id="performanceChart">
+
+                <!-- JavaScript creates the chart here -->
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================================================
+         SUBJECT RESULTS
+         ============================================================ -->
+
+    <section class="grade-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Subject Results</h2>
+                <p>Detailed examination results.</p>
+            </div>
+        </div>
+
+        <div class="grade-table-wrapper">
+
+            <table class="grade-table">
+
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Total Marks</th>
+                        <th>Obtained</th>
+                        <th>Percentage</th>
+                        <th>Grade</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+
+                <tbody id="gradeTableBody">
+
+                    <tr>
+                        <td>English</td>
+                        <td>100</td>
+                        <td>88</td>
+                        <td>88%</td>
+                        <td>
+                            <span class="grade-badge grade-a">A</span>
+                        </td>
+                        <td>Very Good</td>
+                    </tr>
+
+                    <tr>
+                        <td>Maths</td>
+                        <td>100</td>
+                        <td>92</td>
+                        <td>92%</td>
+                        <td>
+                            <span class="grade-badge grade-aplus">A+</span>
+                        </td>
+                        <td>Outstanding</td>
+                    </tr>
+
+                    <tr>
+                        <td>Science</td>
+                        <td>100</td>
+                        <td>81</td>
+                        <td>81%</td>
+                        <td>
+                            <span class="grade-badge grade-a">A</span>
+                        </td>
+                        <td>Very Good</td>
+                    </tr>
+
+                    <tr>
+                        <td>Urdu</td>
+                        <td>100</td>
+                        <td>76</td>
+                        <td>76%</td>
+                        <td>
+                            <span class="grade-badge grade-bplus">B+</span>
+                        </td>
+                        <td>Good</td>
+                    </tr>
+
+                    <tr>
+                        <td>Drawing</td>
+                        <td>50</td>
+                        <td>45</td>
+                        <td>90%</td>
+                        <td>
+                            <span class="grade-badge grade-aplus">A+</span>
+                        </td>
+                        <td>Excellent</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================================================
+         PERFORMANCE HISTORY
+         ============================================================ -->
+
+    <section class="grade-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Performance History</h2>
+                <p>Track academic progress across examinations.</p>
+            </div>
+        </div>
+
+        <div class="history-card">
+
+            <div class="history-chart" id="historyChart">
+
+                <!-- JavaScript creates the history chart -->
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================================================
+         GRADE SCALE
+         ============================================================ -->
+
+    <section class="grade-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Grade Scale</h2>
+                <p>Current grading criteria.</p>
+            </div>
+        </div>
+
+        <div class="grade-scale-grid">
+
+            <div class="scale-item">
+                <strong>A+</strong>
+                <span>90–100%</span>
+            </div>
+
+            <div class="scale-item">
+                <strong>A</strong>
+                <span>80–89%</span>
+            </div>
+
+            <div class="scale-item">
+                <strong>B+</strong>
+                <span>75–79%</span>
+            </div>
+
+            <div class="scale-item">
+                <strong>B</strong>
+                <span>70–74%</span>
+            </div>
+
+            <div class="scale-item">
+                <strong>C+</strong>
+                <span>65–69%</span>
+            </div>
+
+            <div class="scale-item">
+                <strong>C</strong>
+                <span>50–64%</span>
+            </div>
+
+            <div class="scale-item">
+                <strong>F</strong>
+                <span>Below 50%</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================================================
+         TEACHER REMARKS
+         ============================================================ -->
+
+    <section class="grade-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Teacher Remarks</h2>
+                <p>Comments regarding academic performance.</p>
+            </div>
+        </div>
+
+        <div class="teacher-remark-card">
+
+            <div class="remark-icon">💬</div>
+
+            <div>
+                <h3>Class Teacher</h3>
+
+                <p>
+                    Ahmed has shown excellent progress in Mathematics
+                    and Science. More attention should be given to
+                    Urdu written work.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+@section Scripts {
+    <script src="~/js/Grade.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,235 @@
+@page
+@model School_LMS.Pages.ContactModel
+
+@{
+    ViewData["Title"] = "Contact";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Contact.css" />
+}
+
+<div class="contact-page">
+
+    <!-- =====================================================
+         SCHOOL HEADER
+         ===================================================== -->
+
+    <section class="contact-school-header">
+
+        <div class="contact-school-logo">
+
+            <!-- Future database image -->
+            <div class="contact-logo-placeholder">
+                SCHOOL LOGO
+            </div>
+
+        </div>
+
+        <div class="contact-school-name">
+
+            <!-- Future database value -->
+            <h1>School Name</h1>
+
+            <p>
+                About Us &amp; Contact Us
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ABOUT US
+         ===================================================== -->
+
+    <section class="contact-card">
+
+        <div class="contact-card-heading">
+
+            <div class="contact-card-icon">
+                ℹ
+            </div>
+
+            <div>
+                <h2>About Us</h2>
+
+                <p>
+                    Learn more about our school and our commitment
+                    to providing a quality learning environment.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="contact-about-content">
+
+            <!--
+                This content will eventually come from the database.
+            -->
+
+            <p>
+                School information will appear here.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CONTACT US
+         ===================================================== -->
+
+    <section class="contact-card">
+
+        <div class="contact-card-heading">
+
+            <div class="contact-card-icon">
+                ✉
+            </div>
+
+            <div>
+                <h2>Contact Us</h2>
+
+                <p>
+                    Get in touch with the school administration.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="contact-information-grid">
+
+            <!-- ADDRESS -->
+
+            <div class="contact-information-item">
+
+                <div class="contact-information-icon">
+                    📍
+                </div>
+
+                <div class="contact-information-content">
+
+                    <span class="contact-label">
+                        Address
+                    </span>
+
+                    <!-- Future database value -->
+                    <span class="contact-value">
+                        School Address
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- DIAL -->
+
+            <div class="contact-information-item">
+
+                <div class="contact-information-icon">
+                    ☎
+                </div>
+
+                <div class="contact-information-content">
+
+                    <span class="contact-label">
+                        Dial
+                    </span>
+
+                    <!-- Future database value -->
+                    <span class="contact-value">
+                        +92 (51-111-8-88-80)
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- MOBILE -->
+
+            <div class="contact-information-item">
+
+                <div class="contact-information-icon">
+                    📱
+                </div>
+
+                <div class="contact-information-content">
+
+                    <span class="contact-label">
+                        Mobile
+                    </span>
+
+                    <!-- Future database value -->
+                    <span class="contact-value">
+                        0304-1234567
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- FAX -->
+
+            <div class="contact-information-item">
+
+                <div class="contact-information-icon">
+                    📠
+                </div>
+
+                <div class="contact-information-content">
+
+                    <span class="contact-label">
+                        Fax
+                    </span>
+
+                    <!-- Future database value -->
+                    <span class="contact-value">
+                        +92 (51) 1234567
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="contact-information-item">
+
+                <div class="contact-information-icon">
+                    ✉
+                </div>
+
+                <div class="contact-information-content">
+
+                    <span class="contact-label">
+                        Email
+                    </span>
+
+                    <!-- Future database value -->
+                    <span class="contact-value">
+                        school@example.com
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+@section Scripts {
+    <script src="~/js/Contact.js"></script>
+}
+

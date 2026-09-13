@@ -1,0 +1,447 @@
+/* ============================================================
+   SCHOOL LMS - CLASS PAGE
+   ============================================================ */
+
+.class-page {
+    width: 100%;
+}
+
+
+/* ============================================================
+   CLASS HEADER
+   ============================================================ */
+
+.class-header {
+    margin-bottom: 28px;
+}
+
+.class-header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.class-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.class-header h1 {
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 800;
+    color: #172554;
+    line-height: 1.15;
+}
+
+.class-header p {
+    margin-top: 5px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+
+/* ============================================================
+   SUBJECT GRID
+   ============================================================ */
+
+.subjects-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 24px;
+
+    width: 100%;
+}
+
+
+/* ============================================================
+   SUBJECT CARD
+   ============================================================ */
+
+.subject-card {
+    min-width: 0;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 6px 20px
+        rgba(15, 23, 42, 0.07);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.subject-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 30px
+        rgba(15, 23, 42, 0.11);
+}
+
+
+/* ============================================================
+   SUBJECT TITLE
+   ============================================================ */
+
+.subject-card-header {
+    padding: 20px 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eff6ff,
+            #eef2ff
+        );
+
+    border-bottom:
+        1px solid #dbeafe;
+}
+
+.subject-card-header h2 {
+    font-size: 20px;
+
+    font-weight: 800;
+
+    color: #1e3a8a;
+
+    line-height: 1.25;
+}
+
+
+/* ============================================================
+   TEACHER SECTION
+   ============================================================ */
+
+.teacher-section {
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 20px 22px;
+
+    background: #f8fafc;
+
+    border-bottom:
+        1px solid #e2e8f0;
+}
+
+
+/* ============================================================
+   TEACHER PHOTO PLACEHOLDER
+   ============================================================ */
+
+.teacher-photo {
+    width: 64px;
+
+    height: 82px;
+
+    min-width: 64px;
+
+    min-height: 82px;
+
+    max-width: 110px;
+
+    max-height: 140px;
+
+    flex: 0 1 auto;
+
+    border-radius: 10px;
+
+    border:
+        2px dashed #93c5fd;
+
+    background: #dbeafe;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    overflow: hidden;
+
+    color: #1d4ed8;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+}
+
+.teacher-photo img {
+    width: 100%;
+
+    height: 100%;
+
+    max-width: 100%;
+
+    max-height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+/* ============================================================
+   TEACHER DETAILS
+   ============================================================ */
+
+.teacher-details {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.teacher-label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    color: #64748b;
+}
+
+.teacher-details h3 {
+    font-size: 15px;
+
+    font-weight: 700;
+
+    color: #1e293b;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   SUBJECT OPTIONS
+   ============================================================ */
+
+.subject-options {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(78px, 1fr));
+
+    gap: 10px;
+
+    padding: 18px 18px 20px;
+
+    background: #ffffff;
+}
+
+
+/* ============================================================
+   INDIVIDUAL OPTION
+   ============================================================ */
+
+.subject-option {
+    min-width: 0;
+
+    min-height: 90px;
+
+    padding: 9px 5px;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    border:
+        1px solid #e2e8f0;
+
+    color: #334155;
+
+    text-decoration: none;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    text-align: center;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.subject-option:hover {
+    background: #eff6ff;
+
+    border-color: #93c5fd;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 12px
+        rgba(37, 99, 235, 0.10);
+}
+
+
+/* ============================================================
+   OPTION ICON PLACEHOLDER
+   ============================================================ */
+
+.option-icon {
+    width: clamp(34px, 4vw, 46px);
+
+    height: clamp(34px, 4vw, 46px);
+
+    min-width: 34px;
+
+    min-height: 34px;
+
+    max-width: 46px;
+
+    max-height: 46px;
+
+    border-radius: 10px;
+
+    background: #dbeafe;
+
+    border:
+        1px solid #bfdbfe;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+}
+
+.option-icon img,
+.option-icon svg {
+    width: 70%;
+
+    height: 70%;
+
+    max-width: 100%;
+
+    max-height: 100%;
+
+    object-fit: contain;
+}
+
+.icon-placeholder {
+    font-size: 20px;
+
+    font-weight: 300;
+
+    color: #2563eb;
+}
+
+
+/* ============================================================
+   OPTION TEXT
+   ============================================================ */
+
+.option-name {
+    width: 100%;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    line-height: 1.25;
+
+    color: #475569;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .subjects-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .class-header h1 {
+        font-size: 28px;
+    }
+
+    .subject-card-header {
+        padding: 17px 18px;
+    }
+
+    .teacher-section {
+        padding: 17px 18px;
+    }
+
+    .teacher-photo {
+        width: 58px;
+        height: 76px;
+        min-width: 58px;
+    }
+
+    .subject-options {
+        padding:
+            15px;
+    }
+}
+
+
+@media (max-width: 420px) {
+
+    .subject-options {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .subject-option {
+        min-height: 82px;
+    }
+
+    .option-name {
+        font-size: 9px;
+    }
+}

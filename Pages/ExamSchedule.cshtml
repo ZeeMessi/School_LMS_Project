@@ -1,0 +1,565 @@
+@page
+@model ExamScheduleModel
+
+@{
+    ViewData["Title"] = "Exam Schedule";
+}
+
+<link rel="stylesheet" href="~/css/ExamSchedule.css" asp-append-version="true" />
+
+<div class="exam-page">
+
+    <!-- =========================================================
+         PAGE HEADER
+         ========================================================= -->
+    <div class="exam-page-header">
+
+        <div class="exam-title-area">
+
+            <div class="exam-title-icon">
+                <span>📅</span>
+            </div>
+
+            <div>
+                <h1>Exam Schedule</h1>
+                <p>
+                    @Model.ClassName
+                    <span>•</span>
+                    @Model.SectionName
+                    <span>•</span>
+                    @Model.AcademicYear
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         EXAM TYPE SELECTOR
+         Only configured exam types are displayed.
+         ========================================================= -->
+    @if (Model.ExamTypes.Any())
+    {
+        <div class="exam-type-card">
+
+            <div class="exam-type-heading">
+                <div>
+                    <h2>Examination Type</h2>
+                    <p>Select an examination to view its schedule.</p>
+                </div>
+            </div>
+
+            <div class="exam-type-list">
+
+                @foreach (var examType in Model.ExamTypes)
+                {
+                    <button type="button"
+                            class="exam-type-button @(examType.IsActive ? "active" : "")"
+                            data-exam-type="@examType.Code">
+
+                        <span class="exam-type-icon">
+                            @examType.Icon
+                        </span>
+
+                        <span class="exam-type-name">
+                            @examType.Name
+                        </span>
+
+                    </button>
+                }
+
+            </div>
+
+        </div>
+    }
+
+
+    <!-- =========================================================
+         QUICK SUMMARY
+         ========================================================= -->
+    <div class="exam-summary-grid">
+
+        <div class="exam-summary-card">
+
+            <div class="summary-icon">
+                📚
+            </div>
+
+            <div>
+                <span class="summary-label">Total Exams</span>
+                <strong>@Model.TotalExams</strong>
+            </div>
+
+        </div>
+
+
+        <div class="exam-summary-card">
+
+            <div class="summary-icon">
+                📖
+            </div>
+
+            <div>
+                <span class="summary-label">Subjects</span>
+                <strong>@Model.TotalSubjects</strong>
+            </div>
+
+        </div>
+
+
+        <div class="exam-summary-card">
+
+            <div class="summary-icon">
+                ⏳
+            </div>
+
+            <div>
+                <span class="summary-label">Upcoming</span>
+                <strong>@Model.UpcomingExamCount</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         CALENDAR CARD
+         FULLSCREEN ENABLED
+         ========================================================= -->
+    <section class="exam-panel fullscreen-card">
+
+        <div class="panel-header">
+
+            <div class="panel-heading">
+
+                <div class="panel-icon">
+                    📆
+                </div>
+
+                <div>
+                    <h2>Calendar View</h2>
+                    <p>@Model.CurrentMonthName</p>
+                </div>
+
+            </div>
+
+            <button type="button"
+                    class="fullscreen-button"
+                    title="Enter full screen"
+                    aria-label="Enter full screen">
+                ⛶
+            </button>
+
+        </div>
+
+
+        <div class="calendar-container">
+
+            <div class="calendar-header">
+
+                <button type="button"
+                        class="calendar-navigation"
+                        aria-label="Previous month">
+                    ‹
+                </button>
+
+                <div class="calendar-month">
+                    @Model.CurrentMonthName
+                </div>
+
+                <button type="button"
+                        class="calendar-navigation"
+                        aria-label="Next month">
+                    ›
+                </button>
+
+            </div>
+
+
+            <div class="calendar-weekdays">
+
+                @foreach (var day in Model.WeekDays)
+                {
+                    <div class="calendar-weekday">
+                        @day
+                    </div>
+                }
+
+            </div>
+
+
+            <div class="calendar-grid">
+
+                @foreach (var day in Model.CalendarDays)
+                {
+                    <div class="calendar-day
+                                @(day.IsToday ? "today" : "")
+                                @(day.IsCurrentMonth ? "" : "outside-month")
+                                @(day.HasExam ? "has-exam" : "")">
+
+                        <span class="calendar-day-number">
+                            @day.DayNumber
+                        </span>
+
+                        @if (day.HasExam)
+                        {
+                            <div class="calendar-exam-indicator">
+
+                                <span class="calendar-exam-dot"></span>
+
+                                <span>
+                                    @day.ExamSubject
+                                </span>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         UPCOMING EXAMINATIONS
+         FULLSCREEN ENABLED
+         ========================================================= -->
+    <section class="exam-panel fullscreen-card">
+
+        <div class="panel-header">
+
+            <div class="panel-heading">
+
+                <div class="panel-icon">
+                    🎓
+                </div>
+
+                <div>
+                    <h2>Upcoming Examinations</h2>
+                    <p>Next scheduled examinations</p>
+                </div>
+
+            </div>
+
+            <button type="button"
+                    class="fullscreen-button"
+                    title="Enter full screen"
+                    aria-label="Enter full screen">
+                ⛶
+            </button>
+
+        </div>
+
+
+        <div class="upcoming-list">
+
+            @if (Model.UpcomingExams.Any())
+            {
+                @foreach (var exam in Model.UpcomingExams)
+                {
+                    <article class="upcoming-exam-card">
+
+                        <div class="exam-date-box">
+
+                            <span class="exam-date-day">
+                                @exam.Date.Day
+                            </span>
+
+                            <span class="exam-date-month">
+                                @exam.Date.ToString("MMM")
+                            </span>
+
+                        </div>
+
+
+                        <div class="upcoming-exam-content">
+
+                            <div class="upcoming-exam-top">
+
+                                <h3>
+                                    @exam.Subject
+                                </h3>
+
+                                @if (exam.SubjectCodeAvailable)
+                                {
+                                    <span class="subject-code">
+                                        @exam.SubjectCode
+                                    </span>
+                                }
+
+                            </div>
+
+
+                            <div class="upcoming-exam-details">
+
+                                <span>
+                                    🕘 @exam.StartTime - @exam.EndTime
+                                </span>
+
+                                @if (!string.IsNullOrWhiteSpace(exam.Room))
+                                {
+                                    <span>
+                                        🏫 @exam.Room
+                                    </span>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(exam.Invigilator))
+                                {
+                                    <span>
+                                        👨‍🏫 @exam.Invigilator
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="exam-status">
+                            <span>@exam.Status</span>
+                        </div>
+
+                    </article>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+
+                    <div class="empty-state-icon">
+                        📭
+                    </div>
+
+                    <h3>No Upcoming Examination</h3>
+
+                    <p>
+                        There is currently no upcoming examination
+                        available for this examination type.
+                    </p>
+
+                </div>
+            }
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         COMPLETE SCHEDULE
+         FULLSCREEN ENABLED
+         ========================================================= -->
+    <section class="exam-panel fullscreen-card">
+
+        <div class="panel-header">
+
+            <div class="panel-heading">
+
+                <div class="panel-icon">
+                    📋
+                </div>
+
+                <div>
+                    <h2>Examination Schedule</h2>
+                    <p>Complete examination timetable</p>
+                </div>
+
+            </div>
+
+            <button type="button"
+                    class="fullscreen-button"
+                    title="Enter full screen"
+                    aria-label="Enter full screen">
+                ⛶
+            </button>
+
+        </div>
+
+
+        <div class="schedule-table-wrapper">
+
+            <table class="schedule-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+
+                        <th>Day</th>
+
+                        <th>Subject</th>
+
+                        @if (Model.ShowSubjectCode)
+                        {
+                            <th>Subject Code</th>
+                        }
+
+                        <th>Time</th>
+
+                        @if (Model.ShowRoom)
+                        {
+                            <th>Room</th>
+                        }
+
+                        @if (Model.ShowInvigilator)
+                        {
+                            <th>Invigilator</th>
+                        }
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model.Exams.Any())
+                    {
+                        @foreach (var exam in Model.Exams)
+                        {
+                            <tr>
+
+                                <td>
+                                    <div class="table-date">
+                                        <strong>
+                                            @exam.Date.ToString("dd")
+                                        </strong>
+                                        <span>
+                                            @exam.Date.ToString("MMM")
+                                        </span>
+                                    </div>
+                                </td>
+
+
+                                <td>
+                                    @exam.Date.ToString("dddd")
+                                </td>
+
+
+                                <td>
+
+                                    <div class="table-subject">
+
+                                        <div class="table-subject-icon">
+                                            @exam.Icon
+                                        </div>
+
+                                        <span>
+                                            @exam.Subject
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                @if (Model.ShowSubjectCode)
+                                {
+                                    <td>
+                                        @exam.SubjectCode
+                                    </td>
+                                }
+
+
+                                <td>
+                                    <span class="time-badge">
+                                        @exam.StartTime
+                                        -
+                                        @exam.EndTime
+                                    </span>
+                                </td>
+
+
+                                @if (Model.ShowRoom)
+                                {
+                                    <td>
+                                        @exam.Room
+                                    </td>
+                                }
+
+
+                                @if (Model.ShowInvigilator)
+                                {
+                                    <td>
+                                        @exam.Invigilator
+                                    </td>
+                                }
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="7">
+
+                                <div class="empty-state table-empty">
+
+                                    <div class="empty-state-icon">
+                                        📭
+                                    </div>
+
+                                    <h3>No Examination Schedule</h3>
+
+                                    <p>
+                                        No examination schedule has been
+                                        published yet.
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         EXAM INSTRUCTIONS
+         NOT FULLSCREEN
+         ========================================================= -->
+    @if (Model.ShowInstructions && !string.IsNullOrWhiteSpace(Model.ExamInstructions))
+    {
+        <section class="exam-instructions-card">
+
+            <div class="instructions-icon">
+                ℹ
+            </div>
+
+            <div>
+
+                <h2>Examination Instructions</h2>
+
+                <p>
+                    @Model.ExamInstructions
+                </p>
+
+            </div>
+
+        </section>
+    }
+
+</div>
+
+
+@section Scripts {
+
+    <script src="~/js/ExamSchedule.js"
+            asp-append-version="true"></script>
+}

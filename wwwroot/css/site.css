@@ -1,0 +1,1042 @@
+/* ============================================================
+   SCHOOL LMS - SHARED LAYOUT CSS
+   ============================================================ */
+
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+    overflow-x: hidden;
+}
+
+
+/* ============================================================
+   LAYOUT VARIABLES
+   ============================================================ */
+
+:root {
+
+    /* OPEN SIDEBAR WIDTH */
+    --sidebar-open-width: 270px;
+
+    /* CLOSED SIDEBAR WIDTH */
+    --sidebar-closed-width: 76px;
+
+    /* HEADER HEIGHT */
+    --header-height: 78px;
+
+    /* ANIMATION */
+    --layout-speed: 0.25s;
+}
+
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: var(--sidebar-open-width);
+
+    background:
+        linear-gradient(
+            180deg,
+            #102a43 0%,
+            #173f5f 100%
+        );
+
+    color: white;
+
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    box-shadow:
+        4px 0 18px
+        rgba(0, 0, 0, 0.18);
+
+    transition:
+        width var(--layout-speed) ease;
+}
+
+
+/* ============================================================
+   SIDEBAR HEADER
+   ============================================================ */
+
+.sidebar-header {
+    width: 100%;
+
+    height: var(--header-height);
+    min-height: var(--header-height);
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 12px;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.12);
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   SCHOOL LOGO
+
+   OPEN:
+       Logo visible
+
+   CLOSED:
+       Logo completely disappears
+
+   The placeholder is intentionally flexible so that a future
+   real logo can be larger than this temporary placeholder.
+   ============================================================ */
+
+.school-logo {
+    height: 56px;
+
+    min-width: 0;
+
+    flex: 1 1 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    transition:
+        opacity var(--layout-speed) ease;
+}
+
+
+.school-logo-placeholder {
+    width: 100%;
+    height: 52px;
+
+    min-height: 42px;
+
+    border:
+        2px dashed
+        rgba(255, 255, 255, 0.65);
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-align: center;
+
+    overflow: hidden;
+}
+
+
+/* Future real school logo */
+
+.school-logo-placeholder img {
+    width: auto;
+    height: auto;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+}
+
+
+/* ============================================================
+   HAMBURGER
+   ============================================================ */
+
+.sidebar-toggle {
+    width: 46px;
+    height: 46px;
+
+    min-width: 46px;
+    min-height: 46px;
+
+    max-width: 46px;
+    max-height: 46px;
+
+    flex: 0 0 46px;
+
+    border: 0;
+    border-radius: 10px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+.sidebar-toggle:hover {
+    background:
+        rgba(255, 255, 255, 0.22);
+}
+
+
+.hamburger-lines {
+    font-size: 25px;
+    line-height: 1;
+
+    display: block;
+
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   SIDEBAR NAVIGATION
+   ============================================================ */
+
+.sidebar-navigation {
+    width: 100%;
+
+    padding: 18px 10px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    flex: 1;
+}
+
+
+/* ============================================================
+   SIDEBAR LINK
+   ============================================================ */
+
+.sidebar-link {
+    width: 100%;
+
+    height: 54px;
+    min-height: 54px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 5px 10px;
+
+    border-radius: 12px;
+
+    color: white;
+    text-decoration: none;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.sidebar-link:hover {
+    background:
+        rgba(255, 255, 255, 0.14);
+}
+
+
+/* ============================================================
+   SIDEBAR ICON BOX
+
+   Flexible enough to accept future custom icons.
+   ============================================================ */
+
+.sidebar-icon-box {
+    width: 44px;
+    height: 44px;
+
+    min-width: 44px;
+    min-height: 44px;
+
+    max-width: 44px;
+    max-height: 44px;
+
+    flex: 0 0 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 255, 255, 0.10);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.12);
+
+    overflow: hidden;
+}
+
+
+.sidebar-icon {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 19px;
+
+    flex-shrink: 0;
+}
+
+
+/* Future custom SVG/image */
+
+.sidebar-icon-box img,
+.sidebar-icon-box svg {
+    width: 70%;
+    height: 70%;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   SIDEBAR TEXT
+   ============================================================ */
+
+.sidebar-text {
+    display: block;
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* ============================================================
+   PAGE AREA
+   ============================================================ */
+
+.page-area {
+    width: calc(100% - var(--sidebar-open-width));
+
+    min-height: 100vh;
+
+    margin-left: var(--sidebar-open-width);
+
+    transition:
+        width var(--layout-speed) ease,
+        margin-left var(--layout-speed) ease;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.top-header {
+    width: 100%;
+
+    height: var(--header-height);
+    min-height: var(--header-height);
+
+    background: white;
+
+    border-bottom:
+        1px solid
+        #e5e7eb;
+
+    display: flex;
+    align-items: center;
+
+    /*
+       IMPORTANT:
+       Do not use space-between here.
+
+       The LMS branding stays on the left.
+       The student-header uses margin-left:auto to move
+       itself to the right.
+    */
+    justify-content: flex-start;
+
+    padding: 10px 24px;
+
+    /*
+       Small gap between the major header elements.
+    */
+    gap: 10px;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 900;
+
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   LMS BRANDING
+   ============================================================ */
+
+.lms-heading {
+    min-width: 0;
+
+    /*
+       LMS branding is allowed to shrink if necessary,
+       but it must not push the student information
+       outside the header.
+    */
+    flex: 1 1 auto;
+
+    max-width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    overflow: hidden;
+}
+
+
+.lms-word {
+    font-size: 34px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    color: #2563eb;
+
+    flex: 0 0 auto;
+}
+
+
+.lms-full-name {
+    min-width: 0;
+
+    font-size: 19px;
+
+    font-weight: 700;
+
+    color: #172554;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   STUDENT HEADER
+
+   Order from LEFT to RIGHT inside this group:
+
+       Notification → Student details → Profile picture
+
+   The complete group is protected from being squeezed.
+   ============================================================ */
+
+.student-header {
+    display: flex;
+
+    align-items: center;
+
+    /*
+       Keep the three student elements close together.
+    */
+    gap: 8px;
+
+    /*
+       Do not allow this group to shrink.
+    */
+    flex: 0 0 auto;
+
+    /*
+       Keep the group on the right side of the header.
+    */
+    margin-left: auto;
+
+    /*
+       Prevent the browser from squeezing the contents.
+    */
+    min-width: max-content;
+
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   NOTIFICATION
+   ============================================================ */
+
+.notification-button {
+    width: 44px;
+    height: 44px;
+
+    min-width: 44px;
+    min-height: 44px;
+
+    max-width: 44px;
+    max-height: 44px;
+
+    flex: 0 0 44px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    background: #eef2ff;
+
+    color: #3730a3;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+.notification-icon {
+    font-size: 22px;
+
+    flex-shrink: 0;
+}
+
+
+/* Future custom notification icon */
+
+.notification-button img,
+.notification-button svg {
+    width: 65%;
+    height: 65%;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+}
+
+
+/* ============================================================
+   STUDENT DETAILS
+   ============================================================ */
+
+.student-details {
+    /*
+       Keep enough room for name and roll number.
+    */
+    width: 150px;
+
+    min-width: 120px;
+
+    max-width: 160px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    overflow: hidden;
+}
+
+
+.student-name {
+    width: 100%;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    text-align: right;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.student-roll {
+    width: 100%;
+
+    margin-top: 2px;
+
+    font-size: 12px;
+
+    color: #64748b;
+
+    text-align: right;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   PROFILE PICTURE
+
+   The placeholder has a protected minimum size.
+
+   Future real profile pictures can be larger because:
+       - width is flexible
+       - height is flexible
+       - min-width/min-height prevent squeezing
+       - max-width/max-height prevent uncontrolled growth
+   ============================================================ */
+
+.profile-picture {
+    width: clamp(44px, 5vw, 64px);
+
+    height: clamp(44px, 5vw, 64px);
+
+    min-width: 44px;
+    min-height: 44px;
+
+    max-width: 64px;
+    max-height: 64px;
+
+    flex: 0 0 auto;
+
+    border-radius: 50%;
+
+    background: #dbeafe;
+
+    border:
+        2px solid
+        #bfdbfe;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+.profile-initials {
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: #1d4ed8;
+}
+
+
+/* Future real student picture */
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+
+.main-content {
+    width: 100%;
+
+    min-height:
+        calc(100vh - var(--header-height));
+
+    padding: 28px;
+
+    overflow-x: hidden;
+}
+
+
+/* ============================================================
+   CLOSED SIDEBAR
+   ============================================================ */
+
+body.sidebar-collapsed .sidebar {
+    width: var(--sidebar-closed-width);
+}
+
+
+body.sidebar-collapsed .page-area {
+    width: calc(100% - var(--sidebar-closed-width));
+
+    margin-left: var(--sidebar-closed-width);
+}
+
+
+/* ============================================================
+   CLOSED SIDEBAR HEADER
+   ============================================================ */
+
+body.sidebar-collapsed .sidebar-header {
+    justify-content: center;
+
+    padding-left: 15px;
+    padding-right: 15px;
+
+    gap: 0;
+}
+
+
+/* ============================================================
+   LOGO COMPLETELY DISAPPEARS
+   ============================================================ */
+
+body.sidebar-collapsed .school-logo {
+    display: none;
+
+    width: 0;
+    height: 0;
+
+    min-width: 0;
+    max-width: 0;
+
+    flex: 0 0 0;
+
+    opacity: 0;
+    visibility: hidden;
+
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   HAMBURGER STAYS WHOLE
+   ============================================================ */
+
+body.sidebar-collapsed .sidebar-toggle {
+    width: 46px;
+    height: 46px;
+
+    min-width: 46px;
+    min-height: 46px;
+
+    max-width: 46px;
+    max-height: 46px;
+
+    flex: 0 0 46px;
+}
+
+
+/* ============================================================
+   CLOSED NAVIGATION
+   ============================================================ */
+
+body.sidebar-collapsed .sidebar-navigation {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+body.sidebar-collapsed .sidebar-link {
+    width: 56px;
+    min-width: 56px;
+    max-width: 56px;
+
+    height: 54px;
+    min-height: 54px;
+    max-height: 54px;
+
+    padding: 5px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    justify-content: center;
+
+    gap: 0;
+}
+
+
+/* ============================================================
+   CLOSED ICON
+
+   Icon never gets squeezed or cut.
+   ============================================================ */
+
+body.sidebar-collapsed .sidebar-icon-box {
+    width: 44px;
+    height: 44px;
+
+    min-width: 44px;
+    min-height: 44px;
+
+    max-width: 44px;
+    max-height: 44px;
+
+    flex: 0 0 44px;
+}
+
+
+/* ============================================================
+   CLOSED TEXT
+
+   Text completely disappears.
+   ============================================================ */
+
+body.sidebar-collapsed .sidebar-text {
+    display: none;
+
+    width: 0;
+    height: 0;
+
+    min-width: 0;
+    max-width: 0;
+
+    opacity: 0;
+    visibility: hidden;
+
+    overflow: hidden;
+
+    flex: 0 0 0;
+}
+
+
+/* ============================================================
+   RESPONSIVE - 1100px
+   ============================================================ */
+
+@media (max-width: 1100px) {
+
+    .lms-full-name {
+        font-size: 17px;
+    }
+
+    .student-details {
+        width: 140px;
+    }
+}
+
+
+/* ============================================================
+   RESPONSIVE - 900px
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .lms-full-name {
+        font-size: 16px;
+    }
+
+    .student-details {
+        width: 130px;
+    }
+}
+
+
+/* ============================================================
+   RESPONSIVE - 700px
+
+   The long LMS name disappears to make room for
+   student information.
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    .lms-full-name {
+        display: none;
+    }
+
+    .student-details {
+        width: 120px;
+    }
+
+    .top-header {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+}
+
+
+/* ============================================================
+   RESPONSIVE - 520px
+
+   Student text disappears on very small screens,
+   but notification and profile picture remain.
+   ============================================================ */
+
+@media (max-width: 520px) {
+
+    .student-details {
+        display: none;
+    }
+
+    .notification-button {
+        width: 40px;
+        height: 40px;
+
+        min-width: 40px;
+        min-height: 40px;
+
+        max-width: 40px;
+        max-height: 40px;
+
+        flex-basis: 40px;
+    }
+
+    .profile-picture {
+        width: 46px;
+        height: 46px;
+
+        min-width: 46px;
+        min-height: 46px;
+
+        max-width: 46px;
+        max-height: 46px;
+    }
+
+    .lms-word {
+        font-size: 28px;
+    }
+}
+
+
+/* ============================================================
+   ACTIVE SIDEBAR ITEM
+   ============================================================ */
+
+.sidebar-link.active {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.sidebar-link.active:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+
+/* ============================================================
+   TEMPORARY LAYOUT TEST
+
+   Keep this. You can continue using /LayoutTest later
+   whenever you want to test changes to the shared layout.
+   ============================================================ */
+
+.layout-test {
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 4px 18px
+        rgba(0, 0, 0, 0.06);
+}
+
+
+.layout-test h1 {
+    margin-bottom: 10px;
+
+    font-size: 28px;
+
+    color: #172554;
+}
+
+
+.layout-test p {
+    color: #64748b;
+
+    line-height: 1.6;
+}

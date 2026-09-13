@@ -1,0 +1,277 @@
+@page
+@model SchoolLMS.Pages.AnnouncementModel
+@{
+    ViewData["Title"] = "Announcement";
+}
+
+<link rel="stylesheet" href="~/css/Announcement.css" asp-append-version="true" />
+
+<div class="announcement-page">
+
+    <!-- PAGE HEADER -->
+    <div class="announcement-page-header">
+        <div class="announcement-title-area">
+            <div class="announcement-title-icon">🔔</div>
+
+            <div>
+                <h1>Announcement</h1>
+                <p>Notice Board • News & Events</p>
+            </div>
+        </div>
+
+        <div class="announcement-header-badge">
+            <span class="badge-dot"></span>
+            School Updates
+        </div>
+    </div>
+
+
+    <!-- FILTER BAR -->
+    <div class="announcement-filter-bar">
+
+        <button class="announcement-filter active"
+                type="button"
+                data-filter="all">
+            All
+        </button>
+
+        <button class="announcement-filter"
+                type="button"
+                data-filter="notice">
+            Notices
+        </button>
+
+        <button class="announcement-filter"
+                type="button"
+                data-filter="event">
+            Events
+        </button>
+
+        <button class="announcement-filter"
+                type="button"
+                data-filter="important">
+            Important
+        </button>
+
+    </div>
+
+
+    <!-- ANNOUNCEMENT LIST -->
+    <div class="announcement-list" id="announcementList">
+
+        @if (Model.Announcements != null && Model.Announcements.Count > 0)
+        {
+            foreach (var announcement in Model.Announcements)
+            {
+                <article class="announcement-card
+                                @(announcement.IsImportant ? "important-announcement" : "")
+                                @(announcement.IsRead ? "read-announcement" : "unread-announcement")"
+                         data-category="@announcement.Category.ToLower()"
+                         data-important="@announcement.IsImportant.ToString().ToLower()">
+
+                    <!-- DATE -->
+                    <div class="announcement-date">
+                        <div class="announcement-date-day">
+                            @announcement.Date.Day
+                        </div>
+
+                        <div class="announcement-date-month">
+                            @announcement.Date.ToString("MMM")
+                        </div>
+
+                        <div class="announcement-date-year">
+                            @announcement.Date.Year
+                        </div>
+                    </div>
+
+
+                    <!-- CONTENT -->
+                    <div class="announcement-card-content">
+
+                        <div class="announcement-card-top">
+
+                            <span class="announcement-category">
+                                @announcement.Category
+                            </span>
+
+                            @if (announcement.IsImportant)
+                            {
+                                <span class="important-badge">
+                                    Important
+                                </span>
+                            }
+
+                        </div>
+
+
+                        <button type="button"
+                                class="announcement-card-title"
+                                onclick="openAnnouncement(this)"
+                                data-id="@announcement.Id">
+
+                            @announcement.Title
+
+                        </button>
+
+
+                        <p class="announcement-preview">
+                            @announcement.ShortDescription
+                        </p>
+
+
+                        <div class="announcement-card-footer">
+
+                            <span>
+                                Issued by:
+                                <strong>@announcement.IssuedBy</strong>
+                            </span>
+
+                            @if (!announcement.IsRead)
+                            {
+                                <span class="unread-indicator">
+                                    New
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </article>
+            }
+        }
+        else
+        {
+            <!-- EMPTY STATE -->
+            <div class="announcement-empty">
+
+                <div class="empty-icon">
+                    🔔
+                </div>
+
+                <h2>No Announcements</h2>
+
+                <p>
+                    There are currently no announcements available.
+                </p>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ANNOUNCEMENT FULL-SCREEN DETAIL
+     ========================================================= -->
+
+<div class="announcement-modal"
+     id="announcementModal"
+     aria-hidden="true">
+
+    <div class="announcement-modal-content">
+
+        <!-- MODAL HEADER -->
+        <div class="announcement-modal-header">
+
+            <button type="button"
+                    class="announcement-back-button"
+                    onclick="closeAnnouncement()">
+
+                ← Back to Announcements
+
+            </button>
+
+            <button type="button"
+                    class="announcement-fullscreen-button"
+                    onclick="toggleAnnouncementFullscreen()"
+                    title="Full Screen">
+
+                ⛶
+
+            </button>
+
+        </div>
+
+
+        <!-- MODAL BODY -->
+        <div class="announcement-detail">
+
+            <div class="announcement-detail-category"
+                 id="detailCategory">
+                Notice
+            </div>
+
+            <h1 id="detailTitle">
+                Announcement Title
+            </h1>
+
+            <div class="announcement-detail-meta">
+
+                <span id="detailDate">
+                    August 13, 2026
+                </span>
+
+                <span class="detail-separator">•</span>
+
+                <span>
+                    Issued by:
+                    <strong id="detailIssuer">
+                        School Administration
+                    </strong>
+                </span>
+
+            </div>
+
+
+            <div class="announcement-detail-divider"></div>
+
+
+            <!-- DATABASE CONTENT WILL APPEAR HERE -->
+            <div class="announcement-detail-body"
+                 id="detailBody">
+
+                Announcement content will appear here.
+
+            </div>
+
+
+            <!-- ATTACHMENT -->
+            <div class="announcement-attachment"
+                 id="detailAttachment"
+                 style="display:none;">
+
+                <div class="attachment-icon">
+                    📎
+                </div>
+
+                <div class="attachment-information">
+
+                    <span class="attachment-label">
+                        Attachment
+                    </span>
+
+                    <a id="attachmentLink"
+                       href="#"
+                       target="_blank">
+                        View Attachment
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script src="~/js/Announcement.js"
+            asp-append-version="true"></script>
+}

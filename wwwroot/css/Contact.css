@@ -1,0 +1,445 @@
+/* ============================================================
+   SCHOOL LMS - CONTACT PAGE
+   ============================================================ */
+
+
+/* ============================================================
+   PAGE
+   ============================================================ */
+
+.contact-page {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+
+/* ============================================================
+   SCHOOL HEADER
+   ============================================================ */
+
+.contact-school-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 22px;
+
+    padding: 28px 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eff6ff 0%,
+            #ffffff 100%
+        );
+
+    border:
+        1px solid
+        #dbeafe;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(15, 23, 42, 0.06);
+}
+
+
+/* ============================================================
+   SCHOOL LOGO
+   ============================================================ */
+
+.contact-school-logo {
+    width: 82px;
+    height: 82px;
+
+    min-width: 82px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 16px;
+
+    background: white;
+
+    border:
+        1px solid
+        #dbeafe;
+
+    box-shadow:
+        0 5px 15px
+        rgba(15, 23, 42, 0.08);
+}
+
+
+.contact-logo-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-align: center;
+}
+
+
+/* Future real school logo */
+
+.contact-school-logo img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* ============================================================
+   SCHOOL NAME
+   ============================================================ */
+
+.contact-school-name {
+    min-width: 0;
+}
+
+
+.contact-school-name h1 {
+    margin: 0 0 6px;
+
+    color: #172554;
+
+    font-size: 30px;
+
+    font-weight: 800;
+}
+
+
+.contact-school-name p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   GENERAL CARD
+   ============================================================ */
+
+.contact-card {
+    width: 100%;
+
+    padding: 28px 30px;
+
+    background: white;
+
+    border:
+        1px solid
+        #e5e7eb;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(15, 23, 42, 0.06);
+}
+
+
+/* ============================================================
+   CARD HEADING
+   ============================================================ */
+
+.contact-card-heading {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding-bottom: 20px;
+
+    margin-bottom: 22px;
+
+    border-bottom:
+        1px solid
+        #e5e7eb;
+}
+
+
+.contact-card-icon {
+    width: 44px;
+    height: 44px;
+
+    min-width: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 21px;
+
+    font-weight: 700;
+}
+
+
+.contact-card-heading h2 {
+    margin: 0 0 4px;
+
+    color: #172554;
+
+    font-size: 21px;
+}
+
+
+.contact-card-heading p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   ABOUT US
+   ============================================================ */
+
+.contact-about-content {
+    color: #475569;
+
+    font-size: 14px;
+
+    line-height: 1.8;
+}
+
+
+.contact-about-content p {
+    margin: 0;
+}
+
+
+/* ============================================================
+   CONTACT INFORMATION GRID
+   ============================================================ */
+
+.contact-information-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+
+/* ============================================================
+   INFORMATION ITEM
+   ============================================================ */
+
+.contact-information-item {
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 16px;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.contact-information-item:hover {
+    transform: translateY(-2px);
+
+    border-color: #bfdbfe;
+
+    box-shadow:
+        0 6px 15px
+        rgba(15, 23, 42, 0.06);
+}
+
+
+/* ============================================================
+   INFORMATION ICON
+   ============================================================ */
+
+.contact-information-icon {
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #dbeafe;
+
+    font-size: 18px;
+}
+
+
+/* ============================================================
+   INFORMATION CONTENT
+   ============================================================ */
+
+.contact-information-content {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.contact-label {
+    color: #64748b;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.6px;
+}
+
+
+.contact-value {
+    color: #1e293b;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    .contact-school-header {
+        padding: 22px;
+    }
+
+
+    .contact-school-logo {
+        width: 68px;
+        height: 68px;
+
+        min-width: 68px;
+    }
+
+
+    .contact-school-name h1 {
+        font-size: 25px;
+    }
+
+
+    .contact-card {
+        padding: 22px;
+    }
+
+
+    .contact-information-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .contact-school-header {
+        align-items: flex-start;
+
+        padding: 18px;
+
+        gap: 15px;
+    }
+
+
+    .contact-school-logo {
+        width: 56px;
+        height: 56px;
+
+        min-width: 56px;
+    }
+
+
+    .contact-school-name h1 {
+        font-size: 21px;
+    }
+
+
+    .contact-school-name p {
+        font-size: 12px;
+    }
+
+
+    .contact-card {
+        padding: 18px;
+    }
+
+
+    .contact-card-heading {
+        align-items: flex-start;
+    }
+
+
+    .contact-information-item {
+        padding: 13px;
+    }
+}
+
