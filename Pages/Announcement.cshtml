@@ -107,7 +107,14 @@
                         <button type="button"
                                 class="announcement-card-title"
                                 onclick="openAnnouncement(this)"
-                                data-id="@announcement.Id">
+                                data-id="@announcement.Id"
+                                data-title="@announcement.Title"
+                                data-category="@announcement.Category"
+                                data-date="@announcement.Date.ToString("MMMM d, yyyy")"
+                                data-issuer="@announcement.IssuedBy"
+                                data-content="@announcement.FullDescription"
+                                data-attachment-url="@announcement.AttachmentUrl"
+                                data-attachment-name="@announcement.AttachmentName">
 
                             @announcement.Title
 

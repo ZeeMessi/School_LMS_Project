@@ -4,99 +4,18 @@
 
 
 /* ============================================================
-   SAMPLE DATABASE DATA
-   ============================================================ */
-
-/*
- * Temporary front-end data.
- *
- * Later this information will come from the database/API.
- *
- * The UI does not need to change when the database is connected.
- */
-
-const announcementData = {
-
-    1: {
-        title: "Parent-Teacher Meeting",
-
-        category: "Notice",
-
-        date: "August 13, 2026",
-
-        issuer: "School Administration",
-
-        content:
-            "The school administration has announced a parent-teacher meeting. Parents will receive further details regarding the meeting schedule and venue.",
-
-        attachment: null
-    },
-
-
-    2: {
-        title: "Annual Examination Schedule",
-
-        category: "Notice",
-
-        date: "August 10, 2026",
-
-        issuer: "Examination Department",
-
-        content:
-            "The annual examination schedule has been published by the school administration. Students should check the examination schedule carefully.",
-
-        attachment: null
-    },
-
-
-    3: {
-        title: "School Activity",
-
-        category: "Event",
-
-        date: "August 7, 2026",
-
-        issuer: "School Administration",
-
-        content:
-            "Students are requested to participate in the scheduled school activity.",
-
-        attachment: null
-    },
-
-
-    4: {
-        title: "School Holiday Notice",
-
-        category: "Notice",
-
-        date: "August 3, 2026",
-
-        issuer: "School Administration",
-
-        content:
-            "The school administration has announced a holiday. Regular classes will resume according to the school timetable.",
-
-        attachment: null
-    }
-
-};
-
-
-/* ============================================================
    OPEN ANNOUNCEMENT
+
+   Reads the announcement's details from the data-* attributes on the
+   clicked card's title button, which the server already rendered from
+   the real Announcement row - rather than looking the id up in a
+   separate hardcoded dataset that could (and did) disagree with the
+   card underneath it.
    ============================================================ */
 
 function openAnnouncement(button) {
 
-    const announcementId = button.dataset.id;
-
-    const announcement =
-        announcementData[announcementId];
-
-    if (!announcement) {
-        return;
-    }
+    const data = button.dataset;
 
 
     const modal =
@@ -119,19 +38,19 @@ function openAnnouncement(button) {
 
 
     title.textContent =
-        announcement.title;
+        data.title;
 
     category.textContent =
-        announcement.category;
+        data.category;
 
     date.textContent =
-        announcement.date;
+        data.date;
 
     issuer.textContent =
-        announcement.issuer;
+        data.issuer;
 
     body.textContent =
-        announcement.content;
+        data.content;
 
 
     /* --------------------------------------------------------
@@ -145,15 +64,15 @@ function openAnnouncement(button) {
         document.getElementById("attachmentLink");
 
 
-    if (announcement.attachment) {
+    if (data.attachmentUrl) {
 
         attachmentBox.style.display = "flex";
 
         attachmentLink.href =
-            announcement.attachment.url;
+            data.attachmentUrl;
 
         attachmentLink.textContent =
-            announcement.attachment.name;
+            data.attachmentName || "View Attachment";
 
     }
     else {
