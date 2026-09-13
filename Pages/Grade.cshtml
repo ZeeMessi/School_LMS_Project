@@ -1,6 +1,10 @@
 @page
 @model SchoolLMS.Pages.GradeModel
 
+@{
+    ViewData["Title"] = "Grade";
+}
+
 @section Styles {
     <link rel="stylesheet" href="~/css/Grade.css" asp-append-version="true" />
 }
@@ -36,14 +40,14 @@
         <div class="grade-student-info">
 
             <div class="grade-student-name">
-                Ahmed Khan
+                @Model.StudentName
             </div>
 
             <div class="grade-student-meta">
-                <span>Roll No: 501</span>
-                <span>Class: 5</span>
-                <span>Section: A</span>
-                <span>Academic Year: 2026</span>
+                <span>Roll No: @Model.RollNumber</span>
+                <span>Class: @Model.ClassName</span>
+                <span>Section: @Model.SectionName</span>
+                <span>Academic Year: @Model.AcademicYear</span>
             </div>
 
         </div>
@@ -61,7 +65,7 @@
             <div class="summary-icon">%</div>
             <div>
                 <span class="summary-label">Overall Percentage</span>
-                <strong id="overallPercentage">87.5%</strong>
+                <strong id="overallPercentage">@Model.OverallPercentage.ToString("0.#")%</strong>
             </div>
         </div>
 
@@ -69,7 +73,7 @@
             <div class="summary-icon">★</div>
             <div>
                 <span class="summary-label">Overall Grade</span>
-                <strong id="overallGrade">A</strong>
+                <strong id="overallGrade">@Model.OverallGrade</strong>
             </div>
         </div>
 
@@ -77,7 +81,7 @@
             <div class="summary-icon">✓</div>
             <div>
                 <span class="summary-label">Total Marks</span>
-                <strong id="totalMarks">700 / 800</strong>
+                <strong id="totalMarks">@Model.TotalObtainedMarks / @Model.TotalMaxMarks</strong>
             </div>
         </div>
 
@@ -85,7 +89,7 @@
             <div class="summary-icon">✓</div>
             <div>
                 <span class="summary-label">Subjects Passed</span>
-                <strong id="subjectsPassed">8 / 8</strong>
+                <strong id="subjectsPassed">@Model.SubjectsPassed / @Model.SubjectsCount</strong>
             </div>
         </div>
 
@@ -107,21 +111,13 @@
 
         <div class="exam-selector">
 
-            <button class="exam-button active" data-exam="monthly">
-                Monthly Test
-            </button>
-
-            <button class="exam-button" data-exam="quarterly">
-                Quarterly
-            </button>
-
-            <button class="exam-button" data-exam="midterm">
-                Mid-Term
-            </button>
-
-            <button class="exam-button" data-exam="annual">
-                Annual
-            </button>
+            @foreach (var examType in Model.AvailableExamTypes)
+            {
+                <a class="exam-button @(examType.IsActive ? "active" : "")"
+                   href="?examCode=@examType.Code">
+                    @examType.Name
+                </a>
+            }
 
         </div>
 
@@ -150,7 +146,21 @@
 
             <div class="chart-area" id="performanceChart">
 
-                <!-- JavaScript creates the chart here -->
+                @foreach (var result in Model.SubjectResults)
+                {
+                    <div class="chart-column">
+                        <div class="chart-bar" style="--bar-height: @(result.Percentage)%;">
+                            <span class="chart-percentage">@result.Percentage.ToString("0")%</span>
+                            <div class="chart-tooltip">
+                                <strong>@result.Subject</strong><br />
+                                Marks: @result.ObtainedMarks/@result.TotalMarks<br />
+                                Percentage: @result.Percentage.ToString("0")%<br />
+                                Grade: @result.Grade
+                            </div>
+                        </div>
+                        <span class="chart-subject">@result.Subject</span>
+                    </div>
+                }
 
             </div>
 
@@ -189,60 +199,31 @@
 
                 <tbody id="gradeTableBody">
 
-                    <tr>
-                        <td>English</td>
-                        <td>100</td>
-                        <td>88</td>
-                        <td>88%</td>
-                        <td>
-                            <span class="grade-badge grade-a">A</span>
-                        </td>
-                        <td>Very Good</td>
-                    </tr>
-
-                    <tr>
-                        <td>Maths</td>
-                        <td>100</td>
-                        <td>92</td>
-                        <td>92%</td>
-                        <td>
-                            <span class="grade-badge grade-aplus">A+</span>
-                        </td>
-                        <td>Outstanding</td>
-                    </tr>
-
-                    <tr>
-                        <td>Science</td>
-                        <td>100</td>
-                        <td>81</td>
-                        <td>81%</td>
-                        <td>
-                            <span class="grade-badge grade-a">A</span>
-                        </td>
-                        <td>Very Good</td>
-                    </tr>
-
-                    <tr>
-                        <td>Urdu</td>
-                        <td>100</td>
-                        <td>76</td>
-                        <td>76%</td>
-                        <td>
-                            <span class="grade-badge grade-bplus">B+</span>
-                        </td>
-                        <td>Good</td>
-                    </tr>
-
-                    <tr>
-                        <td>Drawing</td>
-                        <td>50</td>
-                        <td>45</td>
-                        <td>90%</td>
-                        <td>
-                            <span class="grade-badge grade-aplus">A+</span>
-                        </td>
-                        <td>Excellent</td>
-                    </tr>
+                    @if (Model.SubjectResults.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="6">No results recorded for this examination yet.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var result in Model.SubjectResults)
+                        {
+                            <tr data-subject="@result.Subject"
+                                data-marks="@result.ObtainedMarks"
+                                data-total="@result.TotalMarks"
+                                data-grade="@result.Grade">
+                                <td>@result.Subject</td>
+                                <td>@result.TotalMarks</td>
+                                <td>@result.ObtainedMarks</td>
+                                <td>@result.Percentage.ToString("0.#")%</td>
+                                <td>
+                                    <span class="grade-badge @result.GradeCssClass">@result.Grade</span>
+                                </td>
+                                <td>@result.Remarks</td>
+                            </tr>
+                        }
+                    }
 
                 </tbody>
 
@@ -270,7 +251,22 @@
 
             <div class="history-chart" id="historyChart">
 
-                <!-- JavaScript creates the history chart -->
+                @if (Model.PerformanceHistory.Count == 0)
+                {
+                    <p>No exam history recorded yet.</p>
+                }
+                else
+                {
+                    @foreach (var point in Model.PerformanceHistory)
+                    {
+                        <div class="history-column">
+                            <div class="history-point" title="@point.ExamTypeName: @point.AveragePercentage%">
+                                <span class="history-value">@point.AveragePercentage%</span>
+                            </div>
+                            <span class="history-label">@point.ExamTypeName</span>
+                        </div>
+                    }
+                }
 
             </div>
 
@@ -347,6 +343,12 @@
             </div>
         </div>
 
+        <!--
+            Still a placeholder: there's no TeacherRemark entity yet, so
+            this general comment isn't database-backed the way the summary
+            cards and table above are. The per-subject Remarks column,
+            however, does come from the real ExamResult.Remarks column.
+        -->
         <div class="teacher-remark-card">
 
             <div class="remark-icon">💬</div>
@@ -355,9 +357,9 @@
                 <h3>Class Teacher</h3>
 
                 <p>
-                    Ahmed has shown excellent progress in Mathematics
-                    and Science. More attention should be given to
-                    Urdu written work.
+                    @(Model.StudentName.Split(' ')[0]) has shown good progress overall
+                    this term. See the subject remarks above for details on
+                    individual subjects.
                 </p>
             </div>
 
@@ -368,6 +370,8 @@
 </div>
 
 
-@section Scripts {
-    <script src="~/js/Grade.js" asp-append-version="true"></script>
-}
+@* Grade.js was removed - it used to overwrite this entire page's
+   server-rendered content with its own separate hardcoded dataset on
+   load, which would have silently defeated everything above. Now that
+   the table, chart, and history are all rendered server-side from real
+   data, there's no client-side rendering left to do here. *@
