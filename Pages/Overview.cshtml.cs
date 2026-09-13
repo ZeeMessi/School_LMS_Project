@@ -1,7 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace School_LMS.Pages
+namespace SchoolLMS.Pages
 {
     public class OverviewModel : PageModel
     {

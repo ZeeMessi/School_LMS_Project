@@ -22,6 +22,14 @@
        - @RenderBody() places the selected page here.
 *@
 
+@{
+    // Used below to mark the current page's sidebar link as active,
+    // e.g. "/Overview", "/class", "/Attendance".
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+
+    bool IsActive(string page) => currentPage == page;
+}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -109,8 +117,8 @@
 
         <nav class="sidebar-navigation">
 
-            <a href="#"
-                class="sidebar-link active">
+            <a href="/Overview"
+                class="sidebar-link @(IsActive("/Overview") || IsActive("/Index") ? "active" : "")">
 
             <span class="sidebar-icon-box">
             <span class="sidebar-icon">⌂</span>
@@ -122,8 +130,8 @@
 
             </a>
 
-            <a href="#"
-               class="sidebar-link">
+            <a href="/class"
+               class="sidebar-link @(IsActive("/class") ? "active" : "")">
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">▣</span>
@@ -136,8 +144,8 @@
             </a>
 
 
-            <a href="#"
-               class="sidebar-link">
+            <a href="/Attendance"
+               class="sidebar-link @(IsActive("/Attendance") ? "active" : "")">
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">✓</span>
@@ -150,8 +158,8 @@
             </a>
 
 
-            <a href="#"
-               class="sidebar-link">
+            <a href="/Grade"
+               class="sidebar-link @(IsActive("/Grade") ? "active" : "")">
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">▤</span>
@@ -164,8 +172,8 @@
             </a>
 
 
-            <a href="#"
-               class="sidebar-link">
+            <a href="/Progress"
+               class="sidebar-link @(IsActive("/Progress") ? "active" : "")">
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">↗</span>
@@ -178,8 +186,8 @@
             </a>
 
 
-            <a href="#"
-               class="sidebar-link">
+            <a href="/AccountBook"
+               class="sidebar-link @(IsActive("/AccountBook") ? "active" : "")">
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">₨</span>
@@ -192,8 +200,8 @@
             </a>
 
 
-            <a href="#"
-               class="sidebar-link">
+            <a href="/ExamSchedule"
+               class="sidebar-link @(IsActive("/ExamSchedule") ? "active" : "")">
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">▦</span>
@@ -206,8 +214,8 @@
             </a>
 
 
-            <a href="#"
-               class="sidebar-link">
+            <a href="/Announcement"
+               class="sidebar-link @(IsActive("/Announcement") ? "active" : "")">
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">●</span>
@@ -221,8 +229,8 @@
 
         <!-- FEEDBACK -->
 
-            <a href="#"
-            class="sidebar-link">
+            <a href="/Feedback"
+            class="sidebar-link @(IsActive("/Feedback") ? "active" : "")">
 
         <span class="sidebar-icon-box">
         <span class="sidebar-icon">♡</span>
@@ -237,8 +245,8 @@
 
             <!-- CONTACT -->
 
-        <a href="#"
-        class="sidebar-link">
+        <a href="/Contact"
+        class="sidebar-link @(IsActive("/Contact") ? "active" : "")">
 
         <span class="sidebar-icon-box">
         <span class="sidebar-icon">✉</span>
