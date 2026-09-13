@@ -1,7 +1,7 @@
 @page
 @model SchoolLMS.Pages.AttendanceModel
 @section Styles {
-    <link rel="stylesheet" href="~/css/attendance.css" 
+    <link rel="stylesheet" href="~/css/attendance.css"
     asp-append-version="true"
     />
 }
@@ -31,11 +31,11 @@
 
                 <div class="attendance-class-info">
                     <span class="attendance-class-badge">
-                        Class 5
+                        @Model.ClassName
                     </span>
 
                     <span class="attendance-section-badge">
-                        Section A
+                        @Model.SectionName
                     </span>
                 </div>
             </div>
@@ -50,7 +50,7 @@
 
             <div>
                 <span>Overall Attendance</span>
-                <strong>85.71%</strong>
+                <strong>@Model.OverallAttendancePercentage.ToString("0.##")%</strong>
             </div>
 
         </div>
@@ -75,11 +75,11 @@
             <div class="calendar-month">
 
                 <div class="calendar-month-name">
-                    August
+                    @Model.CurrentMonthName
                 </div>
 
                 <div class="calendar-year">
-                    2026
+                    @(Model.CalendarDays.FirstOrDefault(d => d.IsCurrentMonth)?.Date.Year)
                 </div>
 
             </div>
@@ -104,13 +104,10 @@
 
         <div class="attendance-weekdays">
 
-            <div>Monday</div>
-            <div>Tuesday</div>
-            <div>Wednesday</div>
-            <div>Thursday</div>
-            <div>Friday</div>
-            <div>Saturday</div>
-            <div>Sunday</div>
+            @foreach (var day in Model.WeekDays)
+            {
+                <div>@day</div>
+            }
 
         </div>
 
@@ -121,221 +118,25 @@
 
         <div class="attendance-calendar">
 
-            <!-- Previous month -->
-            <div class="attendance-day outside-month">
-                <span class="day-number">27</span>
-            </div>
+            @foreach (var day in Model.CalendarDays)
+            {
+                <div class="attendance-day @day.CssClass @(day.IsToday ? "today" : "")">
 
-            <div class="attendance-day outside-month">
-                <span class="day-number">28</span>
-            </div>
+                    @if (day.IsToday)
+                    {
+                        <span class="today-label">TODAY</span>
+                    }
 
-            <div class="attendance-day outside-month">
-                <span class="day-number">29</span>
-            </div>
+                    <span class="day-number">@day.DayNumber</span>
 
-            <div class="attendance-day outside-month">
-                <span class="day-number">30</span>
-            </div>
+                    @if (day.IsCurrentMonth)
+                    {
+                        <span class="attendance-status-icon">@day.StatusIcon</span>
+                        <span class="attendance-status-text">@day.StatusLabel</span>
+                    }
 
-            <div class="attendance-day outside-month">
-                <span class="day-number">31</span>
-            </div>
-
-
-            <!-- August -->
-
-            <div class="attendance-day status-present">
-                <span class="day-number">1</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-weekend">
-                <span class="day-number">2</span>
-                <span class="attendance-status-icon">OFF</span>
-                <span class="attendance-status-text">Weekend</span>
-            </div>
-
-
-            <div class="attendance-day status-present">
-                <span class="day-number">3</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">4</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-absent">
-                <span class="day-number">5</span>
-                <span class="attendance-status-icon">×</span>
-                <span class="attendance-status-text">Absent</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">6</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">7</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-weekend">
-                <span class="day-number">8</span>
-                <span class="attendance-status-icon">OFF</span>
-                <span class="attendance-status-text">Weekend</span>
-            </div>
-
-            <div class="attendance-day status-weekend">
-                <span class="day-number">9</span>
-                <span class="attendance-status-icon">OFF</span>
-                <span class="attendance-status-text">Weekend</span>
-            </div>
-
-
-            <div class="attendance-day status-present">
-                <span class="day-number">10</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">11</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">12</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <!-- TODAY -->
-            <div class="attendance-day status-present today">
-                <span class="today-label">TODAY</span>
-                <span class="day-number">13</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-not-recorded">
-                <span class="day-number">14</span>
-                <span class="attendance-status-icon">—</span>
-                <span class="attendance-status-text">Not Recorded</span>
-            </div>
-
-            <div class="attendance-day status-weekend">
-                <span class="day-number">15</span>
-                <span class="attendance-status-icon">OFF</span>
-                <span class="attendance-status-text">Weekend</span>
-            </div>
-
-            <div class="attendance-day status-weekend">
-                <span class="day-number">16</span>
-                <span class="attendance-status-icon">OFF</span>
-                <span class="attendance-status-text">Weekend</span>
-            </div>
-
-
-            <div class="attendance-day status-present">
-                <span class="day-number">17</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">18</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-absent">
-                <span class="day-number">19</span>
-                <span class="attendance-status-icon">×</span>
-                <span class="attendance-status-text">Absent</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">20</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">21</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-weekend">
-                <span class="day-number">22</span>
-                <span class="attendance-status-icon">OFF</span>
-                <span class="attendance-status-text">Weekend</span>
-            </div>
-
-            <div class="attendance-day status-weekend">
-                <span class="day-number">23</span>
-                <span class="attendance-status-icon">OFF</span>
-                <span class="attendance-status-text">Weekend</span>
-            </div>
-
-
-            <div class="attendance-day status-present">
-                <span class="day-number">24</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">25</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">26</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">27</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
-
-            <div class="attendance-day status-not-recorded">
-                <span class="day-number">28</span>
-                <span class="attendance-status-icon">—</span>
-                <span class="attendance-status-text">Not Recorded</span>
-            </div>
-
-            <div class="attendance-day status-weekend">
-                <span class="day-number">29</span>
-                <span class="attendance-status-icon">OFF</span>
-                <span class="attendance-status-text">Weekend</span>
-            </div>
-
-            <div class="attendance-day status-weekend">
-                <span class="day-number">30</span>
-                <span class="attendance-status-icon">OFF</span>
-                <span class="attendance-status-text">Weekend</span>
-            </div>
-
-            <div class="attendance-day status-present">
-                <span class="day-number">31</span>
-                <span class="attendance-status-icon">✓</span>
-                <span class="attendance-status-text">Present</span>
-            </div>
+                </div>
+            }
 
         </div>
 
@@ -375,34 +176,37 @@
          TODAY'S ATTENDANCE
          ========================================================= -->
 
-    <section class="attendance-today-card">
+    @if (Model.Today is not null)
+    {
+        <section class="attendance-today-card">
 
-        <div class="today-card-icon">
-            ✓
-        </div>
+            <div class="today-card-icon">
+                @Model.Today.StatusIcon
+            </div>
 
-        <div class="today-card-content">
+            <div class="today-card-content">
 
-            <span class="today-card-label">
-                TODAY'S ATTENDANCE
-            </span>
+                <span class="today-card-label">
+                    TODAY'S ATTENDANCE
+                </span>
 
-            <h2>
-                13 August 2026
-            </h2>
+                <h2>
+                    @Model.Today.Date.ToString("d MMMM yyyy")
+                </h2>
 
-            <p>
-                Thursday
-            </p>
+                <p>
+                    @Model.Today.Date.ToString("dddd")
+                </p>
 
-        </div>
+            </div>
 
-        <div class="today-card-status">
-            <span>Present</span>
-            <strong>✓</strong>
-        </div>
+            <div class="today-card-status">
+                <span>@(Model.Today.StatusLabel ?? "Not Recorded")</span>
+                <strong>@Model.Today.StatusIcon</strong>
+            </div>
 
-    </section>
+        </section>
+    }
 
 
     <!-- =========================================================
@@ -419,7 +223,7 @@
                 </span>
 
                 <h2>
-                    August 2026 Summary
+                    @Model.CurrentMonthName Summary
                 </h2>
             </div>
 
@@ -441,7 +245,7 @@
 
                 <div>
                     <span>Present</span>
-                    <strong>20</strong>
+                    <strong>@Model.MonthlyPresentCount</strong>
                     <small>Days</small>
                 </div>
 
@@ -456,7 +260,7 @@
 
                 <div>
                     <span>Absent</span>
-                    <strong>2</strong>
+                    <strong>@Model.MonthlyAbsentCount</strong>
                     <small>Days</small>
                 </div>
 
@@ -471,7 +275,7 @@
 
                 <div>
                     <span>Holidays</span>
-                    <strong>8</strong>
+                    <strong>@Model.MonthlyHolidayCount</strong>
                     <small>Days</small>
                 </div>
 
@@ -486,8 +290,8 @@
 
                 <div>
                     <span>Not Recorded</span>
-                    <strong>1</strong>
-                    <small>Day</small>
+                    <strong>@Model.MonthlyNotRecordedCount</strong>
+                    <small>Day@(Model.MonthlyNotRecordedCount == 1 ? "" : "s")</small>
                 </div>
 
             </div>
@@ -508,14 +312,14 @@
                     <h3>Attendance Percentage</h3>
                 </div>
 
-                <strong>85.71%</strong>
+                <strong>@Model.MonthlyAttendancePercentage.ToString("0.##")%</strong>
 
             </div>
 
             <div class="percentage-bar">
 
                 <div class="percentage-fill"
-                     style="width: 85.71%;">
+                     style="width: @(Model.MonthlyAttendancePercentage.ToString("0.##"))%;">
                 </div>
 
             </div>
@@ -527,7 +331,7 @@
                 </span>
 
                 <span>
-                    20 Present / 22 Recorded
+                    @Model.MonthlyPresentCount Present / @Model.MonthlyRecordedDays Recorded
                 </span>
 
             </div>
@@ -535,6 +339,8 @@
         </div>
 
     </section>
+
+</div>
 
 @section Scripts {
     <script src="~/js/Attendance.js"

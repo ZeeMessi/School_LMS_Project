@@ -1,135 +1,56 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using SchoolLMS.Data;
 
 namespace SchoolLMS.Pages
 {
     public class ClassModel : PageModel
     {
-        // =========================================================
-        // TEMPORARY CLASS INFORMATION
-        // Later these values will come from the database.
-        // =========================================================
+        private readonly AppDbContext _db;
 
-        public string ClassName { get; set; } = "Class 5";
+        public ClassModel(AppDbContext db)
+        {
+            _db = db;
+        }
 
-        public string SectionName { get; set; } = "Section A";
+        public string ClassName { get; set; } = "";
 
-
-        // =========================================================
-        // SUBJECT LIST
-        // =========================================================
+        public string SectionName { get; set; } = "";
 
         public List<ClassSubject> Subjects { get; set; } = new();
 
-
-        // =========================================================
-        // OPTIONS SHOWN INSIDE EACH SUBJECT CARD
-        // =========================================================
-
+        // Shown inside every subject card. Not stored per-subject in the
+        // database (yet) - every subject offers the same set of options for
+        // now, matching the original hardcoded page.
         public List<ClassSubjectOption> SubjectOptions { get; set; } = new()
         {
-            new ClassSubjectOption
-            {
-                Name = "Assignment",
-                Icon = ""
-            },
-
-            new ClassSubjectOption
-            {
-                Name = "Quiz",
-                Icon = ""
-            },
-
-            new ClassSubjectOption
-            {
-                Name = "Handouts",
-                Icon = ""
-            },
-
-            new ClassSubjectOption
-            {
-                Name = "Teacher Remarks",
-                Icon = ""
-            },
-
-            new ClassSubjectOption
-            {
-                Name = "Announcement",
-                Icon = ""
-            }
+            new ClassSubjectOption { Name = "Assignment", Icon = "" },
+            new ClassSubjectOption { Name = "Quiz", Icon = "" },
+            new ClassSubjectOption { Name = "Handouts", Icon = "" },
+            new ClassSubjectOption { Name = "Teacher Remarks", Icon = "" },
+            new ClassSubjectOption { Name = "Announcement", Icon = "" }
         };
 
-
-        // =========================================================
-        // PAGE LOAD
-        // =========================================================
-
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            // -----------------------------------------------------
-            // TEMPORARY DATA
-            //
-            // Later this will come from the database.
-            // -----------------------------------------------------
+            // No login yet, so this always shows the first student's class.
+            var student = await _db.Students
+                .Include(s => s.ClassRoom)
+                    .ThenInclude(c => c.Subjects)
+                        .ThenInclude(cs => cs.Teacher)
+                .FirstAsync();
 
-            Subjects = new List<ClassSubject>
-            {
-                new ClassSubject
-                {
-                    Name = "English",
-                    TeacherName = "Mrs. Khan",
-                    TeacherImageUrl = ""
-                },
+            ClassName = student.ClassRoom.ClassName;
+            SectionName = student.ClassRoom.SectionName;
 
-                new ClassSubject
+            Subjects = student.ClassRoom.Subjects
+                .Select(cs => new ClassSubject
                 {
-                    Name = "Mathematics",
-                    TeacherName = "Mr. Ahmed",
-                    TeacherImageUrl = ""
-                },
-
-                new ClassSubject
-                {
-                    Name = "Science",
-                    TeacherName = "Ms. Fatima",
-                    TeacherImageUrl = ""
-                },
-
-                new ClassSubject
-                {
-                    Name = "Pakistan Studies",
-                    TeacherName = "Mr. Bilal",
-                    TeacherImageUrl = ""
-                },
-
-                new ClassSubject
-                {
-                    Name = "Drawing",
-                    TeacherName = "Mrs. Sana",
-                    TeacherImageUrl = ""
-                },
-
-                new ClassSubject
-                {
-                    Name = "Art",
-                    TeacherName = "Mr. Imran",
-                    TeacherImageUrl = ""
-                },
-
-                new ClassSubject
-                {
-                    Name = "Social Studies",
-                    TeacherName = "Mrs. Noreen",
-                    TeacherImageUrl = ""
-                },
-
-                new ClassSubject
-                {
-                    Name = "Urdu",
-                    TeacherName = "Mr. Yousuf",
-                    TeacherImageUrl = ""
-                }
-            };
+                    Name = cs.Name,
+                    TeacherName = cs.Teacher?.FullName ?? "Unassigned",
+                    TeacherImageUrl = cs.Teacher?.PhotoUrl ?? ""
+                })
+                .ToList();
         }
     }
 
@@ -140,7 +61,10 @@ namespace SchoolLMS.Pages
     // Named ClassSubject instead of Subject to avoid conflicts
     // with other Subject classes in the LMS project.
     //
-    // Later this can be replaced with/mapped to the database model.
+    // NOTE: this is a separate view-model type from
+    // Data.Entities.ClassSubject (the real database entity of almost the
+    // same name) - kept distinct so this page's shape doesn't have to
+    // change if the entity's does.
     // =============================================================
 
     public class ClassSubject
@@ -161,6 +85,6 @@ namespace SchoolLMS.Pages
     {
         public string Name { get; set; } = "";
 
-        public string Icon { get; set; } = ""; 
+        public string Icon { get; set; } = "";
     }
 }
