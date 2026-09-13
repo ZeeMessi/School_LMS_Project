@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
 {
@@ -33,12 +34,13 @@ namespace SchoolLMS.Pages
 
         public async Task OnGetAsync()
         {
-            // No login yet, so this always shows the first student's class.
+            var studentId = User.GetStudentId()!.Value;
+
             var student = await _db.Students
                 .Include(s => s.ClassRoom)
                     .ThenInclude(c => c.Subjects)
                         .ThenInclude(cs => cs.Teacher)
-                .FirstAsync();
+                .FirstAsync(s => s.Id == studentId);
 
             ClassName = student.ClassRoom.ClassName;
             SectionName = student.ClassRoom.SectionName;

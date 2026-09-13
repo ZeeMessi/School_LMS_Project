@@ -28,6 +28,7 @@ public class AppDbContext : DbContext
     public DbSet<Announcement> Announcements => Set<Announcement>();
     public DbSet<AnnouncementRead> AnnouncementReads => Set<AnnouncementRead>();
     public DbSet<FeedbackSubmission> FeedbackSubmissions => Set<FeedbackSubmission>();
+    public DbSet<UserAccount> UserAccounts => Set<UserAccount>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,8 +46,24 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<ClassSubject>()
             .HasOne(cs => cs.Teacher)
-            .WithMany()
+            .WithMany(t => t.TaughtSubjects)
             .HasForeignKey(cs => cs.TeacherId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<UserAccount>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+
+        modelBuilder.Entity<UserAccount>()
+            .HasOne(u => u.Student)
+            .WithMany()
+            .HasForeignKey(u => u.StudentId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<UserAccount>()
+            .HasOne(u => u.Teacher)
+            .WithMany()
+            .HasForeignKey(u => u.TeacherId)
             .OnDelete(DeleteBehavior.SetNull);
 
         // ExamResult has a cascade path to Student AND to Exam, and both of

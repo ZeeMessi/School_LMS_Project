@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
 using SchoolLMS.Data.Entities;
+using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
 {
@@ -36,10 +37,8 @@ namespace SchoolLMS.Pages
                 return;
             }
 
-            // No login yet, so this attributes the submission to the first
-            // student in the database - once authentication exists, this
-            // becomes the actual logged-in student/parent.
-            var student = await _db.Students.FirstAsync();
+            var studentId = User.GetStudentId()!.Value;
+            var student = await _db.Students.FirstAsync(s => s.Id == studentId);
 
             _db.FeedbackSubmissions.Add(new FeedbackSubmission
             {

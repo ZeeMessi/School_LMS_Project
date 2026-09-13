@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
 using SchoolLMS.Data.Entities;
+using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
 {
@@ -40,10 +41,11 @@ namespace SchoolLMS.Pages
 
         public async Task OnGetAsync()
         {
-            // No login yet, so this always shows the first student's record.
+            var studentId = User.GetStudentId()!.Value;
+
             var student = await _db.Students
                 .Include(s => s.ClassRoom)
-                .FirstAsync();
+                .FirstAsync(s => s.Id == studentId);
 
             ClassName = student.ClassRoom.ClassName;
             SectionName = student.ClassRoom.SectionName;
@@ -93,7 +95,12 @@ namespace SchoolLMS.Pages
 
         private void BuildCalendar(DateOnly month, List<AttendanceRecord> monthRecords)
         {
-            var recordsByDate = monthRecords.ToDictionary(a => a.Date, a => a.Status);
+            // Value type is explicitly AttendanceStatus? here, not
+            // AttendanceStatus - otherwise TryGetValue's failure case below
+            // (no record for that date) leaves `status` at
+            // default(AttendanceStatus), which is Present (the enum's 0
+            // value), silently turning "no record" into "marked present".
+            var recordsByDate = monthRecords.ToDictionary(a => a.Date, a => (AttendanceStatus?)a.Status);
 
             var firstOfMonth = new DateOnly(month.Year, month.Month, 1);
             var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);

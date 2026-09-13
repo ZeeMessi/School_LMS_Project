@@ -1,0 +1,34 @@
+@page
+@model SchoolLMS.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="portal-card">
+    <h2>@Model.SchoolName</h2>
+    <p>
+        This is a placeholder landing page for the Admin role. Managing
+        students, classes, teachers, and fees from here is planned as a
+        follow-up &mdash; for now this just confirms the account and role
+        work, with a few real counts pulled from the database below.
+    </p>
+</div>
+
+<div class="portal-summary-grid">
+
+    <div class="portal-summary-card">
+        <strong>@Model.StudentCount</strong>
+        <span>Students</span>
+    </div>
+
+    <div class="portal-summary-card">
+        <strong>@Model.TeacherCount</strong>
+        <span>Teachers</span>
+    </div>
+
+    <div class="portal-summary-card">
+        <strong>@Model.ClassCount</strong>
+        <span>Classes</span>
+    </div>
+
+</div>

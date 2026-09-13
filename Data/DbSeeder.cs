@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using SchoolLMS.Data.Entities;
 
 namespace SchoolLMS.Data;
@@ -15,7 +16,7 @@ namespace SchoolLMS.Data;
 // name shown in the persistent header) is the one used everywhere.
 public static class DbSeeder
 {
-    public static void Seed(AppDbContext db)
+    public static void Seed(AppDbContext db, IPasswordHasher<UserAccount> passwordHasher)
     {
         if (db.Schools.Any())
         {
@@ -93,7 +94,46 @@ public static class DbSeeder
         SeedFeeInvoices(db, student);
         SeedAnnouncements(db, classRoom);
 
+        // teachers[1] is "Mr. Ahmed", the Mathematics teacher - chosen as
+        // the demo teacher account since Mathematics already has seeded
+        // exam results (see SeedMonthlyTestResults), so the teacher
+        // dashboard has real data to show right away.
+        SeedUserAccounts(db, passwordHasher, student, teachers[1]);
+
         db.SaveChanges();
+    }
+
+    private static void SeedUserAccounts(
+        AppDbContext db,
+        IPasswordHasher<UserAccount> passwordHasher,
+        Student student,
+        Teacher teacher)
+    {
+        var studentAccount = new UserAccount
+        {
+            Username = "ali.raza",
+            Role = UserRole.Student,
+            Student = student
+        };
+        studentAccount.PasswordHash = passwordHasher.HashPassword(studentAccount, "Student@123");
+        db.UserAccounts.Add(studentAccount);
+
+        var teacherAccount = new UserAccount
+        {
+            Username = "mr.ahmed",
+            Role = UserRole.Teacher,
+            Teacher = teacher
+        };
+        teacherAccount.PasswordHash = passwordHasher.HashPassword(teacherAccount, "Teacher@123");
+        db.UserAccounts.Add(teacherAccount);
+
+        var adminAccount = new UserAccount
+        {
+            Username = "admin",
+            Role = UserRole.Admin
+        };
+        adminAccount.PasswordHash = passwordHasher.HashPassword(adminAccount, "Admin@123");
+        db.UserAccounts.Add(adminAccount);
     }
 
     private static void SeedAttendance(AppDbContext db, Student student)
@@ -144,7 +184,7 @@ public static class DbSeeder
         var results = new (string Subject, int Total, int Obtained, string Grade, string Remarks)[]
         {
             ("English", 100, 88, "A", "Very Good"),
-            ("Maths", 100, 92, "A+", "Outstanding"),
+            ("Mathematics", 100, 92, "A+", "Outstanding"),
             ("Science", 100, 81, "A", "Very Good"),
             ("Urdu", 100, 76, "B+", "Good"),
             ("Drawing", 50, 45, "A+", "Excellent"),

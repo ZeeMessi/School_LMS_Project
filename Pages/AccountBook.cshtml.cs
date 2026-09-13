@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages;
 
@@ -74,10 +75,11 @@ public class AccountBookModel : PageModel
 
     public async Task OnGetAsync()
     {
-        // No login yet, so this always shows the first student's account.
+        var studentId = User.GetStudentId()!.Value;
+
         var student = await _db.Students
             .Include(s => s.ClassRoom)
-            .FirstAsync();
+            .FirstAsync(s => s.Id == studentId);
 
         StudentName = student.FullName;
         ClassName = student.ClassRoom.ClassName;

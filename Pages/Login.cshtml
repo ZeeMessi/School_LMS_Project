@@ -24,11 +24,18 @@
                 <p class="system-name">Learning Management System</p>
             </div>
 
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="login-error" role="alert">
+                    @Model.ErrorMessage
+                </div>
+            }
+
             <form method="post" class="login-form">
 
                 <div class="form-group">
-                    <label for="StudentId">Student ID</label>
-                    <input type="text" id="StudentId" name="StudentId" placeholder="Enter your Student ID" autocomplete="username" required />
+                    <label for="Username">Username</label>
+                    <input type="text" id="Username" name="Username" value="@Model.Username" placeholder="Enter your username" autocomplete="username" required autofocus />
                 </div>
 
                 <div class="form-group">

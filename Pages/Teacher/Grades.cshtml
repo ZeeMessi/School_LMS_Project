@@ -1,0 +1,88 @@
+@page
+@model SchoolLMS.Pages.Teacher.GradesModel
+@{
+    ViewData["Title"] = "Enter Grades";
+}
+
+<div class="portal-card">
+
+    @if (Model.Saved)
+    {
+        <div class="portal-banner">Grades saved.</div>
+    }
+
+    <h2>@Model.SubjectName &mdash; @Model.ClassLabel</h2>
+    <p>Select an examination type, then enter each student's marks.</p>
+
+    <form method="get" class="portal-field-row">
+        <input type="hidden" name="classSubjectId" value="@Model.ClassSubjectId" />
+
+        <div class="portal-field">
+            <label for="examTypeCode">Examination</label>
+            <select id="examTypeCode" name="examTypeCode" onchange="this.form.submit()">
+                @foreach (var examType in Model.ExamTypes)
+                {
+                    <option value="@examType.Code" selected="@(examType.IsActive ? "selected" : null)">
+                        @examType.Name
+                    </option>
+                }
+            </select>
+        </div>
+    </form>
+
+    <form method="post">
+        <input type="hidden" asp-for="ClassSubjectId" />
+        <input type="hidden" asp-for="ExamTypeCode" />
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label for="ExamDate">Exam Date</label>
+                <input type="date" id="ExamDate" asp-for="ExamDate" />
+            </div>
+
+            <div class="portal-field">
+                <label for="TotalMarks">Total Marks (applies to all students)</label>
+                <input type="number" id="TotalMarks" asp-for="TotalMarks" min="1" />
+            </div>
+        </div>
+
+        <div class="portal-table-wrapper">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Student</th>
+                        <th>Obtained Marks</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Students.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.Students[i].RollNumber</td>
+                            <td>
+                                @Model.Students[i].FullName
+                                <input type="hidden" asp-for="Students[i].StudentId" />
+                                <input type="hidden" asp-for="Students[i].FullName" />
+                                <input type="hidden" asp-for="Students[i].RollNumber" />
+                            </td>
+                            <td>
+                                <input type="number" min="0" asp-for="Students[i].ObtainedMarks" />
+                            </td>
+                            <td>
+                                <input type="text" class="wide" asp-for="Students[i].Remarks" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <br />
+        <button type="submit" class="portal-button">Save Grades</button>
+    </form>
+
+</div>
+
+<a href="/Teacher/Dashboard" class="portal-button secondary">&larr; Back to Dashboard</a>

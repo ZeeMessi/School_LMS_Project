@@ -22,12 +22,29 @@
        - @RenderBody() places the selected page here.
 *@
 
+@inject SchoolLMS.Data.AppDbContext Db
+@using SchoolLMS.Services
 @{
     // Used below to mark the current page's sidebar link as active,
     // e.g. "/Overview", "/class", "/Attendance".
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
 
     bool IsActive(string page) => currentPage == page;
+
+    // This layout is only ever used by student-facing pages (Teacher/Admin
+    // have their own layout), so the logged-in user here is always a
+    // student - see Program.cs's AuthorizeFolder and Login.cshtml.cs's
+    // role-based redirect after sign-in.
+    var studentId = User.GetStudentId();
+    var currentStudent = studentId is not null
+        ? await Db.Students.FindAsync(studentId)
+        : null;
+
+    var studentName = currentStudent?.FullName ?? "";
+    var studentRoll = currentStudent?.RollNumber ?? "";
+    var studentInitials = string.Concat(
+        studentName.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Select(word => char.ToUpperInvariant(word[0])));
 }
 
 <!DOCTYPE html>
@@ -325,11 +342,11 @@
                 <div class="student-details">
 
                     <span class="student-name">
-                        Ali Raza
+                        @studentName
                     </span>
 
                     <span class="student-roll">
-                        Roll No: 10-A-042
+                        Roll No: @studentRoll
                     </span>
 
                 </div>
@@ -348,10 +365,22 @@
                     -->
 
                     <span class="profile-initials">
-                        AR
+                        @studentInitials
                     </span>
 
                 </div>
+
+
+                <!-- LOGOUT -->
+
+                <form method="post" asp-page="/Logout">
+                    <button type="submit"
+                            class="notification-button"
+                            title="Log out"
+                            aria-label="Log out">
+                        ⏻
+                    </button>
+                </form>
 
 
             </div>

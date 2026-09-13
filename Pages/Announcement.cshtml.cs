@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
 {
@@ -17,10 +18,11 @@ namespace SchoolLMS.Pages
 
         public async Task OnGetAsync()
         {
-            // No login yet, so "read" tracking (AnnouncementRead) isn't
-            // wired up - every announcement shows as unread for now,
-            // rather than fabricating a read/unread split.
-            var student = await _db.Students.FirstAsync();
+            // "Read" tracking (AnnouncementRead) isn't wired up yet - every
+            // announcement shows as unread for now, rather than
+            // fabricating a read/unread split.
+            var studentId = User.GetStudentId()!.Value;
+            var student = await _db.Students.FirstAsync(s => s.Id == studentId);
 
             var announcements = await _db.Announcements
                 .Where(a => a.TargetClassRoomId == null || a.TargetClassRoomId == student.ClassRoomId)

@@ -1,0 +1,38 @@
+@page
+@model SchoolLMS.Pages.Teacher.DashboardModel
+@{
+    ViewData["Title"] = "Teacher Dashboard";
+}
+
+<div class="portal-card">
+    <h2>Welcome, @Model.TeacherName</h2>
+    <p>Your assigned classes and subjects.</p>
+
+    @if (Model.TaughtClasses.Count == 0)
+    {
+        <p>You aren't assigned to any classes yet.</p>
+    }
+    else
+    {
+        <div class="portal-class-list">
+
+            @foreach (var taught in Model.TaughtClasses)
+            {
+                <div class="portal-class-card">
+                    <h3>@taught.SubjectName</h3>
+                    <p>@taught.ClassLabel &bull; @taught.StudentCount student@(taught.StudentCount == 1 ? "" : "s")</p>
+
+                    <div class="portal-class-actions">
+                        <a class="portal-button" href="/Teacher/Attendance?classRoomId=@taught.ClassRoomId">
+                            Take Attendance
+                        </a>
+                        <a class="portal-button secondary" href="/Teacher/Grades?classSubjectId=@taught.ClassSubjectId">
+                            Enter Grades
+                        </a>
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+</div>

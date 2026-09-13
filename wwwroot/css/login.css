@@ -60,6 +60,17 @@ body {
     color: #6b7280;
 }
 
+.login-error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
 .login-form {
     display: flex;
     flex-direction: column;

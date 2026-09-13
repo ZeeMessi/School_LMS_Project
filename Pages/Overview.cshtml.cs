@@ -95,9 +95,11 @@ namespace SchoolLMS.Pages
 
         public async Task OnGetAsync()
         {
+            var studentId = User.GetStudentId()!.Value;
+
             var student = await _db.Students
                 .Include(s => s.ClassRoom)
-                .FirstAsync();
+                .FirstAsync(s => s.Id == studentId);
 
             StudentName = student.FullName;
             StudentClass = student.ClassRoom.ClassName;

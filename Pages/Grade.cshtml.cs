@@ -57,10 +57,11 @@ namespace SchoolLMS.Pages
 
         public async Task OnGetAsync()
         {
-            // No login yet, so this always shows the first student.
+            var studentId = User.GetStudentId()!.Value;
+
             var student = await _db.Students
                 .Include(s => s.ClassRoom)
-                .FirstAsync();
+                .FirstAsync(s => s.Id == studentId);
 
             StudentName = student.FullName;
             RollNumber = student.RollNumber;

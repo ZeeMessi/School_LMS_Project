@@ -1,0 +1,71 @@
+@page
+@model SchoolLMS.Pages.Teacher.AttendanceModel
+@{
+    ViewData["Title"] = "Take Attendance";
+}
+
+<div class="portal-card">
+
+    @if (Model.Saved)
+    {
+        <div class="portal-banner">Attendance saved for @Model.Date.ToString("dddd, d MMMM yyyy").</div>
+    }
+
+    <h2>@Model.ClassLabel</h2>
+    <p>Mark each student present or absent for the selected date.</p>
+
+    <form method="get" class="portal-field-row">
+        <input type="hidden" name="classRoomId" value="@Model.ClassRoomId" />
+
+        <div class="portal-field">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" value="@Model.Date.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <button type="submit" class="portal-button secondary">Change Date</button>
+    </form>
+
+    <form method="post">
+        <input type="hidden" asp-for="ClassRoomId" />
+        <input type="hidden" asp-for="Date" />
+
+        <div class="portal-table-wrapper">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Student</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Students.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.Students[i].RollNumber</td>
+                            <td>
+                                @Model.Students[i].FullName
+                                <input type="hidden" asp-for="Students[i].StudentId" />
+                                <input type="hidden" asp-for="Students[i].FullName" />
+                                <input type="hidden" asp-for="Students[i].RollNumber" />
+                            </td>
+                            <td>
+                                <select asp-for="Students[i].Status">
+                                    <option value="Present">Present</option>
+                                    <option value="Absent">Absent</option>
+                                    <option value="NotRecorded">Not Recorded</option>
+                                </select>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <br />
+        <button type="submit" class="portal-button">Save Attendance</button>
+    </form>
+
+</div>
+
+<a href="/Teacher/Dashboard" class="portal-button secondary">&larr; Back to Dashboard</a>

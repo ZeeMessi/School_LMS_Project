@@ -1,0 +1,10 @@
+@page
+@model SchoolLMS.Pages.LogoutModel
+@{
+    Layout = null;
+}
+@* This page never actually renders - it only exists to give a POST target
+   for the logout button/form in the shared layouts. GET-ting this page
+   directly just bounces to Login since there's no OnGet handler and
+   nothing is rendered. *@
+<form method="post"></form>

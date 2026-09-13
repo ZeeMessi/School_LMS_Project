@@ -1,0 +1,76 @@
+@*
+    Shared layout for the Teacher and Admin areas. Deliberately separate
+    from _Layout.cshtml (the student shell) — a teacher or admin's nav
+    doesn't make sense inside the "my own attendance/grades" sidebar built
+    for students, so this is its own simple shell instead of overloading
+    that one with role-conditional links.
+*@
+@using SchoolLMS.Data.Entities
+@using SchoolLMS.Services
+@{
+    var role = User.GetRole();
+    var username = User.Identity?.Name ?? "";
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    bool IsActive(string page) => currentPage == page;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - School LMS</title>
+    <link rel="stylesheet" href="~/css/portal.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <aside class="portal-sidebar">
+
+        <div class="portal-sidebar-header">
+            <span class="portal-brand">LMS</span>
+            <span class="portal-role-badge">@role</span>
+        </div>
+
+        <nav class="portal-nav">
+
+            @if (role == UserRole.Teacher)
+            {
+                <a href="/Teacher/Dashboard" class="portal-nav-link @(IsActive("/Teacher/Dashboard") ? "active" : "")">
+                    ⌂ Dashboard
+                </a>
+            }
+
+            @if (role == UserRole.Admin)
+            {
+                <a href="/Admin/Dashboard" class="portal-nav-link @(IsActive("/Admin/Dashboard") ? "active" : "")">
+                    ⌂ Dashboard
+                </a>
+            }
+
+        </nav>
+
+    </aside>
+
+    <div class="portal-main">
+
+        <header class="portal-header">
+            <span class="portal-header-title">@ViewData["Title"]</span>
+
+            <div class="portal-header-user">
+                <span class="portal-username">@username</span>
+
+                <form method="post" asp-page="/Logout">
+                    <button type="submit" class="portal-logout-button">Log out</button>
+                </form>
+            </div>
+        </header>
+
+        <main class="portal-content">
+            @RenderBody()
+        </main>
+
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

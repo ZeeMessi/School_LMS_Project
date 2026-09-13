@@ -1,0 +1,350 @@
+/* ============================================================
+   TEACHER / ADMIN PORTAL SHELL
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+.portal-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 220px;
+    background: linear-gradient(180deg, #102a43 0%, #173f5f 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.portal-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.portal-brand {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.portal-role-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.portal-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 10px;
+}
+
+.portal-nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.portal-nav-link:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.portal-nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.portal-main {
+    margin-left: 220px;
+    min-height: 100vh;
+}
+
+.portal-header {
+    height: 68px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+}
+
+.portal-header-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #172554;
+}
+
+.portal-header-user {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.portal-username {
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.portal-logout-button {
+    background: #eef2ff;
+    color: #3730a3;
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.portal-logout-button:hover {
+    background: #e0e7ff;
+}
+
+.portal-content {
+    padding: 28px;
+}
+
+
+/* ============================================================
+   SHARED CARD / TABLE STYLES USED BY TEACHER + ADMIN PAGES
+   ============================================================ */
+
+.portal-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    margin-bottom: 20px;
+}
+
+.portal-card h2 {
+    font-size: 17px;
+    color: #172554;
+    margin: 0 0 4px;
+}
+
+.portal-card p {
+    color: #64748b;
+    font-size: 13px;
+    margin: 0 0 16px;
+}
+
+.portal-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.portal-summary-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.portal-summary-card strong {
+    display: block;
+    font-size: 26px;
+    color: #1d4ed8;
+}
+
+.portal-summary-card span {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.portal-class-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.portal-class-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    background: #f8fafc;
+}
+
+.portal-class-card h3 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    color: #1e3a8a;
+}
+
+.portal-class-card p {
+    margin: 0 0 12px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.portal-class-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.portal-button {
+    display: inline-block;
+    background: #1d4ed8;
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 0;
+    cursor: pointer;
+}
+
+.portal-button:hover {
+    background: #1741b5;
+}
+
+.portal-button.secondary {
+    background: #eef2ff;
+    color: #3730a3;
+}
+
+.portal-button.secondary:hover {
+    background: #e0e7ff;
+}
+
+.portal-table-wrapper {
+    overflow-x: auto;
+}
+
+.portal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.portal-table th,
+.portal-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.portal-table th {
+    color: #64748b;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.portal-table input[type="number"],
+.portal-table input[type="text"] {
+    width: 80px;
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.portal-table input[type="text"].wide {
+    width: 100%;
+    min-width: 160px;
+}
+
+.portal-status-pill {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.portal-status-pill.present {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.portal-status-pill.absent {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.portal-field-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.portal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.portal-field label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.portal-field select,
+.portal-field input {
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.portal-banner {
+    background: #dcfce7;
+    color: #166534;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+@media (max-width: 720px) {
+    .portal-sidebar {
+        position: static;
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .portal-main {
+        margin-left: 0;
+    }
+
+    .portal-nav {
+        flex-direction: row;
+    }
+}

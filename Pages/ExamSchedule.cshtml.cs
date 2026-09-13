@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages;
 
@@ -105,9 +106,11 @@ public class ExamScheduleModel : PageModel
 
     public async Task OnGetAsync()
     {
+        var studentId = User.GetStudentId()!.Value;
+
         var student = await _db.Students
             .Include(s => s.ClassRoom)
-            .FirstAsync();
+            .FirstAsync(s => s.Id == studentId);
 
         ClassName = student.ClassRoom.ClassName;
         SectionName = student.ClassRoom.SectionName;
