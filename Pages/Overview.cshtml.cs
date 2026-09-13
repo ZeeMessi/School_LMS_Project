@@ -1,139 +1,183 @@
-
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using SchoolLMS.Data;
+using SchoolLMS.Data.Entities;
+using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
 {
     public class OverviewModel : PageModel
     {
-        /*
-         * =====================================================
-         * STUDENT INFORMATION
-         * =====================================================
-         *
-         * These are temporary values.
-         *
-         * In the final LMS, these values will be retrieved
-         * from the database according to the logged-in user.
-         */
+        private readonly AppDbContext _db;
 
-        public string StudentName { get; set; } =
-            "Ali Raza";
-
-        public string StudentClass { get; set; } =
-            "Class 5";
-
-        public string StudentSection { get; set; } =
-            "Section A";
-
-
-        /*
-         * =====================================================
-         * ATTENDANCE
-         * =====================================================
-         */
-
-        public double AttendancePercentage { get; set; } =
-            92;
-
-        public int PresentDays { get; set; } =
-            184;
-
-        public int AbsentDays { get; set; } =
-            16;
-
-
-        /*
-         * =====================================================
-         * OVERALL GRADE
-         * =====================================================
-         *
-         * IMPORTANT:
-         *
-         * If the school's database does not have a grading
-         * system, this value should eventually be null/empty
-         * and the Grade card should not be rendered.
-         */
-
-        public string? OverallGrade { get; set; } =
-            "A";
-
-
-        /*
-         * =====================================================
-         * OVERALL PROGRESS
-         * =====================================================
-         */
-
-        public double OverallProgress { get; set; } =
-            78;
-
-        public string ProgressStatus { get; set; } =
-            "Good progress";
-
-
-        /*
-         * =====================================================
-         * ACCOUNT
-         * =====================================================
-         *
-         * If there are no outstanding dues, the account card
-         * can eventually show "No Outstanding Dues".
-         */
-
-        public decimal OutstandingDues { get; set; } =
-            12500;
-
-
-        /*
-         * =====================================================
-         * UPCOMING EXAM
-         * =====================================================
-         *
-         * If there is no upcoming examination, the exam card
-         * should eventually show an appropriate empty state.
-         */
-
-        public string? UpcomingExamName { get; set; } =
-            "Quarterly Examination";
-
-        public string? UpcomingExamSubject { get; set; } =
-            "Mathematics";
-
-        public string? UpcomingExamDate { get; set; } =
-            "20";
-
-        public string? UpcomingExamMonth { get; set; } =
-            "AUG";
-
-        public string? UpcomingExamTime { get; set; } =
-            "09:00 AM";
-
-
-        public void OnGet()
+        public OverviewModel(AppDbContext db)
         {
-            /*
-             * =================================================
-             * FUTURE DATABASE CONNECTION
-             * =================================================
-             *
-             * This method will eventually retrieve all
-             * overview information from the database.
-             *
-             * The database should determine:
-             *
-             * - Student name
-             * - Class
-             * - Section
-             * - Attendance
-             * - Overall grade
-             * - Overall progress
-             * - Outstanding dues
-             * - Upcoming examination
-             *
-             * The UI should NOT contain school-specific
-             * hard-coded information in the final version.
-             */
+            _db = db;
+        }
+
+        // =====================================================
+        // STUDENT INFORMATION
+        // =====================================================
+        //
+        // There's no login yet (see Pages/Login.cshtml.cs), so this always
+        // shows the first student in the database. Once authentication is
+        // wired up, this becomes "the logged-in student" instead.
+
+        public string StudentName { get; set; } = "";
+
+        public string StudentClass { get; set; } = "";
+
+        public string StudentSection { get; set; } = "";
+
+        public string StudentInitials => string.Concat(
+            StudentName.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(word => char.ToUpperInvariant(word[0])));
+
+
+        // =====================================================
+        // ATTENDANCE
+        // =====================================================
+
+        public double AttendancePercentage { get; set; }
+
+        public int PresentDays { get; set; }
+
+        public int AbsentDays { get; set; }
+
+
+        // =====================================================
+        // OVERALL GRADE
+        // =====================================================
+        //
+        // Null when the student has no recorded exam results yet, so the
+        // Grade card can show an empty state instead of a fake "A".
+
+        public string? OverallGrade { get; set; }
+
+
+        // =====================================================
+        // OVERALL PROGRESS
+        // =====================================================
+        //
+        // Computed the same way as OverallGrade (average exam percentage)
+        // as a stand-in until Pages/Progress.cshtml gets its own proper
+        // term-over-term tracking data.
+
+        public double? OverallProgress { get; set; }
+
+        public string ProgressStatus { get; set; } = "";
+
+
+        // =====================================================
+        // ACCOUNT
+        // =====================================================
+
+        public decimal OutstandingDues { get; set; }
+
+
+        // =====================================================
+        // UPCOMING EXAM
+        // =====================================================
+        //
+        // Null when there's nothing scheduled, so the card can show an
+        // empty state instead of a fake exam.
+
+        public string? UpcomingExamName { get; set; }
+
+        public string? UpcomingExamSubject { get; set; }
+
+        public string? UpcomingExamDate { get; set; }
+
+        public string? UpcomingExamMonth { get; set; }
+
+        public string? UpcomingExamTime { get; set; }
+
+
+        public async Task OnGetAsync()
+        {
+            var student = await _db.Students
+                .Include(s => s.ClassRoom)
+                .FirstAsync();
+
+            StudentName = student.FullName;
+            StudentClass = student.ClassRoom.ClassName;
+            StudentSection = student.ClassRoom.SectionName;
+
+            await LoadAttendanceAsync(student.Id);
+            await LoadGradeAndProgressAsync(student.Id);
+            await LoadOutstandingDuesAsync(student.Id);
+            await LoadUpcomingExamAsync(student.ClassRoomId);
+        }
+
+        private async Task LoadAttendanceAsync(int studentId)
+        {
+            var records = await _db.AttendanceRecords
+                .Where(a => a.StudentId == studentId)
+                .Where(a => a.Status == AttendanceStatus.Present || a.Status == AttendanceStatus.Absent)
+                .ToListAsync();
+
+            PresentDays = records.Count(a => a.Status == AttendanceStatus.Present);
+            AbsentDays = records.Count(a => a.Status == AttendanceStatus.Absent);
+
+            var recordedDays = PresentDays + AbsentDays;
+            AttendancePercentage = recordedDays == 0
+                ? 0
+                : Math.Round(100.0 * PresentDays / recordedDays, 2);
+        }
+
+        private async Task LoadGradeAndProgressAsync(int studentId)
+        {
+            var results = await _db.ExamResults
+                .Where(r => r.StudentId == studentId)
+                .ToListAsync();
+
+            if (results.Count == 0)
+            {
+                return; // leave OverallGrade / OverallProgress null - empty state
+            }
+
+            var averagePercentage = results.Average(r => 100.0 * r.ObtainedMarks / r.TotalMarks);
+
+            OverallGrade = GradeScale.LetterFor(averagePercentage);
+            OverallProgress = Math.Round(averagePercentage, 0);
+            ProgressStatus = averagePercentage switch
+            {
+                >= 90 => "Excellent progress",
+                >= 75 => "Good progress",
+                >= 50 => "Needs improvement",
+                _ => "At risk"
+            };
+        }
+
+        private async Task LoadOutstandingDuesAsync(int studentId)
+        {
+            var unpaidInvoices = await _db.FeeInvoices
+                .Where(f => f.StudentId == studentId && f.Status != "Paid")
+                .ToListAsync();
+
+            OutstandingDues = unpaidInvoices.Sum(f => f.TotalPayable);
+        }
+
+        private async Task LoadUpcomingExamAsync(int classRoomId)
+        {
+            var today = DateTime.Today;
+
+            var nextExam = await _db.Exams
+                .Include(e => e.ExamType)
+                .Where(e => e.ClassRoomId == classRoomId && e.Date >= today)
+                .OrderBy(e => e.Date)
+                .FirstOrDefaultAsync();
+
+            if (nextExam is null)
+            {
+                return; // leave Upcoming* null - empty state
+            }
+
+            UpcomingExamName = $"{nextExam.ExamType.Name} Examination";
+            UpcomingExamSubject = nextExam.Subject;
+            UpcomingExamDate = nextExam.Date.Day.ToString();
+            UpcomingExamMonth = nextExam.Date.ToString("MMM").ToUpperInvariant();
+            UpcomingExamTime = nextExam.StartTime;
         }
     }
 }
-

@@ -19,7 +19,7 @@
     <section class="overview-student-card">
 
         <div class="overview-student-avatar">
-            AR
+            @Model.StudentInitials
         </div>
 
         <div class="overview-student-info">
@@ -28,10 +28,10 @@
                 Student Overview
             </span>
 
-            <h1>Ali Raza</h1>
+            <h1>@Model.StudentName</h1>
 
             <span class="overview-class">
-                Class 5 — Section A
+                @Model.StudentClass — @Model.StudentSection
             </span>
 
         </div>
@@ -76,23 +76,23 @@
                  class="overview-attendance-content">
 
                 <div class="overview-percentage">
-                    92%
+                    @Model.AttendancePercentage.ToString("0.##")%
                 </div>
 
                 <div class="overview-progress-track">
                     <div class="overview-progress-fill"
-                         style="width: 92%;">
+                         style="width: @(Model.AttendancePercentage.ToString("0.##"))%;">
                     </div>
                 </div>
 
                 <div class="overview-attendance-details">
 
                     <span>
-                        Present: <strong>184</strong>
+                        Present: <strong>@Model.PresentDays</strong>
                     </span>
 
                     <span>
-                        Absent: <strong>16</strong>
+                        Absent: <strong>@Model.AbsentDays</strong>
                     </span>
 
                 </div>
@@ -109,7 +109,7 @@
             <div class="overview-card-header">
 
                 <div class="overview-card-icon grade-icon">
-                    A
+                    @(Model.OverallGrade ?? "—")
                 </div>
 
                 <div>
@@ -121,13 +121,22 @@
 
             <div class="overview-grade-content">
 
-                <div class="overview-grade-value">
-                    A
-                </div>
+                @if (Model.OverallGrade is not null)
+                {
+                    <div class="overview-grade-value">
+                        @Model.OverallGrade
+                    </div>
 
-                <span class="overview-grade-label">
-                    Overall Performance
-                </span>
+                    <span class="overview-grade-label">
+                        Overall Performance
+                    </span>
+                }
+                else
+                {
+                    <span class="overview-grade-label">
+                        No results recorded yet
+                    </span>
+                }
 
             </div>
 
@@ -153,19 +162,28 @@
 
             <div class="overview-progress-content">
 
-                <div class="overview-progress-number">
-                    78%
-                </div>
-
-                <div class="overview-progress-track">
-                    <div class="overview-progress-fill progress-fill"
-                         style="width: 78%;">
+                @if (Model.OverallProgress is { } progress)
+                {
+                    <div class="overview-progress-number">
+                        @progress.ToString("0")%
                     </div>
-                </div>
 
-                <span class="overview-progress-label">
-                    Good progress
-                </span>
+                    <div class="overview-progress-track">
+                        <div class="overview-progress-fill progress-fill"
+                             style="width: @(progress.ToString("0"))%;">
+                        </div>
+                    </div>
+
+                    <span class="overview-progress-label">
+                        @Model.ProgressStatus
+                    </span>
+                }
+                else
+                {
+                    <span class="overview-progress-label">
+                        No results recorded yet
+                    </span>
+                }
 
             </div>
 
@@ -191,17 +209,26 @@
 
             <div class="overview-account-content">
 
-                <span class="overview-account-label">
-                    Outstanding Dues
-                </span>
+                @if (Model.OutstandingDues > 0)
+                {
+                    <span class="overview-account-label">
+                        Outstanding Dues
+                    </span>
 
-                <strong class="overview-account-amount">
-                    Rs. 12,500
-                </strong>
+                    <strong class="overview-account-amount">
+                        Rs. @Model.OutstandingDues.ToString("N0")
+                    </strong>
 
-                <span class="overview-account-status">
-                    Payment required
-                </span>
+                    <span class="overview-account-status">
+                        Payment required
+                    </span>
+                }
+                else
+                {
+                    <span class="overview-account-label">
+                        No Outstanding Dues
+                    </span>
+                }
 
             </div>
 
@@ -237,33 +264,42 @@
             <div id="examOverview"
                  class="overview-exam-content">
 
-                <div class="overview-exam-date">
+                @if (Model.UpcomingExamName is not null)
+                {
+                    <div class="overview-exam-date">
 
-                    <span class="exam-month">
-                        AUG
-                    </span>
+                        <span class="exam-month">
+                            @Model.UpcomingExamMonth
+                        </span>
 
-                    <strong>
-                        20
-                    </strong>
+                        <strong>
+                            @Model.UpcomingExamDate
+                        </strong>
 
-                </div>
+                    </div>
 
-                <div class="overview-exam-info">
+                    <div class="overview-exam-info">
 
-                    <strong>
-                        Quarterly Examination
-                    </strong>
+                        <strong>
+                            @Model.UpcomingExamName
+                        </strong>
 
-                    <span>
-                        Mathematics
-                    </span>
+                        <span>
+                            @Model.UpcomingExamSubject
+                        </span>
 
-                    <small>
-                        09:00 AM
-                    </small>
+                        <small>
+                            @Model.UpcomingExamTime
+                        </small>
 
-                </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="overview-exam-info">
+                        <strong>No Upcoming Examination</strong>
+                    </div>
+                }
 
             </div>
 
