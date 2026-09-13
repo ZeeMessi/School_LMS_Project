@@ -11,3 +11,6 @@ obj/
 ## OS
 Thumbs.db
 .DS_Store
+
+## Scratch file used to pass multi-line commit messages to git -F
+.git-commit-msg.txt
