@@ -1,11 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using SchoolLMS.Data;
+using SchoolLMS.Data.Entities;
 
 namespace SchoolLMS.Pages
 {
     public class FeedbackModel : PageModel
     {
+        private readonly AppDbContext _db;
+
+        public FeedbackModel(AppDbContext db)
+        {
+            _db = db;
+        }
+
         [BindProperty]
         public FeedbackInput Feedback { get; set; } = new();
 
@@ -14,44 +24,35 @@ namespace SchoolLMS.Pages
 
         public void OnGet()
         {
-            // Future:
-            // Load logged-in student/parent information
-            // from the database here.
+            // No login yet, so submissions aren't tied to a real logged-in
+            // student/parent - see OnPostAsync below.
         }
 
 
-        public void OnPost()
+        public async Task OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return;
             }
 
-            /*
-             * DATABASE INTEGRATION WILL GO HERE.
-             *
-             * Future database flow:
-             *
-             * 1. Identify the logged-in student/parent.
-             * 2. Save Category.
-             * 3. Save Rating.
-             * 4. Save Message.
-             * 5. Save submission date/time.
-             * 6. Save submission status.
-             *
-             * Example future fields:
-             *
-             * StudentId
-             * ParentId
-             * Category
-             * Rating
-             * Message
-             * SubmittedAt
-             * Status
-             */
+            // No login yet, so this attributes the submission to the first
+            // student in the database - once authentication exists, this
+            // becomes the actual logged-in student/parent.
+            var student = await _db.Students.FirstAsync();
 
+            _db.FeedbackSubmissions.Add(new FeedbackSubmission
+            {
+                StudentId = student.Id,
+                Category = Feedback.Category!,
+                Rating = Feedback.Rating!.Value,
+                Message = Feedback.Message!,
+                SubmittedAt = DateTime.UtcNow,
+                Status = "New"
+            });
 
-            // Temporary response until database is connected.
+            await _db.SaveChangesAsync();
+
             StatusMessage =
                 "Thank you. Your feedback has been submitted successfully.";
 
