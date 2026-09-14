@@ -21,6 +21,7 @@
         <table class="portal-table">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Name</th>
                     <th>Username</th>
                     <th>Teaches</th>
@@ -31,6 +32,7 @@
                 @foreach (var teacher in Model.Teachers)
                 {
                     <tr>
+                        <td><img src="@teacher.AvatarUrl" alt="@teacher.FullName" style="width:32px;height:32px;object-fit:cover;border-radius:50%;" /></td>
                         <td>@teacher.FullName</td>
                         <td>@(teacher.Username ?? "—")</td>
                         <td>@teacher.SubjectsSummary</td>

@@ -4,6 +4,22 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Class";
+
+    // Maps each subject-card option to where it actually goes now that
+    // they're real links instead of href="#" placeholders. Announcement
+    // reuses the existing school-wide Announcements page (it already
+    // filters to the student's class - see AnnouncementModel); the rest
+    // go to SubjectContent, which is one shared page with different tabs
+    // rather than four near-identical pages.
+    string OptionHref(int classSubjectId, string optionName) => optionName switch
+    {
+        "Assignment" => $"/SubjectContent?classSubjectId={classSubjectId}&section=assignments",
+        "Quiz" => $"/SubjectContent?classSubjectId={classSubjectId}&section=quizzes",
+        "Handouts" => $"/SubjectContent?classSubjectId={classSubjectId}&section=handouts",
+        "Teacher Remarks" => $"/SubjectContent?classSubjectId={classSubjectId}&section=remarks",
+        "Announcement" => "/Announcement",
+        _ => "#"
+    };
 }
 
 <link rel="stylesheet" href="~/css/class.css" />
@@ -91,7 +107,7 @@
 
                         @foreach (var option in Model.SubjectOptions)
                         {
-                            <a href="#"
+                            <a href="@OptionHref(subject.ClassSubjectId, option.Name)"
                                class="subject-option"
                                data-option="@option">
 

@@ -1,0 +1,83 @@
+@page
+@model SchoolLMS.Pages.Teacher.RemarksModel
+@{
+    ViewData["Title"] = $"Remarks - {Model.SubjectName}";
+}
+
+<div class="portal-card">
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="login-error">@Model.ErrorMessage</div>
+    }
+
+    <h2>@Model.SubjectName — @Model.ClassLabel</h2>
+    <p>Leave a remark about a student's performance in this subject.</p>
+
+    <form method="post" asp-page-handler="Add" class="portal-field-row">
+        <input type="hidden" asp-for="ClassSubjectId" />
+
+        <div class="portal-field">
+            <label asp-for="StudentId">Student</label>
+            <select asp-for="StudentId">
+                @foreach (var student in Model.Students)
+                {
+                    <option value="@student.Id">@student.FullName (@student.RollNumber)</option>
+                }
+            </select>
+        </div>
+
+        <div class="portal-field" style="flex:1;min-width:280px;">
+            <label asp-for="Remark">Remark</label>
+            <input asp-for="Remark" style="width:100%;" placeholder="e.g. Shows great improvement in written work." />
+        </div>
+
+        <button type="submit" class="portal-button">Add Remark</button>
+    </form>
+
+    <h3 style="font-size:15px;color:#172554;margin:24px 0 10px;">All Remarks</h3>
+
+    @if (Model.Remarks.Count == 0)
+    {
+        <p style="color:#64748b;">No remarks recorded yet.</p>
+    }
+    else
+    {
+        <div class="portal-table-wrapper">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Remark</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var remark in Model.Remarks)
+                    {
+                        <tr>
+                            <td>@remark.StudentName</td>
+                            <td>@remark.Remark</td>
+                            <td>@remark.CreatedAt.ToString("d MMM yyyy")</td>
+                            <td>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@remark.Id"
+                                      onsubmit="return confirm('Remove this remark?');">
+                                    <input type="hidden" asp-for="ClassSubjectId" />
+                                    <button type="submit" class="portal-button secondary">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<a href="/Teacher/Dashboard" class="portal-button secondary">&larr; Back to Dashboard</a>

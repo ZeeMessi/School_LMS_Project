@@ -45,8 +45,8 @@ namespace SchoolLMS.Pages
                     IssuedBy = a.IssuedBy,
                     IsImportant = a.IsImportant,
                     IsRead = false,
-                    AttachmentUrl = a.AttachmentUrl,
-                    AttachmentName = a.AttachmentUrl is null ? null : Path.GetFileName(a.AttachmentUrl)
+                    AttachmentUrl = a.AttachmentData is null ? null : $"/file/announcement/{a.Id}",
+                    AttachmentName = a.AttachmentFileName
                 })
                 .ToList();
         }

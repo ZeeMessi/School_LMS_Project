@@ -1,0 +1,112 @@
+@page
+@model SchoolLMS.Pages.SubjectContentModel
+@section Styles {
+    <link rel="stylesheet" href="~/css/class.css" />
+    <style>
+        .subject-option.active { background: #eff6ff; border-color: #93c5fd; }
+    </style>
+}
+@{
+    ViewData["Title"] = Model.SubjectName;
+
+    var tabs = new (string Key, string Label, int Count)[]
+    {
+        ("assignments", "Assignments", Model.Assignments.Count),
+        ("handouts", "Handouts", Model.Handouts.Count),
+        ("quizzes", "Quizzes", Model.Quizzes.Count),
+        ("remarks", "Teacher Remarks", Model.Remarks.Count)
+    };
+}
+
+<div class="class-page">
+
+    <section class="class-header">
+        <div class="class-header-text">
+            <span class="class-label">SUBJECT</span>
+            <h1>@Model.SubjectName</h1>
+            <p>@Model.ClassLabel &bull; Teacher: @Model.TeacherName</p>
+        </div>
+    </section>
+
+    <div class="subject-options" style="margin-bottom:20px;">
+        @foreach (var tab in tabs)
+        {
+            <a href="?classSubjectId=@Model.ClassSubjectId&amp;section=@tab.Key"
+               class="subject-option @(Model.Section == tab.Key ? "active" : "")">
+                <span class="option-name">@tab.Label (@tab.Count)</span>
+            </a>
+        }
+    </div>
+
+    @{
+        var materials = Model.Section switch
+        {
+            "handouts" => Model.Handouts,
+            "quizzes" => Model.Quizzes,
+            "remarks" => null,
+            _ => Model.Assignments
+        };
+    }
+
+    @if (Model.Section == "remarks")
+    {
+        <section class="class-header" style="margin-top:0;">
+            @if (Model.Remarks.Count == 0)
+            {
+                <p>No remarks recorded for this subject yet.</p>
+            }
+            else
+            {
+                @foreach (var remark in Model.Remarks)
+                {
+                    <div style="padding:14px 0;border-bottom:1px solid #e2e8f0;">
+                        <p style="margin:0 0 4px;">@remark.Remark</p>
+                        <small style="color:#64748b;">@remark.CreatedAt.ToString("d MMMM yyyy")</small>
+                    </div>
+                }
+            }
+        </section>
+    }
+    else if (materials is not null)
+    {
+        <section class="class-header" style="margin-top:0;">
+            @if (materials.Count == 0)
+            {
+                <p>Nothing posted here yet.</p>
+            }
+            else
+            {
+                @foreach (var material in materials)
+                {
+                    <div style="padding:16px 0;border-bottom:1px solid #e2e8f0;">
+                        <h3 style="margin:0 0 4px;color:#172554;">@material.Title</h3>
+
+                        @if (material.DueDate is not null)
+                        {
+                            <p style="margin:0 0 4px;color:#b45309;font-weight:600;font-size:13px;">
+                                Due: @material.DueDate.Value.ToString("d MMMM yyyy")
+                            </p>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(material.Description))
+                        {
+                            <p style="margin:0 0 6px;">@material.Description</p>
+                        }
+
+                        @if (material.FileData is not null)
+                        {
+                            <a href="/file/material/@material.Id" target="_blank">📎 @(material.FileName ?? "Download attachment")</a>
+                        }
+
+                        <div>
+                            <small style="color:#64748b;">Posted @material.PostedAt.ToString("d MMMM yyyy")</small>
+                        </div>
+                    </div>
+                }
+            }
+        </section>
+    }
+
+</div>
+
+<a href="/class" style="margin-top:12px;display:inline-block;color:#1d4ed8;font-weight:700;text-decoration:none;">&larr; Back to Class</a>

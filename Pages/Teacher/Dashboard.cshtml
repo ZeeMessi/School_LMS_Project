@@ -5,7 +5,10 @@
 }
 
 <div class="portal-card">
-    <h2>Welcome, @Model.TeacherName</h2>
+    <h2 style="display:flex;align-items:center;gap:12px;">
+        <img src="@Model.AvatarUrl" alt="@Model.TeacherName" style="width:40px;height:40px;object-fit:cover;border-radius:50%;" />
+        Welcome, @Model.TeacherName
+    </h2>
     <p>Your assigned classes and subjects.</p>
 
     @if (Model.TaughtClasses.Count == 0)
@@ -28,6 +31,12 @@
                         </a>
                         <a class="portal-button secondary" href="/Teacher/Grades?classSubjectId=@taught.ClassSubjectId">
                             Enter Grades
+                        </a>
+                        <a class="portal-button secondary" href="/Teacher/Materials?classSubjectId=@taught.ClassSubjectId&amp;Type=Assignment">
+                            Materials
+                        </a>
+                        <a class="portal-button secondary" href="/Teacher/Remarks?classSubjectId=@taught.ClassSubjectId">
+                            Remarks
                         </a>
                     </div>
                 </div>

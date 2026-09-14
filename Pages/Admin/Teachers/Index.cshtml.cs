@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages.Admin.Teachers;
 
@@ -37,6 +38,7 @@ public class IndexModel : PageModel
             .Select(t => new TeacherRow(
                 t.Id,
                 t.FullName,
+                t.PhotoData != null ? $"/image/teacher/{t.Id}" : AvatarHelper.PlaceholderDataUri(t.Gender),
                 usernames.GetValueOrDefault(t.Id),
                 t.TaughtSubjects.Count == 0
                     ? "No subjects assigned"
@@ -66,4 +68,4 @@ public class IndexModel : PageModel
     }
 }
 
-public record TeacherRow(int Id, string FullName, string? Username, string SubjectsSummary);
+public record TeacherRow(int Id, string FullName, string AvatarUrl, string? Username, string SubjectsSummary);

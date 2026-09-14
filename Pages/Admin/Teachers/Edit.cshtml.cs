@@ -36,6 +36,11 @@ public class EditModel : PageModel
     public string Username { get; set; } = "";
 
     [BindProperty]
+    public Gender Gender { get; set; }
+
+    public string PlaceholderAvatarUri => AvatarHelper.PlaceholderDataUri(Gender);
+
+    [BindProperty]
     public string Password { get; set; } = "";
 
     [BindProperty]
@@ -53,6 +58,7 @@ public class EditModel : PageModel
         {
             var teacher = await _db.Teachers.FirstAsync(t => t.Id == Id);
             FullName = teacher.FullName;
+            Gender = teacher.Gender;
             HasPhoto = teacher.PhotoData != null;
 
             var account = await _db.UserAccounts.FirstOrDefaultAsync(u => u.TeacherId == Id);
@@ -95,6 +101,7 @@ public class EditModel : PageModel
             var teacher = new TeacherEntity
             {
                 FullName = FullName,
+                Gender = Gender,
                 PhotoData = photoUpload.Data,
                 PhotoContentType = photoUpload.ContentType
             };
@@ -114,6 +121,7 @@ public class EditModel : PageModel
         {
             var teacher = await _db.Teachers.FirstAsync(t => t.Id == Id);
             teacher.FullName = FullName;
+            teacher.Gender = Gender;
 
             if (photoUpload.Data is not null)
             {

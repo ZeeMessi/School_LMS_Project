@@ -24,7 +24,9 @@
                 }
                 else
                 {
-                    <span style="color:#64748b;">No photo uploaded yet</span>
+                    <img src="@Model.PlaceholderAvatarUri" alt="Placeholder avatar" style="width:56px;height:56px;object-fit:cover;border-radius:50%;" />
+                    <br />
+                    <small style="color:#64748b;">No photo uploaded - showing a placeholder based on gender</small>
                 }
             </div>
 
@@ -45,6 +47,16 @@
                 <input asp-for="Username" autocomplete="off" />
             </div>
 
+            <div class="portal-field">
+                <label asp-for="Gender">Gender</label>
+                <select asp-for="Gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="portal-field-row">
             <div class="portal-field">
                 <label asp-for="Password">
                     @(Model.IsNew ? "Password" : "New Password (leave blank to keep current)")

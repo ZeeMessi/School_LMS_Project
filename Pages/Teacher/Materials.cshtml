@@ -1,0 +1,126 @@
+@page
+@using SchoolLMS.Data.Entities
+@model SchoolLMS.Pages.Teacher.MaterialsModel
+@{
+    ViewData["Title"] = $"{Model.Type} - {Model.SubjectName}";
+}
+
+<div class="portal-card">
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="login-error">@Model.ErrorMessage</div>
+    }
+
+    <h2>@Model.SubjectName — @Model.ClassLabel</h2>
+    <p>Post assignments, handouts, and quizzes for this class.</p>
+
+    <div class="portal-class-actions" style="margin-bottom:18px;">
+        @foreach (var type in Enum.GetValues<MaterialType>())
+        {
+            var plural = type == MaterialType.Quiz ? "Quizzes" : $"{type}s";
+            <a class="portal-button @(Model.Type == type ? "" : "secondary")"
+               href="?ClassSubjectId=@Model.ClassSubjectId&amp;Type=@type">
+                @plural
+            </a>
+        }
+    </div>
+
+    <h3 style="font-size:15px;color:#172554;margin-bottom:10px;">Post a New @Model.Type</h3>
+
+    <form method="post" asp-page-handler="Add" enctype="multipart/form-data">
+        <input type="hidden" asp-for="ClassSubjectId" />
+        <input type="hidden" asp-for="Type" />
+
+        <div class="portal-field-row">
+            <div class="portal-field" style="flex:1;min-width:220px;">
+                <label asp-for="Title">Title</label>
+                <input asp-for="Title" style="width:100%;" />
+            </div>
+
+            @if (Model.Type != MaterialType.Handout)
+            {
+                <div class="portal-field">
+                    <label asp-for="DueDate">Due Date (optional)</label>
+                    <input asp-for="DueDate" type="date" />
+                </div>
+            }
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field" style="flex:1;min-width:280px;">
+                <label asp-for="Description">Description</label>
+                <textarea asp-for="Description" rows="3" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;"></textarea>
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="Attachment">Attachment (optional, PDF/Word/Excel/PowerPoint/image, max 10 MB)</label>
+                <input asp-for="Attachment" type="file" />
+            </div>
+        </div>
+
+        <button type="submit" class="portal-button">Post @Model.Type</button>
+    </form>
+
+    <h3 style="font-size:15px;color:#172554;margin:24px 0 10px;">Posted @Model.TypePlural</h3>
+
+    @if (Model.Materials.Count == 0)
+    {
+        <p style="color:#64748b;">Nothing posted yet.</p>
+    }
+    else
+    {
+        <div class="portal-table-wrapper">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Due Date</th>
+                        <th>Posted</th>
+                        <th>File</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var material in Model.Materials)
+                    {
+                        <tr>
+                            <td>@material.Title</td>
+                            <td>@material.Description</td>
+                            <td>@(material.DueDate?.ToString("d MMM yyyy") ?? "—")</td>
+                            <td>@material.PostedAt.ToString("d MMM yyyy")</td>
+                            <td>
+                                @if (material.FileData is not null)
+                                {
+                                    <a href="/file/material/@material.Id" target="_blank">@(material.FileName ?? "Download")</a>
+                                }
+                                else
+                                {
+                                    <span>—</span>
+                                }
+                            </td>
+                            <td>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@material.Id"
+                                      onsubmit="return confirm('Remove &quot;@material.Title&quot;?');">
+                                    <input type="hidden" asp-for="ClassSubjectId" />
+                                    <input type="hidden" asp-for="Type" />
+                                    <button type="submit" class="portal-button secondary">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<a href="/Teacher/Dashboard" class="portal-button secondary">&larr; Back to Dashboard</a>

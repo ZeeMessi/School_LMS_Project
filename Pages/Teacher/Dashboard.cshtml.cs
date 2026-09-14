@@ -18,6 +18,8 @@ public class DashboardModel : PageModel
 
     public string TeacherName { get; set; } = "";
 
+    public string AvatarUrl { get; set; } = "";
+
     public List<TaughtClassRow> TaughtClasses { get; set; } = new();
 
     public async Task OnGetAsync()
@@ -26,6 +28,9 @@ public class DashboardModel : PageModel
 
         var teacher = await _db.Teachers.FirstAsync(t => t.Id == teacherId);
         TeacherName = teacher.FullName;
+        AvatarUrl = teacher.PhotoData != null
+            ? $"/image/teacher/{teacher.Id}"
+            : AvatarHelper.PlaceholderDataUri(teacher.Gender);
 
         var assignments = await _db.ClassSubjects
             .Include(cs => cs.ClassRoom)

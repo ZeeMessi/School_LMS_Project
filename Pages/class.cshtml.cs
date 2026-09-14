@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Data.Entities;
 using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
@@ -52,9 +53,14 @@ namespace SchoolLMS.Pages
             Subjects = student.ClassRoom.Subjects
                 .Select(cs => new ClassSubject
                 {
+                    ClassSubjectId = cs.Id,
                     Name = cs.Name,
                     TeacherName = cs.Teacher?.FullName ?? "Unassigned",
-                    TeacherImageUrl = cs.Teacher?.PhotoData != null ? $"/image/teacher/{cs.Teacher.Id}" : ""
+                    TeacherImageUrl = cs.Teacher is null
+                        ? ""
+                        : cs.Teacher.PhotoData != null
+                            ? $"/image/teacher/{cs.Teacher.Id}"
+                            : AvatarHelper.PlaceholderDataUri(cs.Teacher.Gender)
                 })
                 .ToList();
         }
@@ -75,6 +81,8 @@ namespace SchoolLMS.Pages
 
     public class ClassSubject
     {
+        public int ClassSubjectId { get; set; }
+
         public string Name { get; set; } = "";
 
         public string TeacherName { get; set; } = "";

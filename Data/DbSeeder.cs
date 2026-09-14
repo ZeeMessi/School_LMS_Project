@@ -45,14 +45,14 @@ public static class DbSeeder
 
         var teachers = new[]
         {
-            new Teacher { FullName = "Mrs. Khan" },
-            new Teacher { FullName = "Mr. Ahmed" },
-            new Teacher { FullName = "Ms. Fatima" },
-            new Teacher { FullName = "Mr. Bilal" },
-            new Teacher { FullName = "Mrs. Sana" },
-            new Teacher { FullName = "Mr. Imran" },
-            new Teacher { FullName = "Mrs. Noreen" },
-            new Teacher { FullName = "Mr. Yousuf" },
+            new Teacher { FullName = "Mrs. Khan", Gender = Gender.Female },
+            new Teacher { FullName = "Mr. Ahmed", Gender = Gender.Male },
+            new Teacher { FullName = "Ms. Fatima", Gender = Gender.Female },
+            new Teacher { FullName = "Mr. Bilal", Gender = Gender.Male },
+            new Teacher { FullName = "Mrs. Sana", Gender = Gender.Female },
+            new Teacher { FullName = "Mr. Imran", Gender = Gender.Male },
+            new Teacher { FullName = "Mrs. Noreen", Gender = Gender.Female },
+            new Teacher { FullName = "Mr. Yousuf", Gender = Gender.Male },
         };
         db.Teachers.AddRange(teachers);
 
@@ -67,15 +67,10 @@ public static class DbSeeder
             ("Social Studies", teachers[6]),
             ("Urdu", teachers[7]),
         };
-        foreach (var (subjectName, teacher) in subjectsByTeacher)
-        {
-            db.ClassSubjects.Add(new ClassSubject
-            {
-                ClassRoom = classRoom,
-                Name = subjectName,
-                Teacher = teacher
-            });
-        }
+        var classSubjects = subjectsByTeacher
+            .Select(x => new ClassSubject { ClassRoom = classRoom, Name = x.Subject, Teacher = x.Teacher })
+            .ToList();
+        db.ClassSubjects.AddRange(classSubjects);
 
         var student = new Student
         {
@@ -94,6 +89,9 @@ public static class DbSeeder
 
         SeedFeeInvoices(db, student);
         SeedAnnouncements(db, classRoom);
+
+        var mathematics = classSubjects.First(cs => cs.Name == "Mathematics");
+        SeedCourseContent(db, mathematics, student);
 
         // teachers[1] is "Mr. Ahmed", the Mathematics teacher - chosen as
         // the demo teacher account since Mathematics already has seeded
@@ -391,5 +389,37 @@ public static class DbSeeder
                 IsImportant = false
             }
         );
+    }
+
+    private static void SeedCourseContent(AppDbContext db, ClassSubject mathematics, Student student)
+    {
+        // Gives the new teacher Materials/Remarks pages something real to
+        // show on first use, instead of every one of them starting empty.
+        db.CourseMaterials.Add(new CourseMaterial
+        {
+            ClassSubject = mathematics,
+            Type = MaterialType.Assignment,
+            Title = "Fractions Worksheet",
+            Description = "Complete questions 1-20 on adding and subtracting fractions.",
+            DueDate = new DateOnly(2026, 9, 20),
+            PostedAt = new DateTime(2026, 9, 10)
+        });
+
+        db.CourseMaterials.Add(new CourseMaterial
+        {
+            ClassSubject = mathematics,
+            Type = MaterialType.Handout,
+            Title = "Multiplication Tables Reference Sheet",
+            Description = "Keep this handy while practicing the worksheet.",
+            PostedAt = new DateTime(2026, 9, 8)
+        });
+
+        db.TeacherRemarks.Add(new TeacherRemark
+        {
+            Student = student,
+            ClassSubject = mathematics,
+            Remark = "Ali has shown strong improvement in problem-solving speed this term.",
+            CreatedAt = new DateTime(2026, 9, 12)
+        });
     }
 }

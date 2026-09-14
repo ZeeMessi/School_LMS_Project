@@ -1,0 +1,129 @@
+@page
+@model SchoolLMS.Pages.Teacher.AnnouncementsModel
+@{
+    ViewData["Title"] = "Announcements";
+}
+
+<div class="portal-card">
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="login-error">@Model.ErrorMessage</div>
+    }
+
+    <h2>Post an Announcement</h2>
+    <p>Visible to every student in the class you choose, on their Announcements page.</p>
+
+    @if (Model.MyClasses.Count == 0)
+    {
+        <p style="color:#64748b;">You aren't assigned to any classes yet, so there's nowhere to post an announcement to.</p>
+    }
+    else
+    {
+        <form method="post" enctype="multipart/form-data">
+
+            <div class="portal-field-row">
+                <div class="portal-field" style="flex:1;min-width:220px;">
+                    <label asp-for="Title">Title</label>
+                    <input asp-for="Title" style="width:100%;" />
+                </div>
+
+                <div class="portal-field">
+                    <label asp-for="Category">Category</label>
+                    <select asp-for="Category">
+                        <option value="Notice">Notice</option>
+                        <option value="Event">Event</option>
+                    </select>
+                </div>
+
+                <div class="portal-field">
+                    <label asp-for="TargetClassRoomId">Class</label>
+                    <select asp-for="TargetClassRoomId">
+                        @foreach (var classRoom in Model.MyClasses)
+                        {
+                            <option value="@classRoom.Id">@classRoom.ClassName — @classRoom.SectionName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="portal-field-row">
+                <div class="portal-field" style="flex:1;min-width:280px;">
+                    <label asp-for="ShortDescription">Short Description</label>
+                    <input asp-for="ShortDescription" style="width:100%;" placeholder="Shown in the list before it's opened" />
+                </div>
+            </div>
+
+            <div class="portal-field-row">
+                <div class="portal-field" style="flex:1;min-width:280px;">
+                    <label asp-for="FullDescription">Full Description (optional - defaults to the short description)</label>
+                    <textarea asp-for="FullDescription" rows="3" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;"></textarea>
+                </div>
+            </div>
+
+            <div class="portal-field-row" style="align-items:center;">
+                <div class="portal-field">
+                    <label style="display:flex;align-items:center;gap:6px;">
+                        <input type="checkbox" asp-for="IsImportant" style="width:auto;" /> Mark as important
+                    </label>
+                </div>
+
+                <div class="portal-field">
+                    <label asp-for="Attachment">Attachment (optional, max 10 MB)</label>
+                    <input asp-for="Attachment" type="file" />
+                </div>
+            </div>
+
+            <button type="submit" class="portal-button">Post Announcement</button>
+        </form>
+    }
+</div>
+
+<div class="portal-card">
+    <h2>Your Posted Announcements</h2>
+
+    @if (Model.MyAnnouncements.Count == 0)
+    {
+        <p style="color:#64748b;">You haven't posted anything yet.</p>
+    }
+    else
+    {
+        <div class="portal-table-wrapper">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Class</th>
+                        <th>Date</th>
+                        <th>Important</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var announcement in Model.MyAnnouncements)
+                    {
+                        <tr>
+                            <td>@announcement.Title</td>
+                            <td>@(announcement.TargetClassRoom is null ? "—" : $"{announcement.TargetClassRoom.ClassName} — {announcement.TargetClassRoom.SectionName}")</td>
+                            <td>@announcement.Date.ToString("d MMM yyyy")</td>
+                            <td>@(announcement.IsImportant ? "Yes" : "No")</td>
+                            <td>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@announcement.Id"
+                                      onsubmit="return confirm('Remove &quot;@announcement.Title&quot;?');">
+                                    <button type="submit" class="portal-button secondary">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<a href="/Teacher/Dashboard" class="portal-button secondary">&larr; Back to Dashboard</a>

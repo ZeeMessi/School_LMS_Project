@@ -29,6 +29,8 @@ public class AppDbContext : DbContext
     public DbSet<AnnouncementRead> AnnouncementReads => Set<AnnouncementRead>();
     public DbSet<FeedbackSubmission> FeedbackSubmissions => Set<FeedbackSubmission>();
     public DbSet<UserAccount> UserAccounts => Set<UserAccount>();
+    public DbSet<CourseMaterial> CourseMaterials => Set<CourseMaterial>();
+    public DbSet<TeacherRemark> TeacherRemarks => Set<TeacherRemark>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,5 +90,22 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(f => f.StudentId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Announcement>()
+            .HasOne(a => a.Teacher)
+            .WithMany(t => t.Announcements)
+            .HasForeignKey(a => a.TeacherId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // TeacherRemark has a cascade path to Student AND to ClassSubject,
+        // and both of those in turn cascade from ClassRoom - the same
+        // multi-cascade-path problem ExamResult had (see above). Breaking
+        // the ClassSubject side to Restrict keeps "delete a student wipes
+        // their remarks" while avoiding the cycle.
+        modelBuilder.Entity<TeacherRemark>()
+            .HasOne(r => r.ClassSubject)
+            .WithMany()
+            .HasForeignKey(r => r.ClassSubjectId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

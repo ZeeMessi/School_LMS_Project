@@ -109,4 +109,27 @@ app.MapGet("/image/teacher/{id:int}", async (int id, AppDbContext db) =>
         : Results.NotFound();
 }).RequireAuthorization();
 
+// Same "stored as bytes in the database" pattern as the /image endpoints
+// above, for assignment/handout/quiz attachments and announcement
+// attachments - fileDownloadName sets a real Content-Disposition so the
+// browser downloads/saves with the original filename instead of a bare
+// id. Any signed-in user can fetch any attachment by id (no per-resource
+// ownership check) - same simplification already made for photos, since
+// everyone authenticated here belongs to the same one school.
+app.MapGet("/file/material/{id:int}", async (int id, AppDbContext db) =>
+{
+    var material = await db.CourseMaterials.FindAsync(id);
+    return material?.FileData is { } bytes
+        ? Results.File(bytes, material.FileContentType ?? "application/octet-stream", material.FileName)
+        : Results.NotFound();
+}).RequireAuthorization();
+
+app.MapGet("/file/announcement/{id:int}", async (int id, AppDbContext db) =>
+{
+    var announcement = await db.Announcements.FindAsync(id);
+    return announcement?.AttachmentData is { } bytes
+        ? Results.File(bytes, announcement.AttachmentContentType ?? "application/octet-stream", announcement.AttachmentFileName)
+        : Results.NotFound();
+}).RequireAuthorization();
+
 app.Run();
