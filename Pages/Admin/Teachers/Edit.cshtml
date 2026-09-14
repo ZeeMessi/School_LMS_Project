@@ -1,0 +1,45 @@
+@page
+@model SchoolLMS.Pages.Admin.Teachers.EditModel
+@{
+    ViewData["Title"] = Model.IsNew ? "Add Teacher" : "Edit Teacher";
+}
+
+<div class="portal-card">
+    <h2>@(Model.IsNew ? "Add Teacher" : "Edit Teacher")</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="login-error">@Model.ErrorMessage</div>
+    }
+
+    <form method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="FullName">Full Name</label>
+                <input asp-for="FullName" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="Username">Username</label>
+                <input asp-for="Username" autocomplete="off" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="Password">
+                    @(Model.IsNew ? "Password" : "New Password (leave blank to keep current)")
+                </label>
+                <input asp-for="Password" type="password" autocomplete="new-password" />
+            </div>
+        </div>
+
+        <p style="color:#64748b;font-size:13px;">
+            Assign this teacher to classes/subjects from the
+            <a href="/Admin/Classes">Classes</a> page.
+        </p>
+
+        <button type="submit" class="portal-button">Save</button>
+        <a href="/Admin/Teachers" class="portal-button secondary">Cancel</a>
+    </form>
+</div>

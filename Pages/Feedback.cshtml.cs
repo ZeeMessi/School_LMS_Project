@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,9 @@ using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
 {
+    // See Overview.cshtml.cs - reads User.GetStudentId()!.Value, so must
+    // stay restricted to the Student role.
+    [Authorize(Roles = "Student")]
     public class FeedbackModel : PageModel
     {
         private readonly AppDbContext _db;

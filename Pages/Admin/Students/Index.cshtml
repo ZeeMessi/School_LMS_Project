@@ -1,0 +1,52 @@
+@page
+@model SchoolLMS.Pages.Admin.Students.IndexModel
+@{
+    ViewData["Title"] = "Students";
+}
+
+<div class="portal-card">
+    <h2>Students</h2>
+    <p>All students across every class.</p>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    <a class="portal-button" href="/Admin/Students/Edit">+ Add Student</a>
+
+    <br /><br />
+
+    <div class="portal-table-wrapper">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Class</th>
+                    <th>Username</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in Model.Students)
+                {
+                    <tr>
+                        <td>@student.FullName</td>
+                        <td>@student.RollNumber</td>
+                        <td>@student.ClassLabel</td>
+                        <td>@(student.Username ?? "—")</td>
+                        <td>
+                            <a class="portal-button secondary" href="/Admin/Students/Edit?id=@student.Id">Edit</a>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@student.Id"
+                                  style="display:inline"
+                                  onsubmit="return confirm('Remove @student.FullName? This also deletes their attendance, grades, and fee records.');">
+                                <button type="submit" class="portal-button secondary">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

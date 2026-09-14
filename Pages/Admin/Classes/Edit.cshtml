@@ -1,0 +1,119 @@
+@page
+@model SchoolLMS.Pages.Admin.Classes.EditModel
+@{
+    ViewData["Title"] = Model.IsNew ? "Add Class" : "Edit Class";
+}
+
+<div class="portal-card">
+    <h2>@(Model.IsNew ? "Add Class" : "Edit Class")</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="login-error">@Model.ErrorMessage</div>
+    }
+
+    <form method="post" asp-page-handler="Save">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="ClassName">Class Name</label>
+                <input asp-for="ClassName" placeholder="e.g. Class 5" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="SectionName">Section</label>
+                <input asp-for="SectionName" placeholder="e.g. Section A" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="AcademicYear">Academic Year</label>
+                <input asp-for="AcademicYear" placeholder="e.g. 2026 - 2027" />
+            </div>
+        </div>
+
+        <button type="submit" class="portal-button">Save</button>
+        <a href="/Admin/Classes" class="portal-button secondary">Cancel</a>
+    </form>
+</div>
+
+@if (!Model.IsNew)
+{
+    <div class="portal-card">
+        <h2>Subjects &amp; Teachers</h2>
+        <p>Which subjects this class has, and who teaches each one.</p>
+
+        @if (Model.Subjects.Count > 0)
+        {
+            <div class="portal-table-wrapper">
+                <table class="portal-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Teacher</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var subject in Model.Subjects)
+                        {
+                            <tr>
+                                <td>@subject.Name</td>
+                                <td>
+                                    <form method="post" asp-page-handler="UpdateTeacher" style="display:flex;gap:6px;">
+                                        <input type="hidden" name="classSubjectId" value="@subject.Id" />
+                                        <select name="teacherId">
+                                            <option value="">— Unassigned —</option>
+                                            @foreach (var teacher in Model.AllTeachers)
+                                            {
+                                                <option value="@teacher.Id" selected="@(subject.TeacherId == teacher.Id ? "selected" : null)">
+                                                    @teacher.FullName
+                                                </option>
+                                            }
+                                        </select>
+                                        <button type="submit" class="portal-button secondary">Update</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="post" asp-page-handler="RemoveSubject"
+                                          onsubmit="return confirm('Remove @subject.Name from this class?');">
+                                        <input type="hidden" name="classSubjectId" value="@subject.Id" />
+                                        <button type="submit" class="portal-button secondary">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p>No subjects added yet.</p>
+        }
+
+        <br />
+
+        <form method="post" asp-page-handler="AddSubject" class="portal-field-row">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="portal-field">
+                <label asp-for="NewSubjectName">Subject Name</label>
+                <input asp-for="NewSubjectName" placeholder="e.g. Chemistry" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="NewSubjectTeacherId">Teacher</label>
+                <select asp-for="NewSubjectTeacherId">
+                    <option value="">— Unassigned —</option>
+                    @foreach (var teacher in Model.AllTeachers)
+                    {
+                        <option value="@teacher.Id">@teacher.FullName</option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="portal-button">Add Subject</button>
+        </form>
+    </div>
+}

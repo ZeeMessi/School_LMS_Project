@@ -1,0 +1,59 @@
+@page
+@model SchoolLMS.Pages.Admin.Classes.IndexModel
+@{
+    ViewData["Title"] = "Classes";
+}
+
+<div class="portal-card">
+    <h2>Classes</h2>
+    <p>Every class/section the school runs.</p>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="login-error">@Model.ErrorMessage</div>
+    }
+
+    <a class="portal-button" href="/Admin/Classes/Edit">+ Add Class</a>
+
+    <br /><br />
+
+    <div class="portal-table-wrapper">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Section</th>
+                    <th>Academic Year</th>
+                    <th>Students</th>
+                    <th>Subjects</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var classRoom in Model.Classes)
+                {
+                    <tr>
+                        <td>@classRoom.ClassName</td>
+                        <td>@classRoom.SectionName</td>
+                        <td>@classRoom.AcademicYear</td>
+                        <td>@classRoom.StudentCount</td>
+                        <td>@classRoom.SubjectCount</td>
+                        <td>
+                            <a class="portal-button secondary" href="/Admin/Classes/Edit?id=@classRoom.Id">Edit</a>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@classRoom.Id"
+                                  style="display:inline"
+                                  onsubmit="return confirm('Remove @classRoom.ClassName — @classRoom.SectionName?');">
+                                <button type="submit" class="portal-button secondary">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

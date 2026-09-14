@@ -1,0 +1,58 @@
+@page
+@model SchoolLMS.Pages.Admin.Fees.IndexModel
+@{
+    ViewData["Title"] = "Fees";
+}
+
+<div class="portal-card">
+    <h2>Fee Invoices</h2>
+    <p>Every fee invoice issued, across all students.</p>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    <a class="portal-button" href="/Admin/Fees/Edit">+ Add Invoice</a>
+
+    <br /><br />
+
+    <div class="portal-table-wrapper">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Billing Period</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var invoice in Model.Invoices)
+                {
+                    <tr>
+                        <td>@invoice.StudentName</td>
+                        <td>@invoice.BillingPeriod</td>
+                        <td>Rs. @invoice.TotalPayable.ToString("N0")</td>
+                        <td>@invoice.DueDate.ToString("d MMM yyyy")</td>
+                        <td>
+                            <span class="portal-status-pill @(invoice.Status == "Paid" ? "present" : "absent")">
+                                @invoice.Status
+                            </span>
+                        </td>
+                        <td>
+                            <a class="portal-button secondary" href="/Admin/Fees/Edit?id=@invoice.Id">Edit</a>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@invoice.Id"
+                                  style="display:inline"
+                                  onsubmit="return confirm('Remove this invoice?');">
+                                <button type="submit" class="portal-button secondary">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

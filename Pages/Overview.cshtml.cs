@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
@@ -6,6 +7,12 @@ using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
 {
+    // Reads the logged-in student's id via User.GetStudentId()!.Value, so
+    // this must never be reachable by a Teacher/Admin account - one
+    // landing here (a stray link, a typo, deliberate probing) would
+    // otherwise hit an unhandled null-reference crash instead of being
+    // turned away cleanly.
+    [Authorize(Roles = "Student")]
     public class OverviewModel : PageModel
     {
         private readonly AppDbContext _db;

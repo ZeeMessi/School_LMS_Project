@@ -322,6 +322,16 @@ html, body {
     font-size: 14px;
 }
 
+.login-error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
 .portal-banner {
     background: #dcfce7;
     color: #166534;

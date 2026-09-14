@@ -1,0 +1,50 @@
+@page
+@model SchoolLMS.Pages.Admin.Teachers.IndexModel
+@{
+    ViewData["Title"] = "Teachers";
+}
+
+<div class="portal-card">
+    <h2>Teachers</h2>
+    <p>All teaching staff and what they're assigned to teach.</p>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    <a class="portal-button" href="/Admin/Teachers/Edit">+ Add Teacher</a>
+
+    <br /><br />
+
+    <div class="portal-table-wrapper">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Teaches</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var teacher in Model.Teachers)
+                {
+                    <tr>
+                        <td>@teacher.FullName</td>
+                        <td>@(teacher.Username ?? "—")</td>
+                        <td>@teacher.SubjectsSummary</td>
+                        <td>
+                            <a class="portal-button secondary" href="/Admin/Teachers/Edit?id=@teacher.Id">Edit</a>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@teacher.Id"
+                                  style="display:inline"
+                                  onsubmit="return confirm('Remove @teacher.FullName? Their class/subject assignments will become unassigned.');">
+                                <button type="submit" class="portal-button secondary">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

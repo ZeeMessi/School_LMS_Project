@@ -1,0 +1,119 @@
+@page
+@model SchoolLMS.Pages.Admin.Fees.EditModel
+@{
+    ViewData["Title"] = Model.IsNew ? "Add Invoice" : "Edit Invoice";
+}
+
+<div class="portal-card">
+    <h2>@(Model.IsNew ? "Add Fee Invoice" : "Edit Fee Invoice")</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="login-error">@Model.ErrorMessage</div>
+    }
+
+    <form method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="StudentId">Student</label>
+                <select asp-for="StudentId">
+                    @foreach (var student in Model.AllStudents)
+                    {
+                        <option value="@student.Id">@student.FullName (@student.RollNumber)</option>
+                    }
+                </select>
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="BillingPeriod">Billing Period</label>
+                <input asp-for="BillingPeriod" placeholder="e.g. October 2026" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="ChallanNumber">Challan Number</label>
+                <input asp-for="ChallanNumber" />
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="IssueDate">Issue Date</label>
+                <input asp-for="IssueDate" type="date" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="DueDate">Due Date</label>
+                <input asp-for="DueDate" type="date" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="Status">Status</label>
+                <select asp-for="Status">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="PaidDate">Paid Date (if paid)</label>
+                <input asp-for="PaidDate" type="date" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="ReceiptNumber">Receipt Number (if paid)</label>
+                <input asp-for="ReceiptNumber" />
+            </div>
+        </div>
+
+        <h3 style="font-size:14px;color:#374151;margin:18px 0 8px;">Fee Components (leave 0 to omit from the challan)</h3>
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="AdmissionFee">Admission Fee</label>
+                <input asp-for="AdmissionFee" type="number" step="0.01" />
+            </div>
+            <div class="portal-field">
+                <label asp-for="TuitionFee">Tuition Fee</label>
+                <input asp-for="TuitionFee" type="number" step="0.01" />
+            </div>
+            <div class="portal-field">
+                <label asp-for="LibraryFee">Library Fee</label>
+                <input asp-for="LibraryFee" type="number" step="0.01" />
+            </div>
+            <div class="portal-field">
+                <label asp-for="TransportFee">Transport Fee</label>
+                <input asp-for="TransportFee" type="number" step="0.01" />
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="StationeryFee">Stationery Fee</label>
+                <input asp-for="StationeryFee" type="number" step="0.01" />
+            </div>
+            <div class="portal-field">
+                <label asp-for="UniformFee">Uniform Fee</label>
+                <input asp-for="UniformFee" type="number" step="0.01" />
+            </div>
+            <div class="portal-field">
+                <label asp-for="Fine">Fine</label>
+                <input asp-for="Fine" type="number" step="0.01" />
+            </div>
+            <div class="portal-field">
+                <label asp-for="OtherCharges">Other Charges</label>
+                <input asp-for="OtherCharges" type="number" step="0.01" />
+            </div>
+            <div class="portal-field">
+                <label asp-for="Discount">Discount</label>
+                <input asp-for="Discount" type="number" step="0.01" />
+            </div>
+        </div>
+
+        <button type="submit" class="portal-button">Save</button>
+        <a href="/Admin/Fees" class="portal-button secondary">Cancel</a>
+    </form>
+</div>

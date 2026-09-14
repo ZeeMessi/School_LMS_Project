@@ -12,6 +12,7 @@
     var username = User.Identity?.Name ?? "";
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
     bool IsActive(string page) => currentPage == page;
+    bool IsSection(string prefix) => currentPage.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -44,6 +45,18 @@
             {
                 <a href="/Admin/Dashboard" class="portal-nav-link @(IsActive("/Admin/Dashboard") ? "active" : "")">
                     ⌂ Dashboard
+                </a>
+                <a href="/Admin/Students" class="portal-nav-link @(IsSection("/Admin/Students") ? "active" : "")">
+                    🎓 Students
+                </a>
+                <a href="/Admin/Teachers" class="portal-nav-link @(IsSection("/Admin/Teachers") ? "active" : "")">
+                    🧑‍🏫 Teachers
+                </a>
+                <a href="/Admin/Classes" class="portal-nav-link @(IsSection("/Admin/Classes") ? "active" : "")">
+                    🏫 Classes
+                </a>
+                <a href="/Admin/Fees" class="portal-nav-link @(IsSection("/Admin/Fees") ? "active" : "")">
+                    💳 Fees
                 </a>
             }
 

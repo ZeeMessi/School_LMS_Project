@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
@@ -5,6 +6,9 @@ using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
 {
+    // See Overview.cshtml.cs - reads User.GetStudentId()!.Value, so must
+    // stay restricted to the Student role.
+    [Authorize(Roles = "Student")]
     public class ClassModel : PageModel
     {
         private readonly AppDbContext _db;
