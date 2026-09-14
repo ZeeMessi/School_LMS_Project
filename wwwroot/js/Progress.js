@@ -1,13 +1,25 @@
 /* ============================================================
    SCHOOL LMS - PROGRESS PAGE JAVASCRIPT
-   ============================================================ */
+   ============================================================
 
-
-/* ============================================================
-   WAIT FOR PAGE
+   Both charts below are built from the real data the server
+   rendered into the #progress-data JSON island (see Progress.cshtml)
+   - there are no hardcoded numbers left in this file. The trend
+   line and the assessment doughnut intentionally read the SAME
+   "trend" data: they're two views of the same real exam sittings,
+   not two separately-maintained datasets that could disagree.
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", function () {
+
+    const dataElement = document.getElementById("progress-data");
+
+    if (!dataElement) {
+        return; // no data island means the empty-state markup is showing instead
+    }
+
+    const progressData = JSON.parse(dataElement.textContent);
+
 
     /* ========================================================
        PERFORMANCE TREND CHART
@@ -16,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const performanceCanvas =
         document.getElementById("performanceTrendChart");
 
-    if (performanceCanvas) {
+    if (performanceCanvas && progressData.trend.labels.length > 0) {
 
         new Chart(performanceCanvas, {
 
@@ -24,32 +36,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
             data: {
 
-                labels: [
-                    "January",
-                    "February",
-                    "March",
-                    "April",
-                    "May",
-                    "June",
-                    "July",
-                    "August"
-                ],
+                labels: progressData.trend.labels,
 
                 datasets: [
 
                     {
                         label: "Overall Performance",
 
-                        data: [
-                            78,
-                            79,
-                            82,
-                            81,
-                            85,
-                            84,
-                            86,
-                            87
-                        ],
+                        data: progressData.trend.values,
 
                         borderWidth: 3,
 
@@ -132,12 +126,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* ========================================================
        ASSESSMENT BREAKDOWN CHART
+
+       Same data as the trend chart above - grouped by examination
+       type instead of plotted over time.
        ======================================================== */
 
     const assessmentCanvas =
         document.getElementById("assessmentChart");
 
-    if (assessmentCanvas) {
+    if (assessmentCanvas && progressData.trend.labels.length > 0) {
 
         new Chart(assessmentCanvas, {
 
@@ -145,25 +142,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             data: {
 
-                labels: [
-                    "Monthly Tests",
-                    "Quizzes",
-                    "Assignments",
-                    "Quarterly Exam",
-                    "Annual Exam"
-                ],
+                labels: progressData.trend.labels,
 
                 datasets: [
 
                     {
 
-                        data: [
-                            84,
-                            91,
-                            95,
-                            87,
-                            89
-                        ],
+                        data: progressData.trend.values,
 
                         borderWidth: 3,
 
@@ -232,6 +217,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* ========================================================
        ATTENDANCE VS PERFORMANCE
+
+       Null values (a month with attendance but no exam, or vice
+       versa) render as gaps in the line - Chart.js handles that
+       natively, so a sparse real history still renders correctly
+       instead of needing to be padded with fake numbers.
        ======================================================== */
 
     const attendanceCanvas =
@@ -239,7 +229,9 @@ document.addEventListener("DOMContentLoaded", function () {
             "attendancePerformanceChart"
         );
 
-    if (attendanceCanvas) {
+    const avp = progressData.attendanceVsPerformance;
+
+    if (attendanceCanvas && avp.labels.length > 0) {
 
         new Chart(attendanceCanvas, {
 
@@ -247,16 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             data: {
 
-                labels: [
-                    "January",
-                    "February",
-                    "March",
-                    "April",
-                    "May",
-                    "June",
-                    "July",
-                    "August"
-                ],
+                labels: avp.labels,
 
                 datasets: [
 
@@ -264,16 +247,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         label: "Attendance",
 
-                        data: [
-                            91,
-                            93,
-                            92,
-                            95,
-                            94,
-                            96,
-                            95,
-                            94
-                        ],
+                        data: avp.attendance,
+
+                        spanGaps: true,
 
                         borderWidth: 3,
 
@@ -289,16 +265,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         label: "Academic Performance",
 
-                        data: [
-                            78,
-                            79,
-                            82,
-                            81,
-                            85,
-                            84,
-                            86,
-                            87
-                        ],
+                        data: avp.academic,
+
+                        spanGaps: true,
 
                         borderWidth: 3,
 
@@ -350,6 +319,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                             label: function (context) {
 
+                                if (context.parsed.y === null) {
+                                    return "";
+                                }
+
                                 return " "
                                     + context.dataset.label
                                     + ": "
@@ -368,7 +341,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     y: {
 
-                        min: 50,
+                        min: 0,
 
                         max: 100,
 
@@ -389,103 +362,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
         });
-
-    }
-
-
-    /* ========================================================
-       FILTERS
-       ======================================================== */
-
-    const academicYear =
-        document.getElementById("academicYear");
-
-    const progressTerm =
-        document.getElementById("progressTerm");
-
-    const progressSubject =
-        document.getElementById("progressSubject");
-
-    const progressPeriod =
-        document.getElementById("progressPeriod");
-
-
-    function handleProgressFilterChange() {
-
-        /*
-         * Future database integration:
-         *
-         * The selected values will eventually be sent
-         * to the server/database.
-         *
-         * Example:
-         *
-         * academicYear.value
-         * progressTerm.value
-         * progressSubject.value
-         * progressPeriod.value
-         *
-         * The server will then return the appropriate
-         * student progress information.
-         */
-
-        console.log(
-            "Progress filters changed:",
-            {
-                academicYear:
-                    academicYear
-                        ? academicYear.value
-                        : null,
-
-                term:
-                    progressTerm
-                        ? progressTerm.value
-                        : null,
-
-                subject:
-                    progressSubject
-                        ? progressSubject.value
-                        : null,
-
-                period:
-                    progressPeriod
-                        ? progressPeriod.value
-                        : null
-            }
-        );
-
-    }
-
-
-    if (academicYear) {
-        academicYear.addEventListener(
-            "change",
-            handleProgressFilterChange
-        );
-    }
-
-
-    if (progressTerm) {
-        progressTerm.addEventListener(
-            "change",
-            handleProgressFilterChange
-        );
-    }
-
-
-    if (progressSubject) {
-        progressSubject.addEventListener(
-            "change",
-            handleProgressFilterChange
-        );
-    }
-
-
-    if (progressPeriod) {
-        progressPeriod.addEventListener(
-            "change",
-            handleProgressFilterChange
-        );
 
     }
 

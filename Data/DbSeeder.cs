@@ -89,7 +89,8 @@ public static class DbSeeder
 
         var (examTypes, quarterly) = SeedExamTypes(db);
         var monthlyTest = SeedMonthlyTestResults(db, classRoom, student);
-        SeedUpcomingExams(db, classRoom, quarterly);
+        var quarterlyExams = SeedUpcomingExams(db, classRoom, quarterly);
+        SeedQuarterlyResults(db, quarterlyExams, student);
 
         SeedFeeInvoices(db, student);
         SeedAnnouncements(db, classRoom);
@@ -218,7 +219,7 @@ public static class DbSeeder
         return monthlyType;
     }
 
-    private static void SeedUpcomingExams(AppDbContext db, ClassRoom classRoom, ExamType quarterly)
+    private static List<Exam> SeedUpcomingExams(AppDbContext db, ClassRoom classRoom, ExamType quarterly)
     {
         // Matches ExamScheduleModel.LoadExams()'s hardcoded sample data.
         var exams = new (string Subject, string Code, DateTime Date, string Room, string Invigilator, string Icon)[]
@@ -231,9 +232,11 @@ public static class DbSeeder
             ("Drawing", "DRW-05", new DateTime(2026, 9, 16), "Art Room", "Ms. Hina", "🎨"),
         };
 
+        var createdExams = new List<Exam>();
+
         foreach (var (subject, code, date, room, invigilator, icon) in exams)
         {
-            db.Exams.Add(new Exam
+            var exam = new Exam
             {
                 ExamType = quarterly,
                 ClassRoom = classRoom,
@@ -246,6 +249,45 @@ public static class DbSeeder
                 Room = room,
                 Invigilator = invigilator,
                 Status = "Upcoming"
+            };
+            db.Exams.Add(exam);
+            createdExams.Add(exam);
+        }
+
+        return createdExams;
+    }
+
+    private static void SeedQuarterlyResults(AppDbContext db, List<Exam> quarterlyExams, Student student)
+    {
+        // Only the exams already sat (5, 7, 9, 11, 14 September) get a
+        // recorded result - Drawing (16 September) hasn't happened yet as
+        // of the seed data's "today", so it stays exam-schedule-only,
+        // matching how a real school wouldn't have marks for a test nobody
+        // has taken. This also gives Pages/Progress.cshtml.cs a second
+        // real sitting to compare against the Monthly Test above, so
+        // "improvement" is a genuine computed comparison instead of
+        // fabricated trend data.
+        var results = new (string Subject, int Total, int Obtained, string Grade, string Remarks)[]
+        {
+            ("English", 100, 91, "A+", "Excellent improvement"),
+            ("Mathematics", 100, 89, "A", "Slight dip, still strong"),
+            ("Science", 100, 86, "A", "Good improvement"),
+            ("Urdu", 100, 82, "A", "Good improvement"),
+            ("Social Studies", 100, 78, "B+", "Good"),
+        };
+
+        foreach (var (subject, total, obtained, grade, remarks) in results)
+        {
+            var exam = quarterlyExams.First(e => e.Subject == subject);
+
+            db.ExamResults.Add(new ExamResult
+            {
+                Student = student,
+                Exam = exam,
+                TotalMarks = total,
+                ObtainedMarks = obtained,
+                Grade = grade,
+                Remarks = remarks
             });
         }
     }
