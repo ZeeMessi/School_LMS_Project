@@ -9,14 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 //
 // Every page requires a signed-in user by default (see AuthorizeFolder
-// below) except Login itself - real, cookie-based login, not the
-// "whichever student is first in the database" placeholder every page used
-// before this. See Pages/Login.cshtml.cs for how the cookie gets set, and
-// Services/CurrentUserExtensions.cs for how pages read who's logged in.
+// below) except Login and ForgotPassword - real, cookie-based login, not
+// the "whichever student is first in the database" placeholder every page
+// used before this. See Pages/Login.cshtml.cs for how the cookie gets set,
+// and Services/CurrentUserExtensions.cs for how pages read who's logged in.
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/");
     options.Conventions.AllowAnonymousToPage("/Login");
+    options.Conventions.AllowAnonymousToPage("/ForgotPassword");
 });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
