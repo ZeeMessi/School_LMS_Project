@@ -35,7 +35,7 @@ namespace SchoolLMS.Pages
             var school = _db.Schools.First();
 
             SchoolName = school.Name;
-            SchoolLogo = school.LogoUrl;
+            SchoolLogo = school.LogoData != null ? "/image/school" : null;
             AboutUs = school.AboutUs;
             Address = school.Address;
             Dial = school.Dial;

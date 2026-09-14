@@ -8,7 +8,12 @@ public class Student
 
     public string RollNumber { get; set; } = "";
 
-    public string? PhotoUrl { get; set; }
+    // Stored in the database, not on local disk - see the School.LogoData
+    // comment for why, and Program.cs's /image/student/{id} endpoint for
+    // how this gets served back out.
+    public byte[]? PhotoData { get; set; }
+
+    public string? PhotoContentType { get; set; }
 
     public int ClassRoomId { get; set; }
     public ClassRoom ClassRoom { get; set; } = null!;

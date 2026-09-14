@@ -30,8 +30,19 @@ namespace SchoolLMS.Pages
 
         public string? ErrorMessage { get; set; }
 
-        public void OnGet()
+        public string SchoolName { get; set; } = "";
+
+        public bool HasSchoolLogo { get; set; }
+
+        public async Task OnGetAsync()
         {
+            // One database per school deployment means there's only ever
+            // one School row - see Contact.cshtml.cs. Anyone can reach the
+            // login page without being signed in yet, so this is one of
+            // the few places that reads school info before auth exists.
+            var school = await _db.Schools.FirstOrDefaultAsync();
+            SchoolName = school?.Name ?? "Your School Name";
+            HasSchoolLogo = school?.LogoData != null;
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -47,6 +58,15 @@ namespace SchoolLMS.Pages
                     == PasswordVerificationResult.Failed)
             {
                 ErrorMessage = "Invalid username or password.";
+
+                // OnPostAsync's own Page() result doesn't run OnGetAsync
+                // first, so the school name/logo need loading here too, or
+                // a failed login attempt would redisplay the form with the
+                // "Your School Name" fallback even when a logo is set.
+                var school = await _db.Schools.FirstOrDefaultAsync();
+                SchoolName = school?.Name ?? "Your School Name";
+                HasSchoolLogo = school?.LogoData != null;
+
                 return Page();
             }
 

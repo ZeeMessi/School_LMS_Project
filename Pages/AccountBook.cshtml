@@ -295,12 +295,19 @@
             <!-- SCHOOL -->
             <div class="challan-school">
 
-                <div class="challan-logo-placeholder">
-                    SCHOOL<br />LOGO
-                </div>
+                @if (Model.HasSchoolLogo)
+                {
+                    <img src="/image/school" alt="@Model.SchoolName logo" style="width:100%;height:100%;object-fit:contain;" />
+                }
+                else
+                {
+                    <div class="challan-logo-placeholder">
+                        SCHOOL<br />LOGO
+                    </div>
+                }
 
                 <div>
-                    <h3>Sample School</h3>
+                    <h3>@Model.SchoolName</h3>
                     <p>School Fee Challan</p>
                 </div>
 

@@ -54,7 +54,7 @@ namespace SchoolLMS.Pages
                 {
                     Name = cs.Name,
                     TeacherName = cs.Teacher?.FullName ?? "Unassigned",
-                    TeacherImageUrl = cs.Teacher?.PhotoUrl ?? ""
+                    TeacherImageUrl = cs.Teacher?.PhotoData != null ? $"/image/teacher/{cs.Teacher.Id}" : ""
                 })
                 .ToList();
         }

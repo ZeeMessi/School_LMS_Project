@@ -19,8 +19,15 @@
         <div class="login-card">
 
             <div class="login-header">
-                <div class="logo-placeholder">SL</div>
-                <h1 class="school-name">Your School Name</h1>
+                @if (Model.HasSchoolLogo)
+                {
+                    <img src="/image/school" alt="@Model.SchoolName logo" style="width:64px;height:64px;object-fit:contain;border-radius:50%;margin:0 auto 16px;display:block;" />
+                }
+                else
+                {
+                    <div class="logo-placeholder">SL</div>
+                }
+                <h1 class="school-name">@Model.SchoolName</h1>
                 <p class="system-name">Learning Management System</p>
             </div>
 

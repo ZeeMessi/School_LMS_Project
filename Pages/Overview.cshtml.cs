@@ -25,16 +25,16 @@ namespace SchoolLMS.Pages
         // =====================================================
         // STUDENT INFORMATION
         // =====================================================
-        //
-        // There's no login yet (see Pages/Login.cshtml.cs), so this always
-        // shows the first student in the database. Once authentication is
-        // wired up, this becomes "the logged-in student" instead.
+
+        public int StudentId { get; set; }
 
         public string StudentName { get; set; } = "";
 
         public string StudentClass { get; set; } = "";
 
         public string StudentSection { get; set; } = "";
+
+        public bool HasPhoto { get; set; }
 
         public string StudentInitials => string.Concat(
             StudentName.Split(' ', StringSplitOptions.RemoveEmptyEntries)
@@ -108,9 +108,11 @@ namespace SchoolLMS.Pages
                 .Include(s => s.ClassRoom)
                 .FirstAsync(s => s.Id == studentId);
 
+            StudentId = student.Id;
             StudentName = student.FullName;
             StudentClass = student.ClassRoom.ClassName;
             StudentSection = student.ClassRoom.SectionName;
+            HasPhoto = student.PhotoData != null;
 
             await LoadAttendanceAsync(student.Id);
             await LoadGradeAndProgressAsync(student.Id);

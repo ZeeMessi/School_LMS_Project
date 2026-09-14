@@ -28,6 +28,10 @@ public class AccountBookModel : PageModel
 
     public string Section { get; set; } = "";
 
+    public string SchoolName { get; set; } = "";
+
+    public bool HasSchoolLogo { get; set; }
+
 
     // =========================================================
     // CURRENT BILLING INFORMATION
@@ -88,6 +92,10 @@ public class AccountBookModel : PageModel
         StudentName = student.FullName;
         ClassName = student.ClassRoom.ClassName;
         Section = student.ClassRoom.SectionName;
+
+        var school = await _db.Schools.FirstAsync();
+        SchoolName = school.Name;
+        HasSchoolLogo = school.LogoData != null;
 
         var invoices = await _db.FeeInvoices
             .Where(f => f.StudentId == student.Id)

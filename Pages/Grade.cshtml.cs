@@ -27,9 +27,13 @@ namespace SchoolLMS.Pages
         [BindProperty(SupportsGet = true)]
         public string ExamCode { get; set; } = "";
 
+        public int StudentId { get; set; }
+
         public string StudentName { get; set; } = "";
 
         public string RollNumber { get; set; } = "";
+
+        public bool HasPhoto { get; set; }
 
         public string ClassName { get; set; } = "";
 
@@ -67,8 +71,10 @@ namespace SchoolLMS.Pages
                 .Include(s => s.ClassRoom)
                 .FirstAsync(s => s.Id == studentId);
 
+            StudentId = student.Id;
             StudentName = student.FullName;
             RollNumber = student.RollNumber;
+            HasPhoto = student.PhotoData != null;
             ClassName = student.ClassRoom.ClassName;
             SectionName = student.ClassRoom.SectionName;
             AcademicYear = student.ClassRoom.AcademicYear;

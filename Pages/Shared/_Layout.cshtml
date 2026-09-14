@@ -24,6 +24,7 @@
 
 @inject SchoolLMS.Data.AppDbContext Db
 @using SchoolLMS.Services
+@using Microsoft.EntityFrameworkCore
 @{
     // Used below to mark the current page's sidebar link as active,
     // e.g. "/Overview", "/class", "/Attendance".
@@ -45,6 +46,9 @@
     var studentInitials = string.Concat(
         studentName.Split(' ', StringSplitOptions.RemoveEmptyEntries)
             .Select(word => char.ToUpperInvariant(word[0])));
+
+    var hasStudentPhoto = currentStudent?.PhotoData != null;
+    var hasSchoolLogo = await Db.Schools.AnyAsync(s => s.LogoData != null);
 }
 
 <!DOCTYPE html>
@@ -98,9 +102,16 @@
                     The container is intentionally flexible.
                 -->
 
-                <div class="school-logo-placeholder">
-                    SCHOOL LOGO
-                </div>
+                @if (hasSchoolLogo)
+                {
+                    <img src="/image/school" alt="School logo" style="max-width:100%;max-height:100%;object-fit:contain;" />
+                }
+                else
+                {
+                    <div class="school-logo-placeholder">
+                        SCHOOL LOGO
+                    </div>
+                }
 
             </div>
 
@@ -356,17 +367,16 @@
 
                 <div class="profile-picture">
 
-                    <!--
-                        Replace this placeholder later with
-                        the student's actual picture.
-
-                        The container automatically adapts
-                        to different image sizes.
-                    -->
-
-                    <span class="profile-initials">
-                        @studentInitials
-                    </span>
+                    @if (hasStudentPhoto)
+                    {
+                        <img src="/image/student/@studentId" alt="@studentName" />
+                    }
+                    else
+                    {
+                        <span class="profile-initials">
+                            @studentInitials
+                        </span>
+                    }
 
                 </div>
 

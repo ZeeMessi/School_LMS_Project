@@ -74,4 +74,39 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
+// Photos/logo are stored as bytes in the database (see School.LogoData,
+// Student.PhotoData, Teacher.PhotoData) rather than as files on local
+// disk, so they travel with a school's database backup/restore like every
+// other piece of that school's data. These three endpoints are the only
+// way that data ever becomes an actual <img>-loadable URL.
+//
+// The school logo needs to render on Login itself (an anonymous page), so
+// it's explicitly AllowAnonymous; student/teacher photos are only ever
+// shown on pages that already require a signed-in user, so those require
+// one too - not because a photo is especially sensitive, but so a photo
+// can't be enumerated by guessing ids without even logging in.
+app.MapGet("/image/school", async (AppDbContext db) =>
+{
+    var school = await db.Schools.FirstOrDefaultAsync();
+    return school?.LogoData is { } bytes
+        ? Results.File(bytes, school.LogoContentType ?? "application/octet-stream")
+        : Results.NotFound();
+}).AllowAnonymous();
+
+app.MapGet("/image/student/{id:int}", async (int id, AppDbContext db) =>
+{
+    var student = await db.Students.FindAsync(id);
+    return student?.PhotoData is { } bytes
+        ? Results.File(bytes, student.PhotoContentType ?? "application/octet-stream")
+        : Results.NotFound();
+}).RequireAuthorization();
+
+app.MapGet("/image/teacher/{id:int}", async (int id, AppDbContext db) =>
+{
+    var teacher = await db.Teachers.FindAsync(id);
+    return teacher?.PhotoData is { } bytes
+        ? Results.File(bytes, teacher.PhotoContentType ?? "application/octet-stream")
+        : Results.NotFound();
+}).RequireAuthorization();
+
 app.Run();

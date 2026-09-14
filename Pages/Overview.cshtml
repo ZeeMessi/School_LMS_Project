@@ -19,7 +19,14 @@
     <section class="overview-student-card">
 
         <div class="overview-student-avatar">
-            @Model.StudentInitials
+            @if (Model.HasPhoto)
+            {
+                <img src="/image/student/@Model.StudentId" alt="@Model.StudentName" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />
+            }
+            else
+            {
+                @Model.StudentInitials
+            }
         </div>
 
         <div class="overview-student-info">

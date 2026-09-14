@@ -12,8 +12,27 @@
         <div class="login-error">@Model.ErrorMessage</div>
     }
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="Id" />
+
+        <div class="portal-field-row" style="align-items:center;">
+            <div class="portal-field">
+                <label>Current Photo</label>
+                @if (Model.HasPhoto)
+                {
+                    <img src="/image/teacher/@Model.Id" alt="@Model.FullName" style="width:56px;height:56px;object-fit:cover;border-radius:50%;border:1px solid #e2e8f0;" />
+                }
+                else
+                {
+                    <span style="color:#64748b;">No photo uploaded yet</span>
+                }
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="Photo">Upload New Photo (JPEG/PNG/WebP/GIF, max 2 MB)</label>
+                <input asp-for="Photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+            </div>
+        </div>
 
         <div class="portal-field-row">
             <div class="portal-field">

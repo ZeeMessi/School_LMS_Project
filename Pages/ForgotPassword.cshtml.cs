@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using SchoolLMS.Data;
 
 namespace SchoolLMS.Pages;
 
@@ -9,7 +11,17 @@ namespace SchoolLMS.Pages;
 // which already has a "New Password" field for exactly this.
 public class ForgotPasswordModel : PageModel
 {
-    public void OnGet()
+    private readonly AppDbContext _db;
+
+    public ForgotPasswordModel(AppDbContext db)
     {
+        _db = db;
+    }
+
+    public bool HasSchoolLogo { get; set; }
+
+    public async Task OnGetAsync()
+    {
+        HasSchoolLogo = await _db.Schools.AnyAsync(s => s.LogoData != null);
     }
 }

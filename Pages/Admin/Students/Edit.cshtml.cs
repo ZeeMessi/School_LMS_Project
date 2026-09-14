@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
 using SchoolLMS.Data.Entities;
+using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages.Admin.Students;
 
@@ -38,7 +40,12 @@ public class EditModel : PageModel
     [BindProperty]
     public string Password { get; set; } = "";
 
+    [BindProperty]
+    public IFormFile? Photo { get; set; }
+
     public bool IsNew => Id is null or 0;
+
+    public bool HasPhoto { get; set; }
 
     public List<ClassRoom> ClassRooms { get; set; } = new();
 
@@ -54,6 +61,7 @@ public class EditModel : PageModel
             FullName = student.FullName;
             RollNumber = student.RollNumber;
             ClassRoomId = student.ClassRoomId;
+            HasPhoto = student.PhotoData != null;
 
             var account = await _db.UserAccounts.FirstOrDefaultAsync(u => u.StudentId == Id);
             Username = account?.Username ?? "";
@@ -89,13 +97,22 @@ public class EditModel : PageModel
             return Page();
         }
 
+        var photoUpload = await ImageUploadHelper.ReadAsync(Photo);
+        if (photoUpload.Error is not null)
+        {
+            ErrorMessage = photoUpload.Error;
+            return Page();
+        }
+
         if (IsNew)
         {
             var student = new Student
             {
                 FullName = FullName,
                 RollNumber = RollNumber,
-                ClassRoomId = ClassRoomId
+                ClassRoomId = ClassRoomId,
+                PhotoData = photoUpload.Data,
+                PhotoContentType = photoUpload.ContentType
             };
             _db.Students.Add(student);
             await _db.SaveChangesAsync(); // assigns student.Id
@@ -115,6 +132,12 @@ public class EditModel : PageModel
             student.FullName = FullName;
             student.RollNumber = RollNumber;
             student.ClassRoomId = ClassRoomId;
+
+            if (photoUpload.Data is not null)
+            {
+                student.PhotoData = photoUpload.Data;
+                student.PhotoContentType = photoUpload.ContentType;
+            }
 
             var account = await _db.UserAccounts.FirstOrDefaultAsync(u => u.StudentId == Id);
             if (account is null)

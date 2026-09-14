@@ -34,7 +34,14 @@
     <section class="grade-student-card">
 
         <div class="grade-profile-placeholder">
-            <span>PHOTO</span>
+            @if (Model.HasPhoto)
+            {
+                <img src="/image/student/@Model.StudentId" alt="@Model.StudentName" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />
+            }
+            else
+            {
+                <span>PHOTO</span>
+            }
         </div>
 
         <div class="grade-student-info">

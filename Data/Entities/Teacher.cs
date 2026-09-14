@@ -6,7 +6,12 @@ public class Teacher
 
     public string FullName { get; set; } = "";
 
-    public string? PhotoUrl { get; set; }
+    // Stored in the database, not on local disk - see School.LogoData's
+    // comment for why, and Program.cs's /image/teacher/{id} endpoint for
+    // how this gets served back out.
+    public byte[]? PhotoData { get; set; }
+
+    public string? PhotoContentType { get; set; }
 
     // The class/subject combinations this teacher is assigned to teach -
     // what their dashboard lists, and where they take attendance / enter

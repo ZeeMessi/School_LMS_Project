@@ -1,0 +1,87 @@
+@page
+@model SchoolLMS.Pages.Admin.School.IndexModel
+@{
+    ViewData["Title"] = "School Settings";
+}
+
+<div class="portal-card">
+    <h2>School Settings</h2>
+    <p>This information appears on the Contact page, the login screen, and fee challans.</p>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="login-error">@Model.ErrorMessage</div>
+    }
+
+    <form method="post" enctype="multipart/form-data">
+
+        <div class="portal-field-row" style="align-items:center;">
+            <div class="portal-field">
+                <label>Current Logo</label>
+                @if (Model.HasLogo)
+                {
+                    <img src="/image/school" alt="School logo" style="width:64px;height:64px;object-fit:contain;border:1px solid #e2e8f0;border-radius:8px;background:white;" />
+                }
+                else
+                {
+                    <span style="color:#64748b;">No logo uploaded yet</span>
+                }
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="Logo">Upload New Logo (JPEG/PNG/WebP/GIF, max 2 MB)</label>
+                <input asp-for="Logo" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="Name">School Name</label>
+                <input asp-for="Name" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" type="email" />
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="Dial">Dial</label>
+                <input asp-for="Dial" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="Mobile">Mobile</label>
+                <input asp-for="Mobile" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="Fax">Fax</label>
+                <input asp-for="Fax" />
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field" style="flex:1;min-width:280px;">
+                <label asp-for="Address">Address</label>
+                <input asp-for="Address" style="width:100%;" />
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field" style="flex:1;min-width:280px;">
+                <label asp-for="AboutUs">About Us</label>
+                <textarea asp-for="AboutUs" rows="4" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;"></textarea>
+            </div>
+        </div>
+
+        <button type="submit" class="portal-button">Save</button>
+    </form>
+</div>

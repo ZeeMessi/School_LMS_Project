@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
 using SchoolLMS.Data.Entities;
+using SchoolLMS.Services;
 // SchoolLMS.Pages.Teacher is a real namespace (the Teacher portal pages)
 // that would otherwise shadow the real entity type here, since
 // enclosing-namespace lookup wins over `using`.
@@ -36,7 +38,12 @@ public class EditModel : PageModel
     [BindProperty]
     public string Password { get; set; } = "";
 
+    [BindProperty]
+    public IFormFile? Photo { get; set; }
+
     public bool IsNew => Id is null or 0;
+
+    public bool HasPhoto { get; set; }
 
     public string? ErrorMessage { get; set; }
 
@@ -46,6 +53,7 @@ public class EditModel : PageModel
         {
             var teacher = await _db.Teachers.FirstAsync(t => t.Id == Id);
             FullName = teacher.FullName;
+            HasPhoto = teacher.PhotoData != null;
 
             var account = await _db.UserAccounts.FirstOrDefaultAsync(u => u.TeacherId == Id);
             Username = account?.Username ?? "";
@@ -75,9 +83,21 @@ public class EditModel : PageModel
             return Page();
         }
 
+        var photoUpload = await ImageUploadHelper.ReadAsync(Photo);
+        if (photoUpload.Error is not null)
+        {
+            ErrorMessage = photoUpload.Error;
+            return Page();
+        }
+
         if (IsNew)
         {
-            var teacher = new TeacherEntity { FullName = FullName };
+            var teacher = new TeacherEntity
+            {
+                FullName = FullName,
+                PhotoData = photoUpload.Data,
+                PhotoContentType = photoUpload.ContentType
+            };
             _db.Teachers.Add(teacher);
             await _db.SaveChangesAsync(); // assigns teacher.Id
 
@@ -94,6 +114,12 @@ public class EditModel : PageModel
         {
             var teacher = await _db.Teachers.FirstAsync(t => t.Id == Id);
             teacher.FullName = FullName;
+
+            if (photoUpload.Data is not null)
+            {
+                teacher.PhotoData = photoUpload.Data;
+                teacher.PhotoContentType = photoUpload.ContentType;
+            }
 
             var account = await _db.UserAccounts.FirstOrDefaultAsync(u => u.TeacherId == Id);
             if (account is null)
