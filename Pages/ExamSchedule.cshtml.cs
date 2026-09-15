@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Data.Entities;
 using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages;
@@ -170,6 +171,8 @@ public class ExamScheduleModel : PageModel
         UpcomingExams = Exams.Where(x => x.Date >= today).OrderBy(x => x.Date).Take(5).ToList();
 
         BuildCalendar();
+
+        await NavTrackingService.MarkViewedAsync(_db, studentId, NavSection.ExamSchedule);
     }
 
 

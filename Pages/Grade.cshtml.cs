@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Data.Entities;
 using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
@@ -127,6 +128,8 @@ namespace SchoolLMS.Pages
             SubjectsPassed = results.Count(r => 100.0 * r.ObtainedMarks / r.TotalMarks >= 50);
 
             await LoadPerformanceHistoryAsync(student.Id);
+
+            await NavTrackingService.MarkViewedAsync(_db, studentId, NavSection.GradeBook);
         }
 
         private async Task LoadPerformanceHistoryAsync(int studentId)

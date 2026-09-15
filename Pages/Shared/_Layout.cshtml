@@ -49,6 +49,28 @@
 
     var hasStudentPhoto = currentStudent?.PhotoData != null;
     var hasSchoolLogo = await Db.Schools.AnyAsync(s => s.LogoData != null);
+
+    // "New content" badges on the sidebar links below and the
+    // notification bell - see NavTrackingService for what each flag
+    // means and ContentTrackingService for the per-subject flags Class
+    // and Overview roll up.
+    var navFlags = currentStudent is not null
+        ? await NavTrackingService.GetNavFlagsAsync(Db, currentStudent.Id, currentStudent.ClassRoomId)
+        : new NavTrackingService.NavFlags();
+
+    var notifications = currentStudent is not null
+        ? await NotificationService.GetRecentAsync(Db, currentStudent.Id, currentStudent.ClassRoomId)
+        : new List<NotificationService.NotificationItem>();
+
+    string TimeAgo(DateTime timestamp)
+    {
+        var span = DateTime.UtcNow - timestamp;
+        if (span.TotalMinutes < 1) return "just now";
+        if (span.TotalHours < 1) return $"{(int)span.TotalMinutes}m ago";
+        if (span.TotalDays < 1) return $"{(int)span.TotalHours}h ago";
+        if (span.TotalDays < 7) return $"{(int)span.TotalDays}d ago";
+        return timestamp.ToString("d MMM yyyy");
+    }
 }
 
 <!DOCTYPE html>
@@ -150,6 +172,10 @@
 
             <span class="sidebar-icon-box">
             <span class="sidebar-icon">⌂</span>
+            @if (navFlags.Overview)
+            {
+                <span class="nav-new-badge" title="New"></span>
+            }
             </span>
 
              <span class="sidebar-text">
@@ -163,6 +189,10 @@
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">▣</span>
+                    @if (navFlags.Class)
+                    {
+                        <span class="nav-new-badge" title="New"></span>
+                    }
                 </span>
 
                 <span class="sidebar-text">
@@ -191,6 +221,10 @@
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">▤</span>
+                    @if (navFlags.GradeBook)
+                    {
+                        <span class="nav-new-badge" title="New"></span>
+                    }
                 </span>
 
                 <span class="sidebar-text">
@@ -219,6 +253,10 @@
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">₨</span>
+                    @if (navFlags.AccountBook)
+                    {
+                        <span class="nav-new-badge" title="New"></span>
+                    }
                 </span>
 
                 <span class="sidebar-text">
@@ -233,6 +271,10 @@
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">▦</span>
+                    @if (navFlags.ExamSchedule)
+                    {
+                        <span class="nav-new-badge" title="New"></span>
+                    }
                 </span>
 
                 <span class="sidebar-text">
@@ -247,6 +289,10 @@
 
                 <span class="sidebar-icon-box">
                     <span class="sidebar-icon">●</span>
+                    @if (navFlags.Announcement)
+                    {
+                        <span class="nav-new-badge" title="New"></span>
+                    }
                 </span>
 
                 <span class="sidebar-text">
@@ -337,15 +383,54 @@
 
                 <!-- NOTIFICATION -->
 
-                <button class="notification-button"
-                        type="button"
-                        aria-label="Notifications">
+                <div class="notification-wrapper">
 
-                    <span class="notification-icon">
-                        ♢
-                    </span>
+                    <button id="notificationButton"
+                            class="notification-button"
+                            type="button"
+                            aria-label="Notifications"
+                            aria-expanded="false">
 
-                </button>
+                        <span class="notification-icon">
+                            ♢
+                        </span>
+
+                        @if (navFlags.Overview)
+                        {
+                            <span class="notification-badge-dot" title="New"></span>
+                        }
+
+                    </button>
+
+                    <div id="notificationPanel" class="notification-panel" hidden>
+
+                        <div class="notification-panel-header">
+                            Notifications
+                        </div>
+
+                        @if (notifications.Count == 0)
+                        {
+                            <div class="notification-empty">
+                                Nothing to show yet.
+                            </div>
+                        }
+                        else
+                        {
+                            @foreach (var item in notifications)
+                            {
+                                <a href="@item.Url" class="notification-item">
+                                    <span class="notification-item-icon">@item.Icon</span>
+                                    <span class="notification-item-body">
+                                        <span class="notification-item-text">@item.Text</span>
+                                        <span class="notification-item-time">@TimeAgo(item.Timestamp)</span>
+                                    </span>
+                                </a>
+                            }
+                        }
+
+                    </div>
+
+                </div>
 
 
                 <!-- STUDENT INFORMATION -->

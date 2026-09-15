@@ -32,6 +32,7 @@ public class AppDbContext : DbContext
     public DbSet<CourseMaterial> CourseMaterials => Set<CourseMaterial>();
     public DbSet<TeacherRemark> TeacherRemarks => Set<TeacherRemark>();
     public DbSet<StudentSectionView> StudentSectionViews => Set<StudentSectionView>();
+    public DbSet<StudentNavView> StudentNavViews => Set<StudentNavView>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -122,5 +123,20 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<StudentSectionView>()
             .HasIndex(v => new { v.StudentId, v.ClassSubjectId, v.Section })
             .IsUnique();
+
+        // One "last viewed" row per student/sidebar-tab.
+        modelBuilder.Entity<StudentNavView>()
+            .HasIndex(v => new { v.StudentId, v.Section })
+            .IsUnique();
+
+        // An exam type can be deleted (a school reconfiguring its exam
+        // types) without needing to also delete the announcement it
+        // generated - it just stops being "the" exam-schedule
+        // announcement for that type.
+        modelBuilder.Entity<Announcement>()
+            .HasOne(a => a.RelatedExamType)
+            .WithMany()
+            .HasForeignKey(a => a.RelatedExamTypeId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Data.Entities;
 using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages;
@@ -144,6 +145,8 @@ public class AccountBookModel : PageModel
                 ReceiptNumber = f.ReceiptNumber ?? ""
             })
             .ToList();
+
+        await NavTrackingService.MarkViewedAsync(_db, studentId, NavSection.AccountBook);
     }
 }
 

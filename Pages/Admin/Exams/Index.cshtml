@@ -1,0 +1,145 @@
+@page
+@model SchoolLMS.Pages.Admin.Exams.IndexModel
+@{
+    ViewData["Title"] = "Exam Schedule";
+}
+
+<div class="portal-card">
+    <h2>Exam Schedule</h2>
+    <p>Publish or update the exam timetable for a class. Every change also posts/updates an announcement students see automatically.</p>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="login-error">@Model.ErrorMessage</div>
+    }
+
+    <form method="get" class="portal-field-row" style="margin-bottom:18px;">
+        <div class="portal-field">
+            <label>Exam Type</label>
+            <select name="ExamTypeId" onchange="this.form.submit()">
+                @foreach (var type in Model.ExamTypes)
+                {
+                    <option value="@type.Id" selected="@(type.Id == Model.ExamTypeId)">@type.Icon @type.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="portal-field">
+            <label>Class</label>
+            <select name="ClassRoomId" onchange="this.form.submit()">
+                @foreach (var room in Model.ClassRooms)
+                {
+                    <option value="@room.Id" selected="@(room.Id == Model.ClassRoomId)">@room.ClassName — @room.SectionName</option>
+                }
+            </select>
+        </div>
+    </form>
+
+    @if (Model.SubjectOptions.Count == 0)
+    {
+        <p style="color:#64748b;">This class has no subjects assigned yet - add some from the <a href="/Admin/Classes">Classes</a> page first.</p>
+    }
+    else
+    {
+        <h3 style="font-size:15px;color:#172554;margin-bottom:10px;">Add / Update a Subject's Exam</h3>
+
+        <form method="post" asp-page-handler="Add">
+            <input type="hidden" name="ExamTypeId" value="@Model.ExamTypeId" />
+            <input type="hidden" name="ClassRoomId" value="@Model.ClassRoomId" />
+
+            <div class="portal-field-row">
+                <div class="portal-field">
+                    <label asp-for="ClassSubjectId">Subject</label>
+                    <select asp-for="ClassSubjectId">
+                        @foreach (var subject in Model.SubjectOptions)
+                        {
+                            <option value="@subject.Id">@subject.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="portal-field">
+                    <label asp-for="Date">Date</label>
+                    <input asp-for="Date" type="date" />
+                </div>
+
+                <div class="portal-field">
+                    <label asp-for="StartTime">Start Time</label>
+                    <input asp-for="StartTime" placeholder="09:00 AM" />
+                </div>
+
+                <div class="portal-field">
+                    <label asp-for="EndTime">End Time</label>
+                    <input asp-for="EndTime" placeholder="11:00 AM" />
+                </div>
+            </div>
+
+            <div class="portal-field-row">
+                <div class="portal-field">
+                    <label asp-for="Room">Room (optional)</label>
+                    <input asp-for="Room" />
+                </div>
+
+                <div class="portal-field">
+                    <label asp-for="Invigilator">Invigilator (optional)</label>
+                    <input asp-for="Invigilator" />
+                </div>
+            </div>
+
+            <button type="submit" class="portal-button">Save to Schedule</button>
+        </form>
+    }
+
+    <h3 style="font-size:15px;color:#172554;margin:24px 0 10px;">
+        Current @(Model.ExamTypes.FirstOrDefault(t => t.Id == Model.ExamTypeId)?.Name) Schedule
+    </h3>
+
+    @if (Model.ScheduledExams.Count == 0)
+    {
+        <p style="color:#64748b;">Nothing scheduled yet for this class and exam type.</p>
+    }
+    else
+    {
+        <div class="portal-table-wrapper">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Room</th>
+                        <th>Invigilator</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var exam in Model.ScheduledExams)
+                    {
+                        <tr>
+                            <td>@exam.Subject</td>
+                            <td>@exam.Date.ToString("d MMM yyyy")</td>
+                            <td>@exam.StartTime – @exam.EndTime</td>
+                            <td>@(exam.Room ?? "—")</td>
+                            <td>@(exam.Invigilator ?? "—")</td>
+                            <td>@exam.Status</td>
+                            <td>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@exam.Id"
+                                      onsubmit="return confirm('Remove @exam.Subject from the schedule?');">
+                                    <input type="hidden" name="ExamTypeId" value="@Model.ExamTypeId" />
+                                    <input type="hidden" name="ClassRoomId" value="@Model.ClassRoomId" />
+                                    <button type="submit" class="portal-button secondary">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

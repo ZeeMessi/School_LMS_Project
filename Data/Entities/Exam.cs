@@ -30,5 +30,12 @@ public class Exam
 
     public string Status { get; set; } = "Upcoming";
 
+    // When this row was actually entered (by an admin publishing a
+    // schedule, or a teacher recording a result) - distinct from Date,
+    // the exam's own scheduled date, which can be well in the future.
+    // Services/NavTrackingService compares this against the student's
+    // last visit to Exam Schedule to decide whether to show a "new" badge.
+    public DateTime CreatedAt { get; set; }
+
     public List<ExamResult> Results { get; set; } = new();
 }

@@ -35,6 +35,27 @@ public class EditModel : PageModel
     public int ClassRoomId { get; set; }
 
     [BindProperty]
+    public Gender Gender { get; set; }
+
+    [BindProperty]
+    public string GuardianName { get; set; } = "";
+
+    [BindProperty]
+    public string GuardianContactNumber { get; set; } = "";
+
+    [BindProperty]
+    public string ContactNumber { get; set; } = "";
+
+    [BindProperty]
+    public string Address { get; set; } = "";
+
+    [BindProperty]
+    public BloodGroup? BloodGroup { get; set; }
+
+    [BindProperty]
+    public string CnicOrBFormNumber { get; set; } = "";
+
+    [BindProperty]
     public string Username { get; set; } = "";
 
     [BindProperty]
@@ -47,7 +68,11 @@ public class EditModel : PageModel
 
     public bool HasPhoto { get; set; }
 
+    public string PlaceholderAvatarUri => AvatarHelper.PlaceholderDataUri(Gender);
+
     public List<ClassRoom> ClassRooms { get; set; } = new();
+
+    public IReadOnlyList<(BloodGroup Value, string Label)> BloodGroupOptions => BloodGroupHelper.Options;
 
     public string? ErrorMessage { get; set; }
 
@@ -61,6 +86,13 @@ public class EditModel : PageModel
             FullName = student.FullName;
             RollNumber = student.RollNumber;
             ClassRoomId = student.ClassRoomId;
+            Gender = student.Gender;
+            GuardianName = student.GuardianName;
+            GuardianContactNumber = student.GuardianContactNumber ?? "";
+            ContactNumber = student.ContactNumber ?? "";
+            Address = student.Address ?? "";
+            BloodGroup = student.BloodGroup;
+            CnicOrBFormNumber = student.CnicOrBFormNumber ?? "";
             HasPhoto = student.PhotoData != null;
 
             var account = await _db.UserAccounts.FirstOrDefaultAsync(u => u.StudentId == Id);
@@ -111,6 +143,13 @@ public class EditModel : PageModel
                 FullName = FullName,
                 RollNumber = RollNumber,
                 ClassRoomId = ClassRoomId,
+                Gender = Gender,
+                GuardianName = GuardianName,
+                GuardianContactNumber = NullIfBlank(GuardianContactNumber),
+                ContactNumber = NullIfBlank(ContactNumber),
+                Address = NullIfBlank(Address),
+                BloodGroup = BloodGroup,
+                CnicOrBFormNumber = NullIfBlank(CnicOrBFormNumber),
                 PhotoData = photoUpload.Data,
                 PhotoContentType = photoUpload.ContentType
             };
@@ -132,6 +171,13 @@ public class EditModel : PageModel
             student.FullName = FullName;
             student.RollNumber = RollNumber;
             student.ClassRoomId = ClassRoomId;
+            student.Gender = Gender;
+            student.GuardianName = GuardianName;
+            student.GuardianContactNumber = NullIfBlank(GuardianContactNumber);
+            student.ContactNumber = NullIfBlank(ContactNumber);
+            student.Address = NullIfBlank(Address);
+            student.BloodGroup = BloodGroup;
+            student.CnicOrBFormNumber = NullIfBlank(CnicOrBFormNumber);
 
             if (photoUpload.Data is not null)
             {
@@ -156,4 +202,11 @@ public class EditModel : PageModel
         await _db.SaveChangesAsync();
         return RedirectToPage("Index");
     }
+
+    // Optional text fields are bound as "" rather than null (see the
+    // model-binding note on ChallanNumber elsewhere in this codebase),
+    // so an empty form field is stored as a real null instead of an
+    // empty string.
+    private static string? NullIfBlank(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

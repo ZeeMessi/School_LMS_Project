@@ -41,6 +41,18 @@ public class EditModel : PageModel
     public string PlaceholderAvatarUri => AvatarHelper.PlaceholderDataUri(Gender);
 
     [BindProperty]
+    public string ContactNumber { get; set; } = "";
+
+    [BindProperty]
+    public string Address { get; set; } = "";
+
+    [BindProperty]
+    public BloodGroup? BloodGroup { get; set; }
+
+    [BindProperty]
+    public string CnicNumber { get; set; } = "";
+
+    [BindProperty]
     public string Password { get; set; } = "";
 
     [BindProperty]
@@ -49,6 +61,8 @@ public class EditModel : PageModel
     public bool IsNew => Id is null or 0;
 
     public bool HasPhoto { get; set; }
+
+    public IReadOnlyList<(BloodGroup Value, string Label)> BloodGroupOptions => BloodGroupHelper.Options;
 
     public string? ErrorMessage { get; set; }
 
@@ -59,6 +73,10 @@ public class EditModel : PageModel
             var teacher = await _db.Teachers.FirstAsync(t => t.Id == Id);
             FullName = teacher.FullName;
             Gender = teacher.Gender;
+            ContactNumber = teacher.ContactNumber ?? "";
+            Address = teacher.Address ?? "";
+            BloodGroup = teacher.BloodGroup;
+            CnicNumber = teacher.CnicNumber ?? "";
             HasPhoto = teacher.PhotoData != null;
 
             var account = await _db.UserAccounts.FirstOrDefaultAsync(u => u.TeacherId == Id);
@@ -102,6 +120,10 @@ public class EditModel : PageModel
             {
                 FullName = FullName,
                 Gender = Gender,
+                ContactNumber = NullIfBlank(ContactNumber),
+                Address = NullIfBlank(Address),
+                BloodGroup = BloodGroup,
+                CnicNumber = NullIfBlank(CnicNumber),
                 PhotoData = photoUpload.Data,
                 PhotoContentType = photoUpload.ContentType
             };
@@ -122,6 +144,10 @@ public class EditModel : PageModel
             var teacher = await _db.Teachers.FirstAsync(t => t.Id == Id);
             teacher.FullName = FullName;
             teacher.Gender = Gender;
+            teacher.ContactNumber = NullIfBlank(ContactNumber);
+            teacher.Address = NullIfBlank(Address);
+            teacher.BloodGroup = BloodGroup;
+            teacher.CnicNumber = NullIfBlank(CnicNumber);
 
             if (photoUpload.Data is not null)
             {
@@ -146,4 +172,7 @@ public class EditModel : PageModel
         await _db.SaveChangesAsync();
         return RedirectToPage("Index");
     }
+
+    private static string? NullIfBlank(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

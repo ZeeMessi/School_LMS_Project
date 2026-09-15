@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SchoolLMS.Data;
+using SchoolLMS.Data.Entities;
 using SchoolLMS.Services;
 
 namespace SchoolLMS.Pages
@@ -49,6 +50,8 @@ namespace SchoolLMS.Pages
                     AttachmentName = a.AttachmentFileName
                 })
                 .ToList();
+
+            await NavTrackingService.MarkViewedAsync(_db, studentId, NavSection.Announcement);
         }
     }
 

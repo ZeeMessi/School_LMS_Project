@@ -17,6 +17,19 @@ public class Teacher
 
     public string? PhotoContentType { get; set; }
 
+    // ------------------------------------------------------------
+    // CONTACT / IDENTITY DETAILS - see the same fields on Student.cs for
+    // why these are all optional and Address is left as plain nvarchar.
+    // ------------------------------------------------------------
+
+    public string? Address { get; set; }
+
+    public BloodGroup? BloodGroup { get; set; }
+
+    public string? CnicNumber { get; set; }
+
+    public string? ContactNumber { get; set; }
+
     // The class/subject combinations this teacher is assigned to teach -
     // what their dashboard lists, and where they take attendance / enter
     // grades from.

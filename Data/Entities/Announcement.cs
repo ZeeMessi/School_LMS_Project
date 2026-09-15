@@ -31,6 +31,15 @@ public class Announcement
     public int? TeacherId { get; set; }
     public Teacher? Teacher { get; set; }
 
+    // Set only for an announcement Admin/Exams generated automatically
+    // when publishing/updating an exam schedule (see
+    // Pages/Admin/Exams/Index.cshtml.cs) - lets that page find "the"
+    // announcement for a given exam type/class to update in place
+    // instead of posting a new one every time a subject is added to the
+    // same schedule.
+    public int? RelatedExamTypeId { get; set; }
+    public ExamType? RelatedExamType { get; set; }
+
     // Stored in the database like every other upload in this app (see
     // School.LogoData's comment) - replaces the old AttachmentUrl string,
     // which nothing had ever actually set.

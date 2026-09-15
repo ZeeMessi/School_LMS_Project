@@ -58,6 +58,36 @@
 
         <div class="portal-field-row">
             <div class="portal-field">
+                <label asp-for="ContactNumber">Contact Number</label>
+                <input asp-for="ContactNumber" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="BloodGroup">Blood Group</label>
+                <select asp-for="BloodGroup">
+                    <option value="">Not specified</option>
+                    @foreach (var option in Model.BloodGroupOptions)
+                    {
+                        <option value="@option.Value">@option.Label</option>
+                    }
+                </select>
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="CnicNumber">CNIC Number</label>
+                <input asp-for="CnicNumber" placeholder="XXXXX-XXXXXXX-X" />
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field" style="flex:1;min-width:260px;">
+                <label asp-for="Address">Address (English, Urdu or numbers)</label>
+                <input asp-for="Address" style="width:100%;" lang="ur" dir="auto" />
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field">
                 <label asp-for="Password">
                     @(Model.IsNew ? "Password" : "New Password (leave blank to keep current)")
                 </label>

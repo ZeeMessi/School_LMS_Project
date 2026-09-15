@@ -1,0 +1,61 @@
+@page
+@model SchoolLMS.Pages.Admin.Feedback.IndexModel
+@{
+    ViewData["Title"] = "Feedback";
+}
+
+<div class="portal-card">
+    <h2>Student Feedback</h2>
+    <p>Everything students have submitted through their Feedback page.</p>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="portal-banner">@Model.StatusMessage</div>
+    }
+
+    @if (Model.Submissions.Count == 0)
+    {
+        <p style="color:#64748b;">No feedback submitted yet.</p>
+    }
+    else
+    {
+        <div class="portal-table-wrapper">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Class</th>
+                        <th>Category</th>
+                        <th>Rating</th>
+                        <th>Message</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Submissions)
+                    {
+                        <tr>
+                            <td>@row.StudentName</td>
+                            <td>@row.ClassLabel</td>
+                            <td>@row.Category</td>
+                            <td>@("★".PadLeft(row.Rating, '★'))</td>
+                            <td style="max-width:280px;">@row.Message</td>
+                            <td>@row.SubmittedAt.ToString("d MMM yyyy")</td>
+                            <td>
+                                <form method="post" asp-page-handler="UpdateStatus" style="display:flex;gap:6px;align-items:center;">
+                                    <input type="hidden" name="id" value="@row.Id" />
+                                    <select name="status" onchange="this.form.submit()">
+                                        <option value="New" selected="@(row.Status == "New")">New</option>
+                                        <option value="Reviewed" selected="@(row.Status == "Reviewed")">Reviewed</option>
+                                        <option value="Resolved" selected="@(row.Status == "Resolved")">Resolved</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -81,7 +81,8 @@ public class GradesModel : PageModel
                 ExamTypeId = examType.Id,
                 StartTime = "",
                 EndTime = "",
-                Status = "Completed"
+                Status = "Completed",
+                CreatedAt = DateTime.UtcNow
             };
             _db.Exams.Add(exam);
         }
@@ -106,6 +107,7 @@ public class GradesModel : PageModel
                 result.ObtainedMarks = row.ObtainedMarks;
                 result.Grade = grade;
                 result.Remarks = row.Remarks;
+                result.RecordedAt = DateTime.UtcNow;
             }
             else
             {
@@ -115,7 +117,8 @@ public class GradesModel : PageModel
                     TotalMarks = TotalMarks,
                     ObtainedMarks = row.ObtainedMarks,
                     Grade = grade,
-                    Remarks = row.Remarks
+                    Remarks = row.Remarks,
+                    RecordedAt = DateTime.UtcNow
                 });
             }
         }

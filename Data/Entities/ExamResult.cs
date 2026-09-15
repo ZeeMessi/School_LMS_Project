@@ -19,4 +19,8 @@ public class ExamResult
     public string Grade { get; set; } = "";
 
     public string? Remarks { get; set; }
+
+    // When this result was recorded - lets Services/NavTrackingService
+    // show a "new" badge on Grade Book when a teacher posts new marks.
+    public DateTime RecordedAt { get; set; }
 }

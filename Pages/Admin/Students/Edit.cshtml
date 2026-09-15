@@ -24,7 +24,8 @@
                 }
                 else
                 {
-                    <span style="color:#64748b;">No photo uploaded yet</span>
+                    <img src="@Model.PlaceholderAvatarUri" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:50%;border:1px solid #e2e8f0;" />
+                    <small style="display:block;color:#64748b;margin-top:4px;">No photo uploaded - showing a placeholder based on gender</small>
                 }
             </div>
 
@@ -53,6 +54,54 @@
                         <option value="@classRoom.Id">@classRoom.ClassName — @classRoom.SectionName</option>
                     }
                 </select>
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="Gender">Gender</label>
+                <select asp-for="Gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field">
+                <label asp-for="GuardianName">Father / Guardian Name</label>
+                <input asp-for="GuardianName" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="GuardianContactNumber">Father / Guardian Contact Number</label>
+                <input asp-for="GuardianContactNumber" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="ContactNumber">Student Contact Number (if applicable)</label>
+                <input asp-for="ContactNumber" />
+            </div>
+        </div>
+
+        <div class="portal-field-row">
+            <div class="portal-field" style="flex:1;min-width:260px;">
+                <label asp-for="Address">Address (English, Urdu or numbers)</label>
+                <input asp-for="Address" style="width:100%;" lang="ur" dir="auto" />
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="BloodGroup">Blood Group</label>
+                <select asp-for="BloodGroup">
+                    <option value="">Not specified</option>
+                    @foreach (var option in Model.BloodGroupOptions)
+                    {
+                        <option value="@option.Value">@option.Label</option>
+                    }
+                </select>
+            </div>
+
+            <div class="portal-field">
+                <label asp-for="CnicOrBFormNumber">CNIC / B-Form Number</label>
+                <input asp-for="CnicOrBFormNumber" placeholder="XXXXX-XXXXXXX-X" />
             </div>
         </div>
 

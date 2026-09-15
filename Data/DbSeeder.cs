@@ -76,7 +76,13 @@ public static class DbSeeder
         {
             FullName = "Ali Raza",
             RollNumber = "10-A-042",
-            ClassRoom = classRoom
+            ClassRoom = classRoom,
+            Gender = Gender.Male,
+            GuardianName = "Muhammad Raza",
+            GuardianContactNumber = "0301-1234567",
+            Address = "House 12, Street 5, Gulshan-e-Iqbal, Karachi",
+            BloodGroup = BloodGroup.OPositive,
+            CnicOrBFormNumber = "42101-1234567-1"
         };
         db.Students.Add(student);
 
@@ -199,7 +205,8 @@ public static class DbSeeder
                 Date = new DateTime(2026, 7, 20),
                 StartTime = "09:00 AM",
                 EndTime = "11:00 AM",
-                Status = "Completed"
+                Status = "Completed",
+                CreatedAt = new DateTime(2026, 7, 20)
             };
             db.Exams.Add(exam);
 
@@ -210,7 +217,8 @@ public static class DbSeeder
                 TotalMarks = total,
                 ObtainedMarks = obtained,
                 Grade = grade,
-                Remarks = remarks
+                Remarks = remarks,
+                RecordedAt = new DateTime(2026, 7, 21)
             });
         }
 
@@ -246,7 +254,8 @@ public static class DbSeeder
                 EndTime = subject == "Drawing" ? "10:30 AM" : "11:00 AM",
                 Room = room,
                 Invigilator = invigilator,
-                Status = "Upcoming"
+                Status = "Upcoming",
+                CreatedAt = new DateTime(2026, 8, 25)
             };
             db.Exams.Add(exam);
             createdExams.Add(exam);
@@ -285,7 +294,8 @@ public static class DbSeeder
                 TotalMarks = total,
                 ObtainedMarks = obtained,
                 Grade = grade,
-                Remarks = remarks
+                Remarks = remarks,
+                RecordedAt = exam.Date.AddDays(1)
             });
         }
     }
