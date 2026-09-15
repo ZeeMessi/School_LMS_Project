@@ -51,16 +51,30 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Applies any pending migrations and seeds demo data on first run.
-// A real school's deployment would still run migrations this way, but
-// without the demo seeding — an admin screen (not yet built) would be how
-// a real school enters its own students/classes/teachers/etc.
+// Applies any pending migrations on every startup, in every environment -
+// a real school's deployment needs this exactly as much as local dev does.
+//
+// What gets seeded into an empty database differs by environment: local
+// Development gets the full demo school (fake students/teachers/grades/
+// etc, so every page has something to show); anywhere else gets just a
+// blank School row and one Admin login with a randomly-generated
+// password printed to the startup log - see DbSeeder.SeedProductionDefaults.
+// A real school then enters its own students/teachers/classes/etc through
+// the Admin screens, not this seeder.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<UserAccount>>();
     db.Database.Migrate();
-    DbSeeder.Seed(db, passwordHasher);
+
+    if (app.Environment.IsDevelopment())
+    {
+        DbSeeder.SeedDemoData(db, passwordHasher);
+    }
+    else
+    {
+        DbSeeder.SeedProductionDefaults(db, passwordHasher);
+    }
 }
 
 app.UseHttpsRedirection();

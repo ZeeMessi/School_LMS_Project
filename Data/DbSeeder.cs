@@ -16,7 +16,10 @@ namespace SchoolLMS.Data;
 // name shown in the persistent header) is the one used everywhere.
 public static class DbSeeder
 {
-    public static void Seed(AppDbContext db, IPasswordHasher<UserAccount> passwordHasher)
+    // Used in Development (see Program.cs) - fills in the full demo
+    // school (classes, teachers, a student, results, fees, announcements)
+    // so every page has real-looking data to show right away.
+    public static void SeedDemoData(AppDbContext db, IPasswordHasher<UserAccount> passwordHasher)
     {
         if (db.Schools.Any())
         {
@@ -106,6 +109,73 @@ public static class DbSeeder
         SeedUserAccounts(db, passwordHasher, student, teachers[1]);
 
         db.SaveChanges();
+    }
+
+    // Used everywhere else (see Program.cs) - a real school's database
+    // should start with nothing pretending to be real data in it. Creates
+    // just enough to log in and take it from there: a School row (blank,
+    // filled in from Admin > School) and one Admin account with a
+    // randomly-generated first-run password, printed once to the
+    // console/log for whoever is running the deployment to retrieve -
+    // never hardcoded, since a fixed default posted in a public repo or
+    // chat history would be a known password for every school running
+    // this unmodified. Pages/ChangePassword.cshtml is how that Admin
+    // account (or anyone's) changes its own password afterward.
+    public static void SeedProductionDefaults(AppDbContext db, IPasswordHasher<UserAccount> passwordHasher)
+    {
+        if (db.Schools.Any())
+        {
+            return; // already set up
+        }
+
+        db.Schools.Add(new School
+        {
+            Name = "Your School Name",
+            AboutUs = "",
+            Address = "",
+            Dial = "",
+            Mobile = "",
+            Fax = "",
+            Email = ""
+        });
+
+        var adminAccount = new UserAccount
+        {
+            Username = "admin",
+            Role = UserRole.Admin
+        };
+
+        var temporaryPassword = GenerateTemporaryPassword();
+        adminAccount.PasswordHash = passwordHasher.HashPassword(adminAccount, temporaryPassword);
+        db.UserAccounts.Add(adminAccount);
+
+        db.SaveChanges();
+
+        Console.WriteLine("=================================================================");
+        Console.WriteLine(" First run: created the initial Admin login.");
+        Console.WriteLine("   Username: admin");
+        Console.WriteLine($"   Password: {temporaryPassword}");
+        Console.WriteLine(" Log in, then change this password immediately (top-right menu)");
+        Console.WriteLine(" and fill in the School page under Admin. This message will not");
+        Console.WriteLine(" appear again - the password is not stored anywhere in plain text,");
+        Console.WriteLine(" including in these logs after this run.");
+        Console.WriteLine("=================================================================");
+    }
+
+    private static string GenerateTemporaryPassword()
+    {
+        // Excludes visually-ambiguous characters (0/O, 1/l/I) since this
+        // is meant to be read off a console and retyped once.
+        const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+
+        var bytes = System.Security.Cryptography.RandomNumberGenerator.GetBytes(14);
+        var password = new char[bytes.Length];
+        for (var i = 0; i < bytes.Length; i++)
+        {
+            password[i] = chars[bytes[i] % chars.Length];
+        }
+
+        return new string(password);
     }
 
     private static void SeedUserAccounts(
