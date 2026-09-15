@@ -14,7 +14,8 @@
         ("assignments", "Assignments", Model.Assignments.Count),
         ("handouts", "Handouts", Model.Handouts.Count),
         ("quizzes", "Quizzes", Model.Quizzes.Count),
-        ("remarks", "Teacher Remarks", Model.Remarks.Count)
+        ("remarks", "Teacher Remarks", Model.Remarks.Count),
+        ("announcements", "Announcements", Model.Announcements.Count)
     };
 }
 
@@ -33,6 +34,10 @@
         {
             <a href="?classSubjectId=@Model.ClassSubjectId&amp;section=@tab.Key"
                class="subject-option @(Model.Section == tab.Key ? "active" : "")">
+                @if (Model.Section != tab.Key && Model.HasNewByTab.GetValueOrDefault(tab.Key))
+                {
+                    <span class="new-badge" title="New"></span>
+                }
                 <span class="option-name">@tab.Label (@tab.Count)</span>
             </a>
         }
@@ -62,6 +67,45 @@
                     <div style="padding:14px 0;border-bottom:1px solid #e2e8f0;">
                         <p style="margin:0 0 4px;">@remark.Remark</p>
                         <small style="color:#64748b;">@remark.CreatedAt.ToString("d MMMM yyyy")</small>
+                    </div>
+                }
+            }
+        </section>
+    }
+    else if (Model.Section == "announcements")
+    {
+        <section class="class-header" style="margin-top:0;">
+            @if (Model.Announcements.Count == 0)
+            {
+                <p>@Model.TeacherName hasn't posted any announcements for this subject yet.</p>
+            }
+            else
+            {
+                @foreach (var announcement in Model.Announcements)
+                {
+                    <div style="padding:16px 0;border-bottom:1px solid #e2e8f0;">
+                        <h3 style="margin:0 0 4px;color:#172554;">
+                            @announcement.Title
+                            @if (announcement.IsImportant)
+                            {
+                                <span style="color:#b45309;font-size:12px;font-weight:800;">IMPORTANT</span>
+                            }
+                        </h3>
+
+                        <p style="margin:0 0 6px;">@announcement.FullDescription</p>
+
+                        @if (announcement.AttachmentData is not null)
+                        {
+                            <a href="/file/announcement/@announcement.Id" target="_blank">
+                                📎 @(announcement.AttachmentFileName ?? "Download attachment")
+                            </a>
+                        }
+
+                        <div>
+                            <small style="color:#64748b;">
+                                Posted @announcement.Date.ToString("d MMMM yyyy") &bull; Issued by @announcement.IssuedBy
+                            </small>
+                        </div>
                     </div>
                 }
             }

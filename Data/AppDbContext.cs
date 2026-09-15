@@ -31,6 +31,7 @@ public class AppDbContext : DbContext
     public DbSet<UserAccount> UserAccounts => Set<UserAccount>();
     public DbSet<CourseMaterial> CourseMaterials => Set<CourseMaterial>();
     public DbSet<TeacherRemark> TeacherRemarks => Set<TeacherRemark>();
+    public DbSet<StudentSectionView> StudentSectionViews => Set<StudentSectionView>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -107,5 +108,19 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(r => r.ClassSubjectId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Same multi-cascade-path problem as TeacherRemark/ExamResult above
+        // (Student and ClassSubject both cascade from ClassRoom).
+        modelBuilder.Entity<StudentSectionView>()
+            .HasOne(v => v.ClassSubject)
+            .WithMany()
+            .HasForeignKey(v => v.ClassSubjectId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // One "last viewed" row per student/subject/section - re-opening a
+        // tab updates the existing row instead of piling up duplicates.
+        modelBuilder.Entity<StudentSectionView>()
+            .HasIndex(v => new { v.StudentId, v.ClassSubjectId, v.Section })
+            .IsUnique();
     }
 }

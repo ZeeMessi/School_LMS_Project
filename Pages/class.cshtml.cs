@@ -50,7 +50,11 @@ namespace SchoolLMS.Pages
             ClassName = student.ClassRoom.ClassName;
             SectionName = student.ClassRoom.SectionName;
 
-            Subjects = student.ClassRoom.Subjects
+            var classSubjectEntities = student.ClassRoom.Subjects.ToList();
+            var newFlags = await ContentTrackingService.GetNewFlagsAsync(
+                _db, studentId, student.ClassRoomId, classSubjectEntities);
+
+            Subjects = classSubjectEntities
                 .Select(cs => new ClassSubject
                 {
                     ClassSubjectId = cs.Id,
@@ -60,7 +64,15 @@ namespace SchoolLMS.Pages
                         ? ""
                         : cs.Teacher.PhotoData != null
                             ? $"/image/teacher/{cs.Teacher.Id}"
-                            : AvatarHelper.PlaceholderDataUri(cs.Teacher.Gender)
+                            : AvatarHelper.PlaceholderDataUri(cs.Teacher.Gender),
+                    HasNewByOption = new Dictionary<string, bool>
+                    {
+                        ["Assignment"] = newFlags.GetValueOrDefault((cs.Id, ContentSection.Assignment)),
+                        ["Quiz"] = newFlags.GetValueOrDefault((cs.Id, ContentSection.Quiz)),
+                        ["Handouts"] = newFlags.GetValueOrDefault((cs.Id, ContentSection.Handout)),
+                        ["Teacher Remarks"] = newFlags.GetValueOrDefault((cs.Id, ContentSection.Remark)),
+                        ["Announcement"] = newFlags.GetValueOrDefault((cs.Id, ContentSection.Announcement)),
+                    }
                 })
                 .ToList();
         }
@@ -88,6 +100,12 @@ namespace SchoolLMS.Pages
         public string TeacherName { get; set; } = "";
 
         public string TeacherImageUrl { get; set; } = "";
+
+        // Keyed by ClassSubjectOption.Name ("Assignment", "Quiz",
+        // "Handouts", "Teacher Remarks", "Announcement") - true when
+        // something has been posted in that section since the student
+        // last opened it, so class.cshtml can show a "new" badge.
+        public Dictionary<string, bool> HasNewByOption { get; set; } = new();
     }
 
 

@@ -266,6 +266,8 @@
    ============================================================ */
 
 .subject-option {
+    position: relative;
+
     min-width: 0;
 
     min-height: 90px;
@@ -320,6 +322,8 @@
    ============================================================ */
 
 .option-icon {
+    position: relative;
+
     width: clamp(34px, 4vw, 46px);
 
     height: clamp(34px, 4vw, 46px);
@@ -369,6 +373,53 @@
     font-weight: 300;
 
     color: #2563eb;
+}
+
+
+/* ============================================================
+   "NEW CONTENT" BADGE
+
+   Shown on a subject-option (see class.cshtml, both on the Class
+   page's icon boxes and on SubjectContent's tabs) when something has
+   been posted in that section since the student last opened it - a
+   real signal computed server-side by ContentTrackingService, not
+   something that's simply always on.
+   ============================================================ */
+
+.new-badge {
+    position: absolute;
+
+    top: -4px;
+
+    right: -4px;
+
+    width: 12px;
+
+    height: 12px;
+
+    border-radius: 50%;
+
+    background: #ef4444;
+
+    border: 2px solid #ffffff;
+
+    animation: new-badge-pulse 1.6s infinite;
+
+    z-index: 1;
+}
+
+@keyframes new-badge-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55);
+    }
+
+    70% {
+        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
 }
 
 
